@@ -1,0 +1,388 @@
+{
+  "name": "WIP_Delete_ziti_identity(VPN)",
+  "nodes": [
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://111.65.255.239:8441/edge/management/v1/authenticate?",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "method",
+              "value": "password"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n    \"username\": \"admin\",\n    \"password\": \"inf123!@#\"\n}",
+        "options": {
+          "allowUnauthorizedCerts": true
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -540,
+        40
+      ],
+      "id": "ab3513dc-b3a4-4ee0-b146-e51bb97c2129",
+      "name": "Login"
+    },
+    {
+      "parameters": {
+        "url": "https://111.65.255.239:8441/edge/management/v1/identities/?",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "filter",
+              "value": "=name=\"{{ $('Pick_layoff_account_vpn').item.json.account }}\""
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "zt-session",
+              "value": "={{ $json.data.token }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "options": {
+          "allowUnauthorizedCerts": true
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -320,
+        40
+      ],
+      "id": "fe61a79d-1863-4c0e-b3dc-d0004cda6a95",
+      "name": "Search for ID Identity"
+    },
+    {
+      "parameters": {
+        "method": "DELETE",
+        "url": "=https://111.65.255.239:8441/edge/management/v1/identities/{{ $('Search for ID Identity').item.json.data[0].id }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "zt-session",
+              "value": "={{ $('Login').item.json.data.token }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "options": {
+          "allowUnauthorizedCerts": true
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        200,
+        -140
+      ],
+      "id": "15f9e4d9-f297-4eae-b13f-16feaf368184",
+      "name": "Delete Identity"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://eoffice.fptonline.net/rest/sms/latest/integration-user/login",
+        "sendBody": true,
+        "contentType": "form-urlencoded",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "username",
+              "value": "admin-huynd54"
+            },
+            {
+              "name": "password",
+              "value": "Kotase2005*"
+            }
+          ]
+        },
+        "options": {
+          "lowercaseHeaders": true
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -1240,
+        40
+      ],
+      "id": "9ebe2199-19a2-437e-844b-2fde9c79ee23",
+      "name": "Login Eoffice",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "url": "https://eoffice.fptonline.net/rest/sms/latest/integration-phase/detail?",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "getHidden",
+              "value": "true"
+            },
+            {
+              "name": "id",
+              "value": "69757"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "S-Token",
+              "value": "={{ $json.UserInfo.loginToken }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -1020,
+        40
+      ],
+      "id": "67f1b8d3-fa13-4bf6-8ff6-669cc7c5a39c",
+      "name": "PhaseID_need_execute"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Lấy dữ liệu đầu vào\nconst input = items[0].json;\n\n// Biến lưu kết quả (các account nhân viên thôi việc)\nlet accounts = [];\n\n// Đảm bảo dữ liệu có cấu trúc PhaseInput\nif (input?.PhaseInput && Array.isArray(input.PhaseInput)) {\n  input.PhaseInput.forEach(phase => {\n    const individuals = phase.detail?.individual || [];\n\n    // Tìm object có nameText = \"Nhân viên thôi việc\"\n    const found = individuals.find(i => i.nameText === \"Nhân viên thôi việc\");\n\n    if (found && found.value) {\n      accounts.push(found.value);\n    }\n  });\n}\n\n// Trả về kết quả (có thể là 1 hoặc nhiều account)\nreturn accounts.map(acc => ({\n  json: { account: acc }\n}));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -800,
+        40
+      ],
+      "id": "634024b0-1b06-48d0-bb41-ce1a7adceb12",
+      "name": "Pick_layoff_account_vpn"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "c86b9b49-0867-46d1-855b-dbb58389f012",
+              "leftValue": "={{ $json.data[0].id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -100,
+        40
+      ],
+      "id": "d7b933a6-e15d-4407-98e4-69324fd7cbab",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "jsCode": "return [\n  {\n    json: {\n      message: \"VPN user không tồn tại\"\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        200,
+        160
+      ],
+      "id": "d75dbef1-578c-4e7e-abce-785af7112e08",
+      "name": "Code"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1440,
+        40
+      ],
+      "id": "42174a24-4164-4a38-ab5c-09a3b3f3b238",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "content": "Trigger từ email Uservices\nLấy phaseID từ body email để gắn vào luồng\n",
+        "height": 80,
+        "width": 200
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -1480,
+        -60
+      ],
+      "typeVersion": 1,
+      "id": "4bb2f9b6-2ff0-4ec7-acdd-a9411e4e55fe",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "fromEmail": "admin@fptonline.net",
+        "toEmail": "fo-it@fpt.com",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        420,
+        -140
+      ],
+      "id": "58168b11-f8d7-49b1-8ead-6ea06e0517c7",
+      "name": "Send Email",
+      "webhookId": "b0d363fe-0bfa-4f84-851b-d695d954732f",
+      "credentials": {
+        "smtp": {
+          "id": "Ih51aPDMfHOq5IOb",
+          "name": "SMTP Huy gửi mail"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Login": {
+      "main": [
+        [
+          {
+            "node": "Search for ID Identity",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search for ID Identity": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Login Eoffice": {
+      "main": [
+        [
+          {
+            "node": "PhaseID_need_execute",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "PhaseID_need_execute": {
+      "main": [
+        [
+          {
+            "node": "Pick_layoff_account_vpn",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pick_layoff_account_vpn": {
+      "main": [
+        [
+          {
+            "node": "Login",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Delete Identity",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Login Eoffice",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Delete Identity": {
+      "main": [
+        [
+          {
+            "node": "Send Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "f2e57e9e-052e-4a83-be7c-fa902ce67da5",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "1eb38babc8a8a45a31824b994b841421a7c46b5a123ae069344c5034178393e9"
+  },
+  "id": "LwOW2od5PIERFulH",
+  "tags": []
+}
