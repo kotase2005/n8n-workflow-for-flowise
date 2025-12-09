@@ -1,0 +1,807 @@
+{
+  "name": "sucomang",
+  "nodes": [
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "Người yêu cầu"
+            },
+            {
+              "name": "Họ tên người yêu cầu"
+            },
+            {
+              "name": "Bộ phận"
+            },
+            {
+              "name": "Vị trí công việc"
+            },
+            {
+              "name": "IT tiếp nhận yêu cầu"
+            },
+            {
+              "name": "Chi tiết lỗi"
+            },
+            {
+              "name": "Vùng miền"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -140,
+        120
+      ],
+      "id": "78e2aa9c-56b8-4db3-b661-0d13adc9e052",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={\n  \"individual\": [\n    {\n      \"name\": \"Vùng miền\",\n      \"type\": \"master_data_master_data_fo_1_location\",\n      \"staticContent\": \"<p style='font-size: 12px; color: #f44842'><i></i></p>\",\n      \"value\": \"\",\n      \"display\": false,\n      \"conditions\": {\n        \"required\": false\n      },\n      \"additionalDisplayClass\": \"left-info\",\n      \"id\": -26000,\n      \"position\": -26000\n    },\n    {\n      \"name\": \"Vùng miền_location feed\",\n      \"type\": \"master_data_location_ten_vung_mien\",\n      \"staticContent\": \"<p style='font-size: 12px; color: #f44842'><i></i></p>\",\n      \"value\": \"\",\n      \"display\": false,\n      \"conditions\": {\n        \"required\": false,\n        \"locationRelated\": true\n      },\n      \"additionalDisplayClass\": \"left-info\",\n      \"id\": -26500,\n      \"position\": -26500\n    },\n    {\n      \"configId\": 935,\n      \"name\": \"Thông tin người yêu cầu\",\n      \"id\": -25000,\n      \"position\": -25000,\n      \"type\": \"splitter\",\n      \"conditions\": {}\n    },\n    {\n      \"name\": \"Người yêu cầu\",\n      \"type\": \"master_data_master_data_fo_1\",\n      \"valuefeeder\": \"TicketOwner\",\n      \"value\": \"{{ $('Edit Fields2').first().json['Người yêu cầu'] }}\",\n      \"display\": true,\n      \"conditions\": {\n        \"required\": true,\n        \"min-length\": 1,\n        \"max-length\": 1000\n      },\n      \"additionalDisplayClass\": \"left-info\",\n      \"id\": -23900,\n      \"position\": -23900\n    },\n    {\n      \"name\": \"Họ tên người yêu cầu\",\n      \"type\": \"master_data_master_data_fo_1_ho_ten_nhan_vien\",\n      \"value\": \"{{ $('Edit Fields2').first().json['Họ tên nguời yêu cầu'] }}\",\n      \"display\": true,\n      \"conditions\": {\n        \"required\": true,\n        \"min-length\": 1,\n        \"max-length\": 1000\n      },\n      \"additionalDisplayClass\": \"left-info\",\n      \"id\": -23899,\n      \"position\": -23899\n    },\n    {\n      \"name\": \"IT Tiếp nhận\",\n      \"type\": \"master_data_master_data_fo_1_lay_thong_tin_it\",\n      \"value\": \"{{ $json.name }}\",\n      \"display\": false,\n      \"conditions\": {\n        \"required\": true,\n        \"min-length\": 1,\n        \"max-length\": 1000\n      },\n      \"additionalDisplayClass\": \"right-info\",\n      \"id\": -7006,\n      \"position\": -23900\n    },\n    {\n      \"name\": \"Cán bộ IT-asigner\",\n      \"type\": \"master_data_master_data_fo_1_lay_thong_tin_it_x\",\n      \"value\": \"\",\n      \"display\": false,\n      \"conditions\": {\n        \"required\": true,\n        \"min-length\": 1,\n        \"max-length\": 1000\n      },\n      \"additionalDisplayClass\": \"left-info\",\n      \"id\": -7007,\n      \"position\": -7007\n    },\n    {\n      \"name\": \"Cán bộ IT-viewer\",\n      \"type\": \"master_data_master_data_fo_1_lay_thong_tin_it_x\",\n      \"value\": \"\",\n      \"display\": false,\n      \"conditions\": {\n        \"required\": true,\n        \"min-length\": 1,\n        \"max-length\": 1000\n      },\n      \"additionalDisplayClass\": \"left-info\",\n      \"id\": -7008,\n      \"position\": -7008\n    },\n    {\n      \"name\": \"Bộ phận\",\n      \"type\": \"master_data_master_data_fo_1_bo_phan\",\n      \"value\": \"{{ $('Edit Fields2').first().json['Bộ phận'] }}\",\n      \"display\": true,\n      \"conditions\": {\n        \"required\": true,\n        \"min-length\": 1,\n        \"max-length\": 1000\n      },\n      \"additionalDisplayClass\": \"left-info\",\n      \"id\": -23850,\n      \"position\": -23850\n    },\n    {\n      \"name\": \"IP Phone/ Số di động\",\n      \"type\": \"master_data_master_data_fo_1_lay_ip_phone\",\n      \"value\": \"\",\n      \"display\": true,\n      \"conditions\": {\n        \"required\": false,\n        \"min-length\": 1,\n        \"max-length\": 1000\n      },\n      \"additionalDisplayClass\": \"left-info\",\n      \"id\": -23800,\n      \"position\": -23800\n    },\n    {\n      \"name\": \"Vị trí công việc\",\n      \"type\": \"master_data_master_data_fo_1_vi_tri\",\n      \"staticContent\": \"<p style='font-size: 12px; color: #f44842'><i></i></p>\",\n      \"value\": \"{{ $('Edit Fields2').first().json['Vị trí công việc'] }}\",\n      \"display\": true,\n      \"conditions\": {\n        \"required\": true\n      },\n      \"additionalDisplayClass\": \"left-info\",\n      \"id\": -23750,\n      \"position\": -23750\n    },\n    {\n      \"name\": \"Chi tiết lỗi\",\n      \"type\": \"textarea\",\n      \"staticContent\": \"<p style='font-size: 12px; color: #f44842'><i></i></p>\",\n      \"value\": \"{{ $('Edit Fields2').first().json['Chi tiết lỗi'] }}\",\n      \"display\": true,\n      \"conditions\": {\n        \"required\": true\n      },\n      \"additionalDisplayClass\": \"left-info\",\n      \"id\": -23700,\n      \"position\": -23700\n    },\n    {\n      \"name\": \"Đính kèm\",\n      \"type\": \"upload\",\n      \"staticContent\": \"<p style='font-size: 12px; color: #f44842'><i>Ảnh lỗi (nếu có)</i></p>\",\n      \"value\": \"\",\n      \"display\": true,\n      \"conditions\": {\n        \"required\": false,\n        \"min-length\": 1,\n        \"max-length\": 1000\n      },\n      \"additionalDisplayClass\": \"left-info\",\n      \"id\": -23650,\n      \"position\": -23650\n    },\n    {\n      \"name\": \"Ghi chú\",\n      \"type\": \"textarea\",\n      \"staticContent\": \"<p style='font-size: 12px; color: #f44842'><i></i></p>\",\n      \"value\": \"\",\n      \"display\": true,\n      \"conditions\": {\n        \"required\": false\n      },\n      \"additionalDisplayClass\": \"left-info\",\n      \"id\": -23600,\n      \"position\": -23600\n    }\n  ]\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        680,
+        0
+      ],
+      "id": "074734e2-da41-4a2d-9579-a6ffe29cccb8",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://eoffice.fptonline.net/rest/sms/latest/integration-ticket/create",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "S-Token",
+              "value": "={{ $json.UserInfo.loginToken }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "form-urlencoded",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "title",
+              "value": "=Khắc phục lỗi mạng - Chatbot - user {{ $('Edit Fields2').first().json['Người yêu cầu'] }}"
+            },
+            {
+              "name": "locationId",
+              "value": "=8"
+            },
+            {
+              "name": "processId",
+              "value": "59"
+            },
+            {
+              "name": "detail",
+              "value": "={{ JSON.stringify($('Edit Fields').item.json) }}"
+            },
+            {
+              "name": "informedUsers",
+              "value": "={{ $('Edit Fields2').first().json['Người yêu cầu'] }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1160,
+        0
+      ],
+      "id": "c1730a80-c19f-4505-a8bd-851fc6f80bcc",
+      "name": "POST_ticket"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://eoffice.fptonline.net/rest/sms/latest/integration-user/login",
+        "sendBody": true,
+        "contentType": "form-urlencoded",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "username",
+              "value": "itbot"
+            },
+            {
+              "name": "password",
+              "value": "fo@45934593"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        920,
+        0
+      ],
+      "id": "8443a3b4-34d6-4510-9e77-d5405d80f890",
+      "name": "Get_S-token"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "933fa222-f9e1-48e1-8eeb-b33f863ee91b",
+              "leftValue": "={{ $json['Vùng miền'] }}",
+              "rightValue": "HCM",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        40,
+        120
+      ],
+      "id": "d360d45b-28fb-41b5-ba2c-efdaf4f175bc",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://eoffice.fptonline.net/rest/sms/latest/integration-user/login",
+        "sendBody": true,
+        "contentType": "form-urlencoded",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "username",
+              "value": "itbot"
+            },
+            {
+              "name": "password",
+              "value": "fo@45934593"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        920,
+        220
+      ],
+      "id": "d9272ecd-a5e3-4639-88bb-3b54f4030a0b",
+      "name": "Get_S-token1"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://eoffice.fptonline.net/rest/sms/latest/integration-ticket/create",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "S-Token",
+              "value": "={{ $json.UserInfo.loginToken }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "form-urlencoded",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "title",
+              "value": "=Khắc phục lỗi mạng - Chatbot - user {{ $('Edit Fields3').first().json['Người yêu cầu'] }}"
+            },
+            {
+              "name": "locationId",
+              "value": "2"
+            },
+            {
+              "name": "processId",
+              "value": "59"
+            },
+            {
+              "name": "detail",
+              "value": "={{ JSON.stringify($('Edit Fields1').item.json) }}"
+            },
+            {
+              "name": "informedUsers",
+              "value": "={{ $('Edit Fields3').first().json['Người yêu cầu'] }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1160,
+        220
+      ],
+      "id": "a2687a20-474b-459d-9ec2-f1ae1c3732fe",
+      "name": "POST_ticket1"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "3CLFRsq2Eob6a0d9",
+          "mode": "list",
+          "cachedResultName": "select_IT_HCM"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        500,
+        0
+      ],
+      "id": "3e1d0280-30df-45c6-a1aa-40cb351bccfc",
+      "name": "select_IT_HCM"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "KHeemypVMnwCp84p",
+          "mode": "list",
+          "cachedResultName": "select_IT_HN"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        500,
+        220
+      ],
+      "id": "9a0c4a84-066b-4333-a793-ae92c201b0a8",
+      "name": "select_IT_HN"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={\n  \"individual\": [\n    {\n      \"name\": \"Vùng miền\",\n      \"type\": \"master_data_master_data_fo_1_location\",\n      \"staticContent\": \"<p style='font-size: 12px; color: #f44842'><i></i></p>\",\n      \"value\": \"\",\n      \"display\": false,\n      \"conditions\": {\n        \"required\": false\n      },\n      \"additionalDisplayClass\": \"left-info\",\n      \"id\": -26000,\n      \"position\": -26000\n    },\n    {\n      \"name\": \"Vùng miền_location feed\",\n      \"type\": \"master_data_location_ten_vung_mien\",\n      \"staticContent\": \"<p style='font-size: 12px; color: #f44842'><i></i></p>\",\n      \"value\": \"\",\n      \"display\": false,\n      \"conditions\": {\n        \"required\": false,\n        \"locationRelated\": true\n      },\n      \"additionalDisplayClass\": \"left-info\",\n      \"id\": -26500,\n      \"position\": -26500\n    },\n    {\n      \"configId\": 935,\n      \"name\": \"Thông tin người yêu cầu\",\n      \"id\": -25000,\n      \"position\": -25000,\n      \"type\": \"splitter\",\n      \"conditions\": {}\n    },\n    {\n      \"name\": \"Người yêu cầu\",\n      \"type\": \"master_data_master_data_fo_1\",\n      \"valuefeeder\": \"TicketOwner\",\n      \"value\": \"{{ $('Edit Fields3').first().json['Người yêu cầu'] }}\",\n      \"display\": true,\n      \"conditions\": {\n        \"required\": true,\n        \"min-length\": 1,\n        \"max-length\": 1000\n      },\n      \"additionalDisplayClass\": \"left-info\",\n      \"id\": -23900,\n      \"position\": -23900\n    },\n    {\n      \"name\": \"Họ tên người yêu cầu\",\n      \"type\": \"master_data_master_data_fo_1_ho_ten_nhan_vien\",\n      \"value\": \"{{ $('Edit Fields3').first().json['Họ tên nguời yêu cầu'] }}\",\n      \"display\": true,\n      \"conditions\": {\n        \"required\": true,\n        \"min-length\": 1,\n        \"max-length\": 1000\n      },\n      \"additionalDisplayClass\": \"left-info\",\n      \"id\": -23899,\n      \"position\": -23899\n    },\n    {\n      \"name\": \"IT Tiếp nhận\",\n      \"type\": \"master_data_master_data_fo_1_lay_thong_tin_it\",\n      \"value\": \"{{ $json.name }}\",\n      \"display\": false,\n      \"conditions\": {\n        \"required\": true,\n        \"min-length\": 1,\n        \"max-length\": 1000\n      },\n      \"additionalDisplayClass\": \"right-info\",\n      \"id\": -7006,\n      \"position\": -23900\n    },\n    {\n      \"name\": \"Cán bộ IT-asigner\",\n      \"type\": \"master_data_master_data_fo_1_lay_thong_tin_it_x\",\n      \"value\": \"\",\n      \"display\": false,\n      \"conditions\": {\n        \"required\": true,\n        \"min-length\": 1,\n        \"max-length\": 1000\n      },\n      \"additionalDisplayClass\": \"left-info\",\n      \"id\": -7007,\n      \"position\": -7007\n    },\n    {\n      \"name\": \"Cán bộ IT-viewer\",\n      \"type\": \"master_data_master_data_fo_1_lay_thong_tin_it_x\",\n      \"value\": \"\",\n      \"display\": false,\n      \"conditions\": {\n        \"required\": true,\n        \"min-length\": 1,\n        \"max-length\": 1000\n      },\n      \"additionalDisplayClass\": \"left-info\",\n      \"id\": -7008,\n      \"position\": -7008\n    },\n    {\n      \"name\": \"Bộ phận\",\n      \"type\": \"master_data_master_data_fo_1_bo_phan\",\n      \"value\": \"{{ $('Edit Fields3').first().json['Bộ phận'] }}\",\n      \"display\": true,\n      \"conditions\": {\n        \"required\": true,\n        \"min-length\": 1,\n        \"max-length\": 1000\n      },\n      \"additionalDisplayClass\": \"left-info\",\n      \"id\": -23850,\n      \"position\": -23850\n    },\n    {\n      \"name\": \"IP Phone/ Số di động\",\n      \"type\": \"master_data_master_data_fo_1_lay_ip_phone\",\n      \"value\": \"\",\n      \"display\": true,\n      \"conditions\": {\n        \"required\": false,\n        \"min-length\": 1,\n        \"max-length\": 1000\n      },\n      \"additionalDisplayClass\": \"left-info\",\n      \"id\": -23800,\n      \"position\": -23800\n    },\n    {\n      \"name\": \"Vị trí công việc\",\n      \"type\": \"master_data_master_data_fo_1_vi_tri\",\n      \"staticContent\": \"<p style='font-size: 12px; color: #f44842'><i></i></p>\",\n      \"value\": \"{{ $('Edit Fields3').first().json['Vị trí công việc'] }}\",\n      \"display\": true,\n      \"conditions\": {\n        \"required\": true\n      },\n      \"additionalDisplayClass\": \"left-info\",\n      \"id\": -23750,\n      \"position\": -23750\n    },\n    {\n      \"name\": \"Chi tiết lỗi\",\n      \"type\": \"textarea\",\n      \"staticContent\": \"<p style='font-size: 12px; color: #f44842'><i></i></p>\",\n      \"value\": \"{{ $('Edit Fields3').first().json['Chi tiết lỗi'] }}\",\n      \"display\": true,\n      \"conditions\": {\n        \"required\": true\n      },\n      \"additionalDisplayClass\": \"left-info\",\n      \"id\": -23700,\n      \"position\": -23700\n    },\n    {\n      \"name\": \"Đính kèm\",\n      \"type\": \"upload\",\n      \"staticContent\": \"<p style='font-size: 12px; color: #f44842'><i>Ảnh lỗi (nếu có)</i></p>\",\n      \"value\": \"\",\n      \"display\": true,\n      \"conditions\": {\n        \"required\": false,\n        \"min-length\": 1,\n        \"max-length\": 1000\n      },\n      \"additionalDisplayClass\": \"left-info\",\n      \"id\": -23650,\n      \"position\": -23650\n    },\n    {\n      \"name\": \"Ghi chú\",\n      \"type\": \"textarea\",\n      \"staticContent\": \"<p style='font-size: 12px; color: #f44842'><i></i></p>\",\n      \"value\": \"\",\n      \"display\": true,\n      \"conditions\": {\n        \"required\": false\n      },\n      \"additionalDisplayClass\": \"left-info\",\n      \"id\": -23600,\n      \"position\": -23600\n    }\n  ]\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        680,
+        220
+      ],
+      "id": "81c0b556-9e0e-4c7d-a9f7-e45308641c33",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "bfa57bf0-8436-4718-96aa-ef5a95dc0304",
+              "name": "Người yêu cầu",
+              "value": "={{ $json['Người yêu cầu'] }}",
+              "type": "string"
+            },
+            {
+              "id": "4badcda2-ac80-4404-9bef-0db1c3552194",
+              "name": "Họ tên nguời yêu cầu",
+              "value": "={{ $json['Họ tên người yêu cầu'] }}",
+              "type": "string"
+            },
+            {
+              "id": "9b037ece-b956-4625-86d9-4b3ffdadac95",
+              "name": "Bộ phận",
+              "value": "={{ $json['Bộ phận'] }}",
+              "type": "string"
+            },
+            {
+              "id": "09d8b4cf-4b05-4703-9f8c-5f23ee42474a",
+              "name": "Vị trí công việc",
+              "value": "={{ $json['Vị trí công việc'] }}",
+              "type": "string"
+            },
+            {
+              "id": "04ba026c-afa8-40e1-9ef6-3a9db70ef897",
+              "name": "Chi tiết lỗi",
+              "value": "={{ $json['Chi tiết lỗi'] }}",
+              "type": "string"
+            },
+            {
+              "id": "6a398591-8d58-434e-bc54-e97be12f438e",
+              "name": "Vùng miền",
+              "value": "={{ $json['Vùng miền'] }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        300,
+        0
+      ],
+      "id": "f3fc0ecc-c048-49cf-ab05-a2b91d60e1ba",
+      "name": "Edit Fields2"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "bfa57bf0-8436-4718-96aa-ef5a95dc0304",
+              "name": "Người yêu cầu",
+              "value": "={{ $json['Người yêu cầu'] }}",
+              "type": "string"
+            },
+            {
+              "id": "4badcda2-ac80-4404-9bef-0db1c3552194",
+              "name": "Họ tên nguời yêu cầu",
+              "value": "={{ $json['Họ tên người yêu cầu'] }}",
+              "type": "string"
+            },
+            {
+              "id": "9b037ece-b956-4625-86d9-4b3ffdadac95",
+              "name": "Bộ phận",
+              "value": "={{ $json['Bộ phận'] }}",
+              "type": "string"
+            },
+            {
+              "id": "09d8b4cf-4b05-4703-9f8c-5f23ee42474a",
+              "name": "Vị trí công việc",
+              "value": "={{ $json['Vị trí công việc'] }}",
+              "type": "string"
+            },
+            {
+              "id": "04ba026c-afa8-40e1-9ef6-3a9db70ef897",
+              "name": "Chi tiết lỗi",
+              "value": "={{ $json['Chi tiết lỗi'] }}",
+              "type": "string"
+            },
+            {
+              "id": "6a398591-8d58-434e-bc54-e97be12f438e",
+              "name": "Vùng miền",
+              "value": "={{ $json['Vùng miền'] }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        300,
+        220
+      ],
+      "id": "2bbd6c03-4604-4011-96a3-8a2c47e7f5e1",
+      "name": "Edit Fields3"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "4ee1f1b0-ce87-4c0f-8c90-29e26c2ea1ea",
+              "name": "ID phiếu yêu cầu",
+              "value": "={{ $json.Data.id }}",
+              "type": "string"
+            },
+            {
+              "id": "73fcf4f9-c2ae-4b68-b139-229c5b2e1036",
+              "name": "Người yêu cầu",
+              "value": "={{ $('Edit Fields2').first().json['Họ tên nguời yêu cầu'] }}",
+              "type": "string"
+            },
+            {
+              "id": "f89e5c67-8f08-402e-a766-6a6a59ad9095",
+              "name": "Bộ phận",
+              "value": "={{ $('Edit Fields2').first().json['Bộ phận'] }}",
+              "type": "string"
+            },
+            {
+              "id": "ed7d71b5-53eb-4a64-acb0-2ceeddbe0d36",
+              "name": "Vùng miền",
+              "value": "={{ $('Edit Fields2').first().json['Vùng miền'] }}",
+              "type": "string"
+            },
+            {
+              "id": "74985443-0874-4caf-ae54-d0e790e675d3",
+              "name": "Chi tiết lỗi",
+              "value": "={{ $('Edit Fields2').first().json['Chi tiết lỗi'] }}",
+              "type": "string"
+            },
+            {
+              "id": "072a17a9-ce62-4c14-a9da-8a3ef2a35d18",
+              "name": "Người đang nhận task",
+              "value": "={{ (() => {\n  const username = $('select_IT_HCM').item.json.name?.trim();\n  const map = {\n    'huynd54': 'Nguyễn Đắc Huy',\n    'trongnc2': 'Nguyễn Công Trọng',\n    'sanglt6': 'Lê Thanh Sang',\n    'huuduc': 'Nguyễn Hữu Đức',\n    'trungnd': 'Nguyễn Đức Trung',\n    'anhvt66': 'Vũ Trường Anh'\n  };\n\n  // Trường hợp đặc biệt cho binhvh\n  if (username === 'binhvh') {\n    return 'Do hiện tại tất cả các IT đang bận hỗ trợ các công việc khác nên yêu cầu của bạn sẽ được trưởng bộ phận IT điều phối lại ngay sau khi có IT sẵn sàng';\n  }\n\n  const result = map[username] || username;\n  return (result + '').replace(/[\\n\\r\\u2028\\u200B]+/g, '').trim();\n})() }}",
+              "type": "string"
+            },
+            {
+              "id": "d67a743f-bd41-4de7-8903-bd7a5a84ad39",
+              "name": "Đường link phiếu yêu cầu",
+              "value": "=https://eoffice.fptonline.net/secure/ViewTicket.jspa?id={{ $('POST_ticket').first().json.Data.id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1380,
+        0
+      ],
+      "id": "38c95556-42dc-44c4-9da8-a780f7eaaa0c",
+      "name": "output info"
+    },
+    {
+      "parameters": {
+        "jsCode": "return [\n  {\n    json: {\n      result: JSON.stringify(items[0].json, null, 2)\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1600,
+        0
+      ],
+      "id": "1cf04121-12bc-43e9-a402-5861ad6051d3",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "4ee1f1b0-ce87-4c0f-8c90-29e26c2ea1ea",
+              "name": "ID phiếu yêu cầu",
+              "value": "={{ $json.Data.id }}",
+              "type": "string"
+            },
+            {
+              "id": "73fcf4f9-c2ae-4b68-b139-229c5b2e1036",
+              "name": "Người yêu cầu",
+              "value": "={{ $('Edit Fields3').first().json['Họ tên nguời yêu cầu'] }}",
+              "type": "string"
+            },
+            {
+              "id": "f89e5c67-8f08-402e-a766-6a6a59ad9095",
+              "name": "Bộ phận",
+              "value": "={{ $('Edit Fields3').first().json['Bộ phận'] }}",
+              "type": "string"
+            },
+            {
+              "id": "ed7d71b5-53eb-4a64-acb0-2ceeddbe0d36",
+              "name": "Vùng miền",
+              "value": "={{ $('Edit Fields3').first().json['Vùng miền'] }}",
+              "type": "string"
+            },
+            {
+              "id": "74985443-0874-4caf-ae54-d0e790e675d3",
+              "name": "Chi tiết lỗi",
+              "value": "={{ $('Edit Fields3').first().json['Chi tiết lỗi'] }}",
+              "type": "string"
+            },
+            {
+              "id": "072a17a9-ce62-4c14-a9da-8a3ef2a35d18",
+              "name": "Người đang nhận task",
+              "value": "={{ (() => {\n  const username = $('select_IT_HN').item.json.name?.trim();\n  const map = {\n    'huynd54': 'Nguyễn Đắc Huy',\n    'trongnc2': 'Nguyễn Công Trọng',\n    'sanglt6': 'Lê Thanh Sang',\n    'huuduc': 'Nguyễn Hữu Đức',\n    'trungnd': 'Nguyễn Đức Trung',\n    'anhvt66': 'Vũ Trường Anh'\n  };\n\n  // Trường hợp đặc biệt cho binhvh\n  if (username === 'binhvh') {\n    return 'Do hiện tại tất cả các IT đang bận hỗ trợ các công việc khác nên yêu cầu của bạn sẽ được trưởng bộ phận IT điều phối lại ngay sau khi có IT sẵn sàng';\n  }\n\n  const result = map[username] || username;\n  return (result + '').replace(/[\\n\\r\\u2028\\u200B]+/g, '').trim();\n})() }}",
+              "type": "string"
+            },
+            {
+              "id": "d67a743f-bd41-4de7-8903-bd7a5a84ad39",
+              "name": "Đường link phiếu yêu cầu",
+              "value": "=https://eoffice.fptonline.net/secure/ViewTicket.jspa?id={{ $('POST_ticket1').first().json.Data.id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1380,
+        220
+      ],
+      "id": "30b35194-93ab-4639-aa34-f2c0f3ef8a67",
+      "name": "output info1"
+    },
+    {
+      "parameters": {
+        "jsCode": "return [\n  {\n    json: {\n      result: JSON.stringify(items[0].json, null, 2)\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1600,
+        220
+      ],
+      "id": "53d6086f-a2c7-4deb-9ad9-37c55b832d41",
+      "name": "Code1"
+    },
+    {
+      "parameters": {
+        "method": "DELETE",
+        "url": "https://eoffice.fptonline.net/rest/sms/latest/integration-user/logout",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "S-Token",
+              "value": "={{ $('Get_S-token').item.json.UserInfo.loginToken }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1380,
+        -180
+      ],
+      "id": "5efcb46d-50ac-4eda-a754-1bd2f2d72fa0",
+      "name": "Logout eoffice"
+    },
+    {
+      "parameters": {
+        "method": "DELETE",
+        "url": "https://eoffice.fptonline.net/rest/sms/latest/integration-user/logout",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "S-Token",
+              "value": "={{ $('Get_S-token1').item.json.UserInfo.loginToken }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1380,
+        400
+      ],
+      "id": "f26467f3-5fd9-4297-96ed-94751eba70f0",
+      "name": "Logout eoffice1"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Get_S-token",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get_S-token": {
+      "main": [
+        [
+          {
+            "node": "POST_ticket",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get_S-token1": {
+      "main": [
+        [
+          {
+            "node": "POST_ticket1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "POST_ticket": {
+      "main": [
+        [
+          {
+            "node": "output info",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Logout eoffice",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "POST_ticket1": {
+      "main": [
+        [
+          {
+            "node": "output info1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Logout eoffice1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "select_IT_HCM": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "select_IT_HN": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Get_S-token1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields2": {
+      "main": [
+        [
+          {
+            "node": "select_IT_HCM",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields3": {
+      "main": [
+        [
+          {
+            "node": "select_IT_HN",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "output info": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "output info1": {
+      "main": [
+        [
+          {
+            "node": "Code1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "6d7ac18b-b07b-4d84-a0c0-5ba98d49139e",
+  "meta": {
+    "instanceId": "1eb38babc8a8a45a31824b994b841421a7c46b5a123ae069344c5034178393e9"
+  },
+  "id": "JbeMJqGBvkqzMpY1",
+  "tags": [
+    {
+      "createdAt": "2025-07-17T02:35:37.776Z",
+      "updatedAt": "2025-07-17T02:35:37.776Z",
+      "id": "X6dEXVHZk1tgTcAd",
+      "name": "ticket_bot"
+    }
+  ]
+}
