@@ -1,0 +1,551 @@
+{
+  "name": "Download_latest_masterdata_and_upload_to_drive",
+  "nodes": [
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://eoffice.fptonline.net/rest/sms/latest/integration-user/login",
+        "sendBody": true,
+        "contentType": "form-urlencoded",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "username",
+              "value": "admin-huynd54"
+            },
+            {
+              "name": "password",
+              "value": "Kotase2005*"
+            }
+          ]
+        },
+        "options": {
+          "lowercaseHeaders": true
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -360,
+        -120
+      ],
+      "id": "8f044d03-e974-426f-83d0-2ed02580ca02",
+      "name": "Login Eoffice",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "url": "https://eoffice.fptonline.net/rest/sms/latest/masterdata/data/getAll?id=19&$inlinecount=allpages&$top=867",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "={{ $json.Authorization }}"
+            },
+            {
+              "name": "Cookie",
+              "value": "={{ $json.Cookie }}"
+            },
+            {
+              "name": "X-TenantID",
+              "value": "fo"
+            },
+            {
+              "name": "XSRF-TOKEN",
+              "value": "={{ $json['XSRF-TOKEN'] }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        20,
+        -120
+      ],
+      "id": "7728b572-4ce3-4f28-ba81-08e6d578d840",
+      "name": "Download Master Data"
+    },
+    {
+      "parameters": {
+        "operation": "xlsx",
+        "options": {
+          "fileName": "Master Data FO 1 - test"
+        }
+      },
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        940,
+        -240
+      ],
+      "id": "48e2c19f-e2b2-47e1-9638-98bafe1be993",
+      "name": "Convert to File"
+    },
+    {
+      "parameters": {
+        "content": "Workflow thực hiện các thao tác sau\n- Login Eoffice\n- Download MasterData (lấy top 867 dòng)\n- Xuất thành file Excel\n- Upload file Excel lên Drive\n- Chạy khi gõ \"hãy thực hiện cập nhật dữ liệu\" trên chatbot",
+        "height": 220,
+        "width": 220
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -620,
+        -360
+      ],
+      "typeVersion": 1,
+      "id": "02812be8-dc01-48de-9299-5a1c63bc6e90",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "operation": "xlsx",
+        "options": {
+          "fileName": "Master Data FO 1 - test"
+        }
+      },
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        940,
+        0
+      ],
+      "id": "cef63b1f-8e18-4e32-a9dc-9cb41625c8c6",
+      "name": "Convert to File1"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Lấy mảng results bên trong d\nconst results = $json.d?.results || [];\n\n// Trả về mỗi record là 1 item phẳng, loại bỏ md_prik\nreturn results.map(r => {\n  const row = { ...r };\n\n  // Xóa cột không mong muốn\n  delete row[\"md_prik\"];\n\n  return { json: row };\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        720,
+        -240
+      ],
+      "id": "79e8d558-1d65-41d7-9775-1b43d43feeeb",
+      "name": "Flatten JSON data"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "325d57a5-02b6-4af3-9ab2-2948ea831bfa",
+              "name": "Authorization",
+              "value": "=Bearer {{ $json.UserInfo.jwtToken }}",
+              "type": "string"
+            },
+            {
+              "id": "e0c92bb0-32e8-467d-9bbe-3fdc1f698dc3",
+              "name": "Cookie",
+              "value": "=JSESSIONID={{ $json.UserInfo.jSessionId }}",
+              "type": "string"
+            },
+            {
+              "id": "7bab7821-740b-4dec-9677-b8d732cb5159",
+              "name": "XSRF-TOKEN",
+              "value": "={{ $json.UserInfo.loginToken }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -160,
+        -120
+      ],
+      "id": "058f45f4-6bba-4965-8bb7-ed567c4c7cb9",
+      "name": "Set header var"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Duyệt qua tất cả items từ node trước (ví dụ IF node)\nlet output = [];\n\nfor (const item of items) {\n  const results = item.json.d?.results || [];\n\n  for (const r of results) {\n    const row = { ...r };\n\n    // Xóa cột không mong muốn\n    delete row[\"md_prik\"];\n\n    output.push({ json: row });\n  }\n}\n\nreturn output;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        480,
+        0
+      ],
+      "id": "e2cf7a47-f2f4-4776-915b-3e016cf855cf",
+      "name": "Flatten JSON data 1"
+    },
+    {
+      "parameters": {
+        "method": "DELETE",
+        "url": "https://eoffice.fptonline.net/rest/sms/latest/integration-user/logout",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "S-Token",
+              "value": "={{ $('Set header var').item.json['XSRF-TOKEN'] }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        720,
+        -440
+      ],
+      "id": "b55aba67-98f6-4498-85d1-7332387275cb",
+      "name": "Log out Eoffice"
+    },
+    {
+      "parameters": {
+        "method": "DELETE",
+        "url": "https://eoffice.fptonline.net/rest/sms/latest/integration-user/logout",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "S-Token",
+              "value": "={{ $('Set header var').item.json['XSRF-TOKEN'] }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        480,
+        180
+      ],
+      "id": "4eeb3522-05e2-407b-a4f8-cb021f5826c9",
+      "name": "Log out Eoffice1"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "fileId": {
+          "__rl": true,
+          "value": "1hJz8OIGuxXec7z9jrJ3zzvIgiY-1REer",
+          "mode": "list",
+          "cachedResultName": "Master Data FO 1 - test.xlsx",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1hJz8OIGuxXec7z9jrJ3zzvIgiY-1REer/edit?usp=drivesdk&ouid=114962108832664751197&rtpof=true&sd=true"
+        },
+        "changeFileContent": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        1200,
+        -240
+      ],
+      "id": "5aaf4293-4afb-441c-8114-8e777f786548",
+      "name": "Update file to Google Drive",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "NlunE72CZIo3W36f",
+          "name": "Google Drive Huy"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "fileId": {
+          "__rl": true,
+          "value": "1lq4OoMnz9VO6zBVd7vtxlGeSX4y1SE1a",
+          "mode": "list",
+          "cachedResultName": "Master Data FO 1.xlsx",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1lq4OoMnz9VO6zBVd7vtxlGeSX4y1SE1a/edit?usp=drivesdk&ouid=114962108832664751197&rtpof=true&sd=true"
+        },
+        "changeFileContent": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        1200,
+        0
+      ],
+      "id": "3473e398-9794-47ee-b9bf-1b5e45236238",
+      "name": "Update file to Google Drive1",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "NlunE72CZIo3W36f",
+          "name": "Google Drive Huy"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "f7f0da80-a07d-4e10-9d65-a921d584aea2",
+              "leftValue": "={{ $json.d.__count }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notExists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        240,
+        -120
+      ],
+      "id": "d01e35c6-0a20-4a4f-8882-06df9fb9a47c",
+      "name": "Check if download failed"
+    },
+    {
+      "parameters": {
+        "url": "https://eoffice.fptonline.net/rest/sms/latest/masterdata/data/getAll?id=19&$inlinecount=allpages&$top=867",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "={{ $('Set header var').item.json.Authorization }}"
+            },
+            {
+              "name": "Cookie",
+              "value": "={{ $('Set header var').item.json.Cookie }}"
+            },
+            {
+              "name": "X-TenantID",
+              "value": "fo"
+            },
+            {
+              "name": "XSRF-TOKEN",
+              "value": "={{ $('Set header var').item.json['XSRF-TOKEN'] }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        480,
+        -240
+      ],
+      "id": "a507777d-16bd-46de-be1b-bd8d7205c809",
+      "name": "Download Master Data again"
+    },
+    {
+      "parameters": {
+        "path": "update-master-data",
+        "authentication": "basicAuth",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -580,
+        -120
+      ],
+      "id": "4a2256ab-e746-4380-9507-16be22eef29f",
+      "name": "Webhook",
+      "webhookId": "6d0b091c-7806-4046-9e75-aa2a75580a0b",
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "dZNtog4wIGaX2q9L",
+          "name": "Basic authen huynd54 HTTP Request"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "completed",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.3,
+      "position": [
+        700,
+        180
+      ],
+      "id": "d330eb1a-846e-476f-8f55-77448e626e2a",
+      "name": "Respond to Webhook"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Login Eoffice": {
+      "main": [
+        [
+          {
+            "node": "Set header var",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download Master Data": {
+      "main": [
+        [
+          {
+            "node": "Check if download failed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert to File": {
+      "main": [
+        [
+          {
+            "node": "Update file to Google Drive",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert to File1": {
+      "main": [
+        [
+          {
+            "node": "Update file to Google Drive1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Flatten JSON data": {
+      "main": [
+        [
+          {
+            "node": "Convert to File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set header var": {
+      "main": [
+        [
+          {
+            "node": "Download Master Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Flatten JSON data 1": {
+      "main": [
+        [
+          {
+            "node": "Convert to File1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check if download failed": {
+      "main": [
+        [
+          {
+            "node": "Download Master Data again",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Flatten JSON data 1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Log out Eoffice1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download Master Data again": {
+      "main": [
+        [
+          {
+            "node": "Flatten JSON data",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Log out Eoffice",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Login Eoffice",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update file to Google Drive1": {
+      "main": [
+        []
+      ]
+    },
+    "Log out Eoffice1": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "Asia/Ho_Chi_Minh",
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "versionId": "5eb74590-f347-4777-858d-a781a15441cd",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "1eb38babc8a8a45a31824b994b841421a7c46b5a123ae069344c5034178393e9"
+  },
+  "id": "4Bu4iOdGulNaJj9w",
+  "tags": []
+}
