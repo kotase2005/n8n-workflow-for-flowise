@@ -1,0 +1,418 @@
+{
+  "name": "Check_account_domain_status",
+  "nodes": [
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "56a84886-1573-4624-83ce-6d313dc153c9",
+              "name": "username",
+              "value": "={{ $json.body.username.trim() }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        240,
+        0
+      ],
+      "id": "f89466a1-57b9-4ca7-8adb-f21e958a1a98",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Function node code for n8n\n// Reads domain maxPwdAge from node \"Search for max password age\"\n// Reads user items from incoming items (from \"Search for account attributes\")\n// Outputs items with computed password expiry fields and dates formatted as \"dd/mm/yyyy hh:mm\" (Asia/Ho_Chi_Minh)\n\n// --- Helpers ---\nconst DOMAIN_NODE_NAME = \"Search for max password age\";\nconst TZ = \"Asia/Ho_Chi_Minh\";\nconst EPOCH_DIFF_100NS = 116444736000000000n; // ticks between 1601 and 1970\nconst TICKS_PER_MS = 10000n;\nconst TICKS_PER_DAY = 864000000000n;\nconst INT64_MIN = -9223372036854775808n;\n\nfunction tryGetMaxPwdAgeFromNode(nodeName) {\n  try {\n    const n = $node[nodeName];\n    if (!n) return null;\n\n    // Common shapes\n    if (n.json && n.json.maxPwdAge !== undefined) return n.json.maxPwdAge;\n    if (Array.isArray(n.json) && n.json.length > 0 && n.json[0].maxPwdAge !== undefined) return n.json[0].maxPwdAge;\n    if (n.item && n.item.json && n.item.json.maxPwdAge !== undefined) return n.item.json.maxPwdAge;\n    if (n.output && Array.isArray(n.output) && n.output.length > 0) {\n      const out = n.output[0];\n      if (Array.isArray(out) && out.length > 0 && out[0].json && out[0].json.maxPwdAge !== undefined) {\n        return out[0].json.maxPwdAge;\n      }\n    }\n    if (n?.json?.[0]?.maxPwdAge !== undefined) return n.json[0].maxPwdAge;\n    return null;\n  } catch (e) {\n    return null;\n  }\n}\n\nfunction parseToBigInt(val) {\n  if (val === undefined || val === null) return null;\n  const s = String(val).trim();\n  if (s === '' || s === '0' || s.toLowerCase() === '0x0') return null;\n  try {\n    const maybe = s.replace(/^0x/i, '');\n    const isHex = /[a-f]/i.test(maybe);\n    return isHex ? BigInt('0x' + maybe) : BigInt(maybe);\n  } catch (e) {\n    return null;\n  }\n}\n\nfunction filetimeBigIntToMs(ftBigInt) {\n  // expects a BigInt representing FILETIME ticks\n  return Number((ftBigInt - EPOCH_DIFF_100NS) / TICKS_PER_MS);\n}\n\n// Format ms (epoch ms) into \"dd/mm/yyyy hh:mm\" in given timezone\nfunction formatMsToDDMMYYYY_HHMM(ms, tz = TZ) {\n  if (ms === null || ms === undefined || !Number.isFinite(ms)) return null;\n  const dt = new Date(ms);\n  if (isNaN(dt.getTime())) return null;\n  // Use Intl.DateTimeFormat to get en-GB style (dd/mm/yyyy) & 24h\n  // format returns like \"20/11/2025, 10:48\" -> we'll remove comma\n  const opts = {\n    year: 'numeric',\n    month: '2-digit',\n    day: '2-digit',\n    hour: '2-digit',\n    minute: '2-digit',\n    hour12: false,\n    timeZone: tz\n  };\n  const formatted = new Intl.DateTimeFormat('en-GB', opts).format(dt);\n  // remove any comma or non-breaking spaces around separator\n  return formatted.replace(/\\u00A0/g, ' ').replace(/,\\s*/, ' ');\n}\n\n// Convert FILETIME-like (string/number) directly to formatted dd/mm/yyyy hh:mm in TZ\nfunction filetimeToFormatted(val) {\n  const big = parseToBigInt(val);\n  if (big === null) return null;\n  const ms = filetimeBigIntToMs(big);\n  return formatMsToDDMMYYYY_HHMM(ms);\n}\n\n// --- Main ---\n\n// 1) Get domain maxPwdAge raw from domain node\nconst domainMaxRaw = tryGetMaxPwdAgeFromNode(DOMAIN_NODE_NAME);\nconst maxPwdAgeBigInt = parseToBigInt(domainMaxRaw);\n\n// compute domain-level days (if available and valid)\nlet domainMaxDays = null;\nif (maxPwdAgeBigInt !== null) {\n  try {\n    if (maxPwdAgeBigInt === 0n || maxPwdAgeBigInt === INT64_MIN) {\n      domainMaxDays = null;\n    } else {\n      domainMaxDays = Math.floor(Number((-maxPwdAgeBigInt) / TICKS_PER_DAY));\n    }\n  } catch (e) {\n    domainMaxDays = null;\n  }\n}\n\n// 2) Process incoming items (users)\nreturn items.map((item) => {\n  const j = item.json || {};\n\n  const accountName = j.sAMAccountName || j.cn || j.uid || null;\n\n  // lock/bad pwd conversions\n  const lockFormatted = filetimeToFormatted(j.lockoutTime);            // dd/mm/yyyy hh:mm or null\n  const badPwdFormatted = filetimeToFormatted(j.badPasswordTime);     // dd/mm/yyyy hh:mm or null\n  const isLocked = lockFormatted !== null;\n\n  // badPwdCount as integer\n  let badPwdCount = null;\n  if (j.badPwdCount !== undefined && j.badPwdCount !== null && String(j.badPwdCount).trim() !== '') {\n    const p = parseInt(String(j.badPwdCount).replace(/[^\\d\\-]/g, ''), 10);\n    badPwdCount = Number.isNaN(p) ? null : p;\n  }\n\n  // pwdLastSet BigInt\n  const pwdLastSetBigInt = parseToBigInt(j.pwdLastSet);\n\n  // compute expiry if possible\n  let passwordExpireAtFormatted = null;\n  let passwordDaysLeft = null;\n  let passwordExpiryNote = null;\n\n  if (pwdLastSetBigInt !== null && maxPwdAgeBigInt !== null && maxPwdAgeBigInt !== 0n && maxPwdAgeBigInt !== INT64_MIN) {\n    try {\n      const expireTicks = pwdLastSetBigInt + (-maxPwdAgeBigInt); // BigInt\n      const expireMs = filetimeBigIntToMs(expireTicks);\n      passwordExpireAtFormatted = formatMsToDDMMYYYY_HHMM(expireMs);\n      const nowMs = Date.now();\n      const msLeft = expireMs - nowMs;\n      passwordDaysLeft = Math.floor(msLeft / (1000 * 60 * 60 * 24));\n    } catch (e) {\n      passwordExpireAtFormatted = null;\n      passwordDaysLeft = null;\n      passwordExpiryNote = \"calculation error: \" + (e && e.message ? e.message : String(e));\n    }\n  } else {\n    if (pwdLastSetBigInt === null && maxPwdAgeBigInt === null) {\n      passwordExpiryNote = \"missing pwdLastSet and maxPwdAge\";\n    } else if (pwdLastSetBigInt === null) {\n      passwordExpiryNote = \"missing pwdLastSet\";\n    } else if (maxPwdAgeBigInt === null || maxPwdAgeBigInt === 0n || maxPwdAgeBigInt === INT64_MIN) {\n      passwordExpiryNote = \"maxPwdAge missing or indicates no expiry\";\n    }\n  }\n\n  return {\n    json: {\n      accountName,\n      isLocked,\n      lockoutTime: lockFormatted,               // \"dd/mm/yyyy hh:mm\" or null\n      badPwdCount,\n      lastBadPasswordTime: badPwdFormatted,     // \"dd/mm/yyyy hh:mm\" or null\n\n      // raw inputs for debugging\n      pwdLastSet_raw: j.pwdLastSet ?? null,\n      maxPwdAge_raw: domainMaxRaw ?? null,\n\n      // computed\n      maxPwdAgeDays: domainMaxDays,             // e.g. 60 or null\n      passwordExpireAt: passwordExpireAtFormatted, // \"dd/mm/yyyy hh:mm\" or null\n      passwordDaysLeft,                          // integer days left or null\n      passwordExpiryNote,                        // note string if cannot compute\n\n      raw: {\n        sAMAccountName: j.sAMAccountName ?? null,\n        lockoutTime_raw: j.lockoutTime ?? null,\n        badPwdCount_raw: j.badPwdCount ?? null,\n        badPasswordTime_raw: j.badPasswordTime ?? null,\n        userAccountControl: j.userAccountControl ?? null\n      }\n    }\n  };\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1060,
+        0
+      ],
+      "id": "2d46ab71-ba65-4527-8831-efd2bd0dad5a",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a3a64bf0-bfb5-45fb-9b95-c545c807b376",
+              "name": "Tên account",
+              "value": "={{ $json.accountName }}",
+              "type": "string"
+            },
+            {
+              "id": "22f40bb1-9475-4f88-b069-72f40b71cd2f",
+              "name": "Tình trạng account (có đang bị lock?)",
+              "value": "={{ String($json.isLocked ? \"Có\" : \"Không\").replace(/[\\r\\n]+/g, \"\").trim() }}",
+              "type": "string"
+            },
+            {
+              "id": "151dc98f-9837-4330-b248-44ec206bd8a9",
+              "name": "Thời điểm bị lock",
+              "value": "={{ $json.lockoutTime }}",
+              "type": "string"
+            },
+            {
+              "id": "7453d7df-03e7-4e38-858c-aafa1c2ce9b2",
+              "name": "Số lần nhập sai password",
+              "value": "={{ $json.badPwdCount }}",
+              "type": "string"
+            },
+            {
+              "id": "97b773fe-d70e-43b0-b08f-4533e4d194f3",
+              "name": "Thời điểm nhập sai password gần nhất",
+              "value": "={{ $json.lastBadPasswordTime }}",
+              "type": "string"
+            },
+            {
+              "id": "2c5a9015-1d61-4211-ab51-c8135c842338",
+              "name": "Số ngày mật khẩu còn hiệu lực",
+              "value": "={{ $json.passwordDaysLeft }}",
+              "type": "string"
+            },
+            {
+              "id": "c5ecd347-c3f4-4777-a380-eb0f7ac453e7",
+              "name": "Ngày hết hạn mật khẩu",
+              "value": "={{ $json.passwordExpireAt }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1320,
+        0
+      ],
+      "id": "0518c79e-aaac-4378-8c28-8965bd30ee6e",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "check-accountdomain-status",
+        "authentication": "basicAuth",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "fc394ae0-cc2f-439c-b978-54d7e32ae79e",
+      "name": "Webhook",
+      "webhookId": "28dd0c8f-44e3-44a9-af4b-1d0a86406911",
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "dZNtog4wIGaX2q9L",
+          "name": "Basic authen huynd54 HTTP Request"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "Flow kiểm tra tình trạng tài khoản domain có đang bị khóa hay không, đã nhập sai bao nhiêu lần và các thông tin khác"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -60,
+        -180
+      ],
+      "typeVersion": 1,
+      "id": "be12eb82-0fff-4fa8-8216-16ecfe6526c4",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "a6714e01-2417-4f90-8b6c-01d387f19925",
+              "leftValue": "={{ $json['Tình trạng account (có đang bị lock?)'] }}",
+              "rightValue": "Có",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1540,
+        0
+      ],
+      "id": "fd72c3a1-4a91-4c5f-a461-3af2606d860c",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a3a64bf0-bfb5-45fb-9b95-c545c807b376",
+              "name": "Tên account",
+              "value": "={{ $json['Tên account'] }}",
+              "type": "string"
+            },
+            {
+              "id": "22f40bb1-9475-4f88-b069-72f40b71cd2f",
+              "name": "Tình trạng account (có đang bị lock?)",
+              "value": "={{ $json['Tình trạng account (có đang bị lock?)'] }}",
+              "type": "string"
+            },
+            {
+              "id": "151dc98f-9837-4330-b248-44ec206bd8a9",
+              "name": "Thời điểm bị lock",
+              "value": "={{ $json['Thời điểm bị lock'] }}",
+              "type": "string"
+            },
+            {
+              "id": "7453d7df-03e7-4e38-858c-aafa1c2ce9b2",
+              "name": "Số lần nhập sai password",
+              "value": "={{ $json['Số lần nhập sai password'] }}",
+              "type": "string"
+            },
+            {
+              "id": "97b773fe-d70e-43b0-b08f-4533e4d194f3",
+              "name": "Thời điểm nhập sai password gần nhất",
+              "value": "={{ $json['Thời điểm nhập sai password gần nhất'] }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1780,
+        -140
+      ],
+      "id": "b96ecbbb-728d-4128-9587-aa0e379523fa",
+      "name": "Edit Fields2"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "3e71b63d-f3e7-402c-8efa-24104ba126c0",
+              "name": "Tài khoản",
+              "value": "={{ $json['Tên account'] }}",
+              "type": "string"
+            },
+            {
+              "id": "e318aa0b-2bc9-4b5c-b8f7-6731ba082d98",
+              "name": "Trạng thái tài khoản",
+              "value": "Bình thường (không bị khóa)",
+              "type": "string"
+            },
+            {
+              "id": "3d74b61e-c4b7-4187-ade7-db68529369a9",
+              "name": "Số ngày mật khẩu còn hiệu lực",
+              "value": "={{ $json['Số ngày mật khẩu còn hiệu lực'] }} ngày",
+              "type": "string"
+            },
+            {
+              "id": "61221da7-5a0e-4027-a317-180c259f5441",
+              "name": "Ngày hết hạn mật khẩu",
+              "value": "={{ $json['Ngày hết hạn mật khẩu'] }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1780,
+        80
+      ],
+      "id": "50a5f8ad-0f56-47a8-b078-94f83f00118d",
+      "name": "Edit Fields3"
+    },
+    {
+      "parameters": {
+        "baseDN": "DC=FO,DC=COM",
+        "searchFor": "(objectclass=domain)",
+        "attribute": "maxPwdAge",
+        "searchText": "*",
+        "limit": 1,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.ldap",
+      "typeVersion": 1,
+      "position": [
+        460,
+        0
+      ],
+      "id": "4ebe2633-6dbf-484f-bcff-a09869a700f7",
+      "name": "Search for max password age",
+      "alwaysOutputData": false,
+      "credentials": {
+        "ldap": {
+          "id": "iI9T1mvcoQPLwUcL",
+          "name": "LDAP huynd"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "baseDN": "OU=FPT Online,DC=fo,DC=com",
+        "searchFor": "custom",
+        "customFilter": "=(&(objectClass=user)(sAMAccountName={{ $('Edit Fields').item.json.username }}))",
+        "options": {
+          "attributes": [
+            "sAMAccountName",
+            "displayName",
+            "lockoutTime",
+            "badPwdCount",
+            "badPasswordTime",
+            "userAccountControl",
+            "pwdLastSet"
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.ldap",
+      "typeVersion": 1,
+      "position": [
+        740,
+        0
+      ],
+      "id": "f3c6c371-56fe-4eb1-a377-21af2ceb5f80",
+      "name": "Search for account attributes",
+      "alwaysOutputData": false,
+      "credentials": {
+        "ldap": {
+          "id": "iI9T1mvcoQPLwUcL",
+          "name": "LDAP huynd"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Search for max password age",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search for max password age": {
+      "main": [
+        [
+          {
+            "node": "Search for account attributes",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search for account attributes": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "Asia/Ho_Chi_Minh",
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "versionId": "17edcd15-3341-4af8-a06d-5eba976b9429",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "1eb38babc8a8a45a31824b994b841421a7c46b5a123ae069344c5034178393e9"
+  },
+  "id": "iAJnKeJ7DyhcEILU",
+  "tags": []
+}
