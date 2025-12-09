@@ -1,0 +1,953 @@
+{
+  "name": "captaisan",
+  "nodes": [
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "Người yêu cầu"
+            },
+            {
+              "name": "Họ tên người yêu cầu"
+            },
+            {
+              "name": "Trưởng phòng phê duyệt"
+            },
+            {
+              "name": "Bộ phận"
+            },
+            {
+              "name": "Vị trí công việc"
+            },
+            {
+              "name": "Loại yêu cầu"
+            },
+            {
+              "name": "Loại tài sản"
+            },
+            {
+              "name": "IT xử lý"
+            },
+            {
+              "name": "Vùng miền"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        160,
+        120
+      ],
+      "id": "c569bdb3-0c49-44e4-9952-59d84785facf",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={\n  \"individual\": [\n    {\n      \"name\": \"Vùng miền\",\n      \"type\": \"master_data_master_data_fo_1_location\",\n      \"staticContent\": \"<p style='font-size: 12px; color: #f44842'><i></i></p>\",\n      \"value\": \"\",\n      \"display\": false,\n      \"conditions\": {\n        \"required\": false\n      },\n      \"additionalDisplayClass\": \"left-info\",\n      \"id\": -23715,\n      \"position\": -23715\n    },\n    {\n      \"name\": \"Vùng miền_location feed\",\n      \"type\": \"master_data_location_ten_vung_mien\",\n      \"staticContent\": \"<p style='font-size: 12px; color: #f44842'><i></i></p>\",\n      \"value\": \"\",\n      \"display\": false,\n      \"conditions\": {\n        \"required\": false,\n        \"locationRelated\": true\n      },\n      \"additionalDisplayClass\": \"left-info\",\n      \"id\": -23710,\n      \"position\": -23710\n    },\n    {\n      \"configId\": 935,\n      \"name\": \"Thông tin người yêu cầu\",\n      \"id\": -25000,\n      \"position\": -25000,\n      \"type\": \"splitter\",\n      \"conditions\": {}\n    },\n    {\n      \"name\": \"Người Yêu Cầu\",\n      \"type\": \"master_data_master_data_fo_1\",\n      \"valuefeeder\": \"TicketOwner\",\n      \"value\": \"{{ $('Edit Fields2').first().json['Người yêu cầu'] }}\",\n      \"display\": true,\n      \"conditions\": {\n        \"required\": true,\n        \"min-length\": 1,\n        \"max-length\": 1000\n      },\n      \"additionalDisplayClass\": \"left-info\",\n      \"id\": -23900,\n      \"position\": -23900\n    },\n    {\n      \"name\": \"Họ tên người yêu cầu\",\n      \"type\": \"master_data_master_data_fo_1_ho_ten_nhan_vien\",\n      \"value\": \"{{ $('Edit Fields2').first().json['Họ tên nguời yêu cầu'] }}\",\n      \"display\": true,\n      \"conditions\": {\n        \"required\": true,\n        \"min-length\": 1,\n        \"max-length\": 1000\n      },\n      \"additionalDisplayClass\": \"left-info\",\n      \"id\": -23899,\n      \"position\": -23899\n    },\n    {\n      \"name\": \"Cán bộ quản lý\",\n      \"type\": \"master_data_master_data_fo_1_truong_bo_phan_cap_1\",\n      \"value\": \"\",\n      \"display\": false,\n      \"conditions\": {\n        \"required\": false,\n        \"min-length\": 1,\n        \"max-length\": 1000\n      },\n      \"additionalDisplayClass\": \"right-info\",\n      \"id\": -6000,\n      \"position\": -23830\n    },\n    {\n      \"name\": \"Cán bộ quản lý-assigner\",\n      \"type\": \"master_data_master_data_fo_1_truong_bo_phan_cap_1_x\",\n      \"value\": \"\",\n      \"display\": false,\n      \"conditions\": {\n        \"required\": false,\n        \"min-length\": 1,\n        \"max-length\": 1000\n      },\n      \"additionalDisplayClass\": \"left-info\",\n      \"id\": -6001,\n      \"position\": -6001\n    },\n    {\n      \"name\": \"Cán bộ quản lý-viewer\",\n      \"type\": \"master_data_master_data_fo_1_truong_bo_phan_cap_1_x\",\n      \"value\": \"\",\n      \"display\": false,\n      \"conditions\": {\n        \"required\": false,\n        \"min-length\": 1,\n        \"max-length\": 1000\n      },\n      \"additionalDisplayClass\": \"left-info\",\n      \"id\": -6002,\n      \"position\": -6002\n    },\n    {\n      \"name\": \"Trưởng phòng phê duyệt\",\n      \"type\": \"master_data_master_data_fo_1_lay_thong_tin_quan_ly_truc_tiep\",\n      \"value\": \"{{ $('Edit Fields2').first().json['Trưởng phòng phê duyệt'] }}\",\n      \"display\": true,\n      \"conditions\": {\n        \"required\": true,\n        \"min-length\": 1,\n        \"max-length\": 1000\n      },\n      \"additionalDisplayClass\": \"right-info\",\n      \"id\": -7000,\n      \"position\": -23900\n    },\n    {\n      \"name\": \"Trưởng phòng-asigner\",\n      \"type\": \"master_data_master_data_fo_1_truong_bo_phan\",\n      \"value\": \"\",\n      \"display\": false,\n      \"conditions\": {\n        \"required\": true,\n        \"min-length\": 1,\n        \"max-length\": 1000\n      },\n      \"additionalDisplayClass\": \"left-info\",\n      \"id\": -7001,\n      \"position\": -7001\n    },\n    {\n      \"name\": \"Trưởng phòng-viewer\",\n      \"type\": \"master_data_master_data_fo_1_truong_bo_phan_x\",\n      \"value\": \"\",\n      \"display\": false,\n      \"conditions\": {\n        \"required\": true,\n        \"min-length\": 1,\n        \"max-length\": 1000\n      },\n      \"additionalDisplayClass\": \"left-info\",\n      \"id\": -7002,\n      \"position\": -7002\n    },\n    {\n      \"name\": \"Trưởng bộ phận IT\",\n      \"type\": \"master_data_master_data_fo_1_truong_phong_it\",\n      \"value\": \"{{ $json['Trưởng bộ phận IT'] }}\",\n      \"display\": false,\n      \"conditions\": {\n        \"required\": true,\n        \"min-length\": 1,\n        \"max-length\": 1000\n      },\n      \"additionalDisplayClass\": \"left-info\",\n      \"id\": -7003,\n      \"position\": -7003\n    },\n    {\n      \"name\": \"Trưởng bộ phận IT-asigner\",\n      \"type\": \"master_data_master_data_fo_1_truong_bo_phan_x\",\n      \"value\": \"\",\n      \"display\": false,\n      \"conditions\": {\n        \"required\": true,\n        \"min-length\": 1,\n        \"max-length\": 1000\n      },\n      \"additionalDisplayClass\": \"left-info\",\n      \"id\": -7004,\n      \"position\": -7004\n    },\n    {\n      \"name\": \"Trưởng bộ phận IT-viewer\",\n      \"type\": \"master_data_master_data_fo_1_truong_bo_phan_x\",\n      \"value\": \"\",\n      \"display\": false,\n      \"conditions\": {\n        \"required\": true,\n        \"min-length\": 1,\n        \"max-length\": 1000\n      },\n      \"additionalDisplayClass\": \"left-info\",\n      \"id\": -7005,\n      \"position\": -7005\n    },\n    {\n      \"name\": \"IT tiếp nhận yêu cầu\",\n      \"type\": \"master_data_master_data_fo_1_lay_thong_tin_it\",\n      \"value\": \"{{ $json['IT Tiếp nhận yêu cầu'] }}\",\n      \"display\": false,\n      \"conditions\": {\n        \"required\": true,\n        \"min-length\": 1,\n        \"max-length\": 1000\n      },\n      \"additionalDisplayClass\": \"right-info\",\n      \"id\": -7006,\n      \"position\": -23900\n    },\n    {\n      \"name\": \"IT ủy quyền\",\n      \"type\": \"master_data_master_data_fo_1_lay_thong_tin_it_x\",\n      \"value\": \"\",\n      \"display\": false,\n      \"conditions\": {\n        \"required\": true,\n        \"min-length\": 1,\n        \"max-length\": 1000\n      },\n      \"additionalDisplayClass\": \"left-info\",\n      \"id\": -7007,\n      \"position\": -7007\n    },\n    {\n      \"name\": \"IT xem xét\",\n      \"type\": \"master_data_master_data_fo_1_lay_thong_tin_it_x\",\n      \"value\": \"\",\n      \"display\": false,\n      \"conditions\": {\n        \"required\": true,\n        \"min-length\": 1,\n        \"max-length\": 1000\n      },\n      \"additionalDisplayClass\": \"left-info\",\n      \"id\": -7008,\n      \"position\": -7008\n    },\n    {\n      \"name\": \"IT Check\",\n      \"type\": \"master_data_master_data_fo_1_lay_thong_tin_it_x\",\n      \"value\": \"\",\n      \"display\": false,\n      \"conditions\": {\n        \"required\": false,\n        \"min-length\": 1,\n        \"max-length\": 1000\n      },\n      \"additionalDisplayClass\": \"left-info\",\n      \"id\": -7009,\n      \"position\": -7009\n    },\n    {\n      \"name\": \"IT ủy quyền check\",\n      \"type\": \"master_data_master_data_fo_1_lay_thong_tin_it_x\",\n      \"value\": \"\",\n      \"display\": false,\n      \"conditions\": {\n        \"required\": true,\n        \"min-length\": 1,\n        \"max-length\": 1000\n      },\n      \"additionalDisplayClass\": \"left-info\",\n      \"id\": -7010,\n      \"position\": -7010\n    },\n    {\n      \"name\": \"IT ủy quyền check\",\n      \"type\": \"master_data_master_data_fo_1_lay_thong_tin_it_x\",\n      \"value\": \"\",\n      \"display\": false,\n      \"conditions\": {\n        \"required\": true,\n        \"min-length\": 1,\n        \"max-length\": 1000\n      },\n      \"additionalDisplayClass\": \"left-info\",\n      \"id\": -7011,\n      \"position\": -7011\n    },\n    {\n      \"name\": \"Kế toán tiếp nhận\",\n      \"type\": \"master_data_master_data_fo_1_lay_quan_ly_tai_san_faf\",\n      \"value\": \"{{ $json['Kế toán tiếp nhận'] }}\",\n      \"display\": false,\n      \"conditions\": {\n        \"required\": true,\n        \"min-length\": 1,\n        \"max-length\": 1000\n      },\n      \"additionalDisplayClass\": \"left-info\",\n      \"id\": -7012,\n      \"position\": -7012\n    },\n    {\n      \"name\": \"Kế toán xử lý thủ tục và xuất tài sản\",\n      \"type\": \"master_data_master_data_fo_1_lay_quan_ly_tai_san_faf_x\",\n      \"value\": \"\",\n      \"display\": false,\n      \"conditions\": {\n        \"required\": true,\n        \"min-length\": 1,\n        \"max-length\": 1000\n      },\n      \"additionalDisplayClass\": \"left-info\",\n      \"id\": -7013,\n      \"position\": -7013\n    },\n    {\n      \"name\": \"Trưởng phòng kế toán phê duyệt thủ tục\",\n      \"type\": \"master_data_master_data_fo_1_lay_truong_phong_ke_toan\",\n      \"value\": \"{{ $json['Trưởng phòng kế toán'] }}\",\n      \"display\": false,\n      \"conditions\": {\n        \"required\": true,\n        \"min-length\": 1,\n        \"max-length\": 1000\n      },\n      \"additionalDisplayClass\": \"left-info\",\n      \"id\": -7014,\n      \"position\": -7014\n    },\n    {\n      \"name\": \"Bộ Phận\",\n      \"type\": \"master_data_master_data_fo_1_bo_phan\",\n      \"value\": \"{{ $('Edit Fields2').first().json['Bộ phận'] }}\",\n      \"display\": true,\n      \"conditions\": {\n        \"required\": true,\n        \"min-length\": 1,\n        \"max-length\": 1000\n      },\n      \"additionalDisplayClass\": \"left-info\",\n      \"id\": -23850,\n      \"position\": -23850\n    },\n    {\n      \"name\": \"Thông tin liên hệ\",\n      \"type\": \"master_data_master_data_fo_1_lay_ip_phone\",\n      \"value\": \"\",\n      \"display\": true,\n      \"conditions\": {\n        \"required\": false,\n        \"min-length\": 1,\n        \"max-length\": 1000\n      },\n      \"additionalDisplayClass\": \"left-info\",\n      \"id\": -23800,\n      \"position\": -23800\n    },\n    {\n      \"name\": \"Vị trí công việc\",\n      \"type\": \"master_data_master_data_fo_1_vi_tri\",\n      \"staticContent\": \"<p style='font-size: 12px; color: #f44842'><i></i></p>\",\n      \"value\": \"{{ $('Edit Fields2').first().json['Vị trí công việc'] }}\",\n      \"display\": true,\n      \"conditions\": {\n        \"required\": true\n      },\n      \"additionalDisplayClass\": \"left-info\",\n      \"id\": -23750,\n      \"position\": -23750\n    },\n    {\n      \"name\": \"Loại yêu cầu\",\n      \"type\": \"select\",\n      \"staticContent\": \"<p style='font-size: 12px; color: #f44842'><i></i></p>\",\n      \"value\": \"{{ $('Edit Fields2').first().json['Loại yêu cầu'] }}\",\n      \"display\": true,\n      \"conditions\": {\n        \"multiple\": false,\n        \"required\": true,\n        \"data\": [\n          {\n            \"text\": \"\",\n            \"value\": \"\"\n          },\n          {\n            \"text\": \"Cấp mới\",\n            \"value\": \"Cấp mới\"\n          },\n          {\n            \"text\": \"Thay thế / Nâng cấp\",\n            \"value\": \"Thay thế / Nâng cấp\"\n          }\n        ]\n      },\n      \"additionalDisplayClass\": \"left-info\",\n      \"id\": -23700,\n      \"position\": -23700\n    },\n    {\n      \"name\": \"Loại tài sản\",\n      \"type\": \"select\",\n      \"staticContent\": \"<p style='font-size: 12px; color: #f44842'><i></i></p>\",\n      \"value\": \"{{ $('Edit Fields2').first().json['Loại tài sản'] }}\",\n      \"display\": true,\n      \"conditions\": {\n        \"multiple\": true,\n        \"required\": true,\n        \"data\": [\n          {\n            \"text\": \"Desktop (PC+Monitor)\",\n            \"value\": \"Desktop (PC+Monitor)\"\n          },\n          {\n            \"text\": \"Case PC\",\n            \"value\": \"Case PC\"\n          },\n          {\n            \"text\": \"IP Phone\",\n            \"value\": \"IP Phone\"\n          },\n          {\n            \"text\": \"Monitor\",\n            \"value\": \"Monitor\"\n          },          \n          {\n            \"text\": \"RAM\",\n            \"value\": \"RAM\"\n          }\n        ]\n      },\n      \"additionalDisplayClass\": \"left-info\",\n      \"id\": -23650,\n      \"position\": -23650\n    },\n    {\n      \"name\": \"Vị trí (Nơi lắp đặt sử dụng tài sản)\",\n      \"type\": \"textarea\",\n      \"staticContent\": \"<p style='font-size: 12px; color: #f44842'><i></i></p>\",\n      \"value\": \"vị trí làm việc\",\n      \"display\": true,\n      \"conditions\": {\n        \"required\": true\n      },\n      \"additionalDisplayClass\": \"left-info\",\n      \"id\": -23500,\n      \"position\": -23500\n    },\n    {\n      \"name\": \"Yêu cầu đặc biệt với tài sản cấp\",\n      \"type\": \"textarea\",\n      \"staticContent\": \"<p style='font-size: 12px; color: #f44842'><i></i></p>\",\n      \"value\": \"\",\n      \"conditions\": {\n        \"required\": false\n      },\n      \"additionalDisplayClass\": \"left-info\",\n      \"id\": -23450,\n      \"position\": -23450\n    },\n    {\n      \"name\": \"Đính kèm tiêu chuẩn, thông số yêu cầu đối với tài sản cấp\",\n      \"type\": \"upload\",\n      \"staticContent\": \"<p style='font-size: 12px; color: #f44842'><i></i></p>\",\n      \"value\": \"\",\n      \"display\": true,\n      \"conditions\": {\n        \"required\": false,\n        \"min-length\": 1,\n        \"max-length\": 1000\n      },\n      \"additionalDisplayClass\": \"left-info\",\n      \"id\": -23400,\n      \"position\": -23340\n    },\n    {\n      \"name\": \"Ghi chú\",\n      \"type\": \"textarea\",\n      \"staticContent\": \"<p style='font-size: 12px; color: #f44842'><i></i></p>\",\n      \"value\": \"\",\n      \"display\": true,\n      \"conditions\": {\n        \"required\": false\n      },\n      \"additionalDisplayClass\": \"left-info\",\n      \"id\": -23350,\n      \"position\": -23350\n    },\n    {\n      \"name\": \"Trình tự duyệt\",\n      \"type\": \"master_data_master_data_fo_1_lay_trinh_tu_duyet\",\n      \"staticContent\": \"<p style='font-size: 12px; color: #f44842'><i></i></p>\",\n      \"value\": \"\",\n      \"display\": false,\n      \"conditions\": {\n        \"required\": false\n      },\n      \"additionalDisplayClass\": \"right-info\",\n      \"id\": -23300,\n      \"position\": -23300\n    }\n  ]\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1080,
+        0
+      ],
+      "id": "e0e4b1ab-2275-4b61-9e7e-86ecfac7a5ca",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://eoffice.fptonline.net/rest/sms/latest/integration-ticket/create",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "S-Token",
+              "value": "={{ $json.UserInfo.loginToken }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "form-urlencoded",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "title",
+              "value": "=Yêu cầu cấp tài sản - {{ $('Edit Fields').first().json.individual[27].value }} - Chatbot - user {{ $('Edit Fields').first().json.individual[3].value }}"
+            },
+            {
+              "name": "locationId",
+              "value": "=8"
+            },
+            {
+              "name": "processId",
+              "value": "190"
+            },
+            {
+              "name": "detail",
+              "value": "={{ JSON.stringify($('Edit Fields').item.json) }}"
+            },
+            {
+              "name": "informedUsers",
+              "value": "={{ $('Edit Fields').first().json.individual[3].value }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1580,
+        0
+      ],
+      "id": "81629479-cf70-4b33-a212-401212194124",
+      "name": "POST_ticket"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://eoffice.fptonline.net/rest/sms/latest/integration-user/login",
+        "sendBody": true,
+        "contentType": "form-urlencoded",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "username",
+              "value": "itbot"
+            },
+            {
+              "name": "password",
+              "value": "fo@45934593"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1340,
+        0
+      ],
+      "id": "789b1a22-5abe-4531-bc38-069faeec0ede",
+      "name": "Get_S-token"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "933fa222-f9e1-48e1-8eeb-b33f863ee91b",
+              "leftValue": "={{ $json['Vùng miền'] }}",
+              "rightValue": "HCM",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        340,
+        120
+      ],
+      "id": "30c02e0a-3d69-4b13-912a-5a993bddf9d3",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={\n  \"individual\": [\n    {\n      \"name\": \"Vùng miền\",\n      \"type\": \"master_data_master_data_fo_1_location\",\n      \"staticContent\": \"<p style='font-size: 12px; color: #f44842'><i></i></p>\",\n      \"value\": \"\",\n      \"display\": false,\n      \"conditions\": {\n        \"required\": false\n      },\n      \"additionalDisplayClass\": \"left-info\",\n      \"id\": -23715,\n      \"position\": -23715\n    },\n    {\n      \"name\": \"Vùng miền_location feed\",\n      \"type\": \"master_data_location_ten_vung_mien\",\n      \"staticContent\": \"<p style='font-size: 12px; color: #f44842'><i></i></p>\",\n      \"value\": \"\",\n      \"display\": false,\n      \"conditions\": {\n        \"required\": false,\n        \"locationRelated\": true\n      },\n      \"additionalDisplayClass\": \"left-info\",\n      \"id\": -23710,\n      \"position\": -23710\n    },\n    {\n      \"configId\": 935,\n      \"name\": \"Thông tin người yêu cầu\",\n      \"id\": -25000,\n      \"position\": -25000,\n      \"type\": \"splitter\",\n      \"conditions\": {}\n    },\n    {\n      \"name\": \"Người Yêu Cầu\",\n      \"type\": \"master_data_master_data_fo_1\",\n      \"valuefeeder\": \"TicketOwner\",\n      \"value\": \"{{ $('Edit Fields3').first().json['Người yêu cầu'] }}\",\n      \"display\": true,\n      \"conditions\": {\n        \"required\": true,\n        \"min-length\": 1,\n        \"max-length\": 1000\n      },\n      \"additionalDisplayClass\": \"left-info\",\n      \"id\": -23900,\n      \"position\": -23900\n    },\n    {\n      \"name\": \"Họ tên người yêu cầu\",\n      \"type\": \"master_data_master_data_fo_1_ho_ten_nhan_vien\",\n      \"value\": \"{{ $('Edit Fields3').first().json['Họ tên nguời yêu cầu'] }}\",\n      \"display\": true,\n      \"conditions\": {\n        \"required\": true,\n        \"min-length\": 1,\n        \"max-length\": 1000\n      },\n      \"additionalDisplayClass\": \"left-info\",\n      \"id\": -23899,\n      \"position\": -23899\n    },\n    {\n      \"name\": \"Cán bộ quản lý\",\n      \"type\": \"master_data_master_data_fo_1_truong_bo_phan_cap_1\",\n      \"value\": \"\",\n      \"display\": false,\n      \"conditions\": {\n        \"required\": false,\n        \"min-length\": 1,\n        \"max-length\": 1000\n      },\n      \"additionalDisplayClass\": \"right-info\",\n      \"id\": -6000,\n      \"position\": -23830\n    },\n    {\n      \"name\": \"Cán bộ quản lý-assigner\",\n      \"type\": \"master_data_master_data_fo_1_truong_bo_phan_cap_1_x\",\n      \"value\": \"\",\n      \"display\": false,\n      \"conditions\": {\n        \"required\": false,\n        \"min-length\": 1,\n        \"max-length\": 1000\n      },\n      \"additionalDisplayClass\": \"left-info\",\n      \"id\": -6001,\n      \"position\": -6001\n    },\n    {\n      \"name\": \"Cán bộ quản lý-viewer\",\n      \"type\": \"master_data_master_data_fo_1_truong_bo_phan_cap_1_x\",\n      \"value\": \"\",\n      \"display\": false,\n      \"conditions\": {\n        \"required\": false,\n        \"min-length\": 1,\n        \"max-length\": 1000\n      },\n      \"additionalDisplayClass\": \"left-info\",\n      \"id\": -6002,\n      \"position\": -6002\n    },\n    {\n      \"name\": \"Trưởng phòng phê duyệt\",\n      \"type\": \"master_data_master_data_fo_1_lay_thong_tin_quan_ly_truc_tiep\",\n      \"value\": \"{{ $('Edit Fields3').first().json['Trưởng phòng phê duyệt'] }}\",\n      \"display\": true,\n      \"conditions\": {\n        \"required\": true,\n        \"min-length\": 1,\n        \"max-length\": 1000\n      },\n      \"additionalDisplayClass\": \"right-info\",\n      \"id\": -7000,\n      \"position\": -23900\n    },\n    {\n      \"name\": \"Trưởng phòng-asigner\",\n      \"type\": \"master_data_master_data_fo_1_truong_bo_phan\",\n      \"value\": \"\",\n      \"display\": false,\n      \"conditions\": {\n        \"required\": true,\n        \"min-length\": 1,\n        \"max-length\": 1000\n      },\n      \"additionalDisplayClass\": \"left-info\",\n      \"id\": -7001,\n      \"position\": -7001\n    },\n    {\n      \"name\": \"Trưởng phòng-viewer\",\n      \"type\": \"master_data_master_data_fo_1_truong_bo_phan_x\",\n      \"value\": \"\",\n      \"display\": false,\n      \"conditions\": {\n        \"required\": true,\n        \"min-length\": 1,\n        \"max-length\": 1000\n      },\n      \"additionalDisplayClass\": \"left-info\",\n      \"id\": -7002,\n      \"position\": -7002\n    },\n    {\n      \"name\": \"Trưởng bộ phận IT\",\n      \"type\": \"master_data_master_data_fo_1_truong_phong_it\",\n      \"value\": \"{{ $json['Trưởng bộ phận IT'] }}\",\n      \"display\": false,\n      \"conditions\": {\n        \"required\": true,\n        \"min-length\": 1,\n        \"max-length\": 1000\n      },\n      \"additionalDisplayClass\": \"left-info\",\n      \"id\": -7003,\n      \"position\": -7003\n    },\n    {\n      \"name\": \"Trưởng bộ phận IT-asigner\",\n      \"type\": \"master_data_master_data_fo_1_truong_bo_phan_x\",\n      \"value\": \"\",\n      \"display\": false,\n      \"conditions\": {\n        \"required\": true,\n        \"min-length\": 1,\n        \"max-length\": 1000\n      },\n      \"additionalDisplayClass\": \"left-info\",\n      \"id\": -7004,\n      \"position\": -7004\n    },\n    {\n      \"name\": \"Trưởng bộ phận IT-viewer\",\n      \"type\": \"master_data_master_data_fo_1_truong_bo_phan_x\",\n      \"value\": \"\",\n      \"display\": false,\n      \"conditions\": {\n        \"required\": true,\n        \"min-length\": 1,\n        \"max-length\": 1000\n      },\n      \"additionalDisplayClass\": \"left-info\",\n      \"id\": -7005,\n      \"position\": -7005\n    },\n    {\n      \"name\": \"IT tiếp nhận yêu cầu\",\n      \"type\": \"master_data_master_data_fo_1_lay_thong_tin_it\",\n      \"value\": \"{{ $json['IT Tiếp nhận yêu cầu'] }}\",\n      \"display\": false,\n      \"conditions\": {\n        \"required\": true,\n        \"min-length\": 1,\n        \"max-length\": 1000\n      },\n      \"additionalDisplayClass\": \"right-info\",\n      \"id\": -7006,\n      \"position\": -23900\n    },\n    {\n      \"name\": \"IT ủy quyền\",\n      \"type\": \"master_data_master_data_fo_1_lay_thong_tin_it_x\",\n      \"value\": \"\",\n      \"display\": false,\n      \"conditions\": {\n        \"required\": true,\n        \"min-length\": 1,\n        \"max-length\": 1000\n      },\n      \"additionalDisplayClass\": \"left-info\",\n      \"id\": -7007,\n      \"position\": -7007\n    },\n    {\n      \"name\": \"IT xem xét\",\n      \"type\": \"master_data_master_data_fo_1_lay_thong_tin_it_x\",\n      \"value\": \"\",\n      \"display\": false,\n      \"conditions\": {\n        \"required\": true,\n        \"min-length\": 1,\n        \"max-length\": 1000\n      },\n      \"additionalDisplayClass\": \"left-info\",\n      \"id\": -7008,\n      \"position\": -7008\n    },\n    {\n      \"name\": \"IT Check\",\n      \"type\": \"master_data_master_data_fo_1_lay_thong_tin_it_x\",\n      \"value\": \"\",\n      \"display\": false,\n      \"conditions\": {\n        \"required\": false,\n        \"min-length\": 1,\n        \"max-length\": 1000\n      },\n      \"additionalDisplayClass\": \"left-info\",\n      \"id\": -7009,\n      \"position\": -7009\n    },\n    {\n      \"name\": \"IT ủy quyền check\",\n      \"type\": \"master_data_master_data_fo_1_lay_thong_tin_it_x\",\n      \"value\": \"\",\n      \"display\": false,\n      \"conditions\": {\n        \"required\": true,\n        \"min-length\": 1,\n        \"max-length\": 1000\n      },\n      \"additionalDisplayClass\": \"left-info\",\n      \"id\": -7010,\n      \"position\": -7010\n    },\n    {\n      \"name\": \"IT ủy quyền check\",\n      \"type\": \"master_data_master_data_fo_1_lay_thong_tin_it_x\",\n      \"value\": \"\",\n      \"display\": false,\n      \"conditions\": {\n        \"required\": true,\n        \"min-length\": 1,\n        \"max-length\": 1000\n      },\n      \"additionalDisplayClass\": \"left-info\",\n      \"id\": -7011,\n      \"position\": -7011\n    },\n    {\n      \"name\": \"Kế toán tiếp nhận\",\n      \"type\": \"master_data_master_data_fo_1_lay_quan_ly_tai_san_faf\",\n      \"value\": \"{{ $json['Kế toán tiếp nhận'] }}\",\n      \"display\": false,\n      \"conditions\": {\n        \"required\": true,\n        \"min-length\": 1,\n        \"max-length\": 1000\n      },\n      \"additionalDisplayClass\": \"left-info\",\n      \"id\": -7012,\n      \"position\": -7012\n    },\n    {\n      \"name\": \"Kế toán xử lý thủ tục và xuất tài sản\",\n      \"type\": \"master_data_master_data_fo_1_lay_quan_ly_tai_san_faf_x\",\n      \"value\": \"\",\n      \"display\": false,\n      \"conditions\": {\n        \"required\": true,\n        \"min-length\": 1,\n        \"max-length\": 1000\n      },\n      \"additionalDisplayClass\": \"left-info\",\n      \"id\": -7013,\n      \"position\": -7013\n    },\n    {\n      \"name\": \"Trưởng phòng kế toán phê duyệt thủ tục\",\n      \"type\": \"master_data_master_data_fo_1_lay_truong_phong_ke_toan\",\n      \"value\": \"{{ $json['Trưởng phòng kế toán'] }}\",\n      \"display\": false,\n      \"conditions\": {\n        \"required\": true,\n        \"min-length\": 1,\n        \"max-length\": 1000\n      },\n      \"additionalDisplayClass\": \"left-info\",\n      \"id\": -7014,\n      \"position\": -7014\n    },\n    {\n      \"name\": \"Bộ Phận\",\n      \"type\": \"master_data_master_data_fo_1_bo_phan\",\n      \"value\": \"{{ $('Edit Fields3').first().json['Bộ phận'] }}\",\n      \"display\": true,\n      \"conditions\": {\n        \"required\": true,\n        \"min-length\": 1,\n        \"max-length\": 1000\n      },\n      \"additionalDisplayClass\": \"left-info\",\n      \"id\": -23850,\n      \"position\": -23850\n    },\n    {\n      \"name\": \"Thông tin liên hệ\",\n      \"type\": \"master_data_master_data_fo_1_lay_ip_phone\",\n      \"value\": \"\",\n      \"display\": true,\n      \"conditions\": {\n        \"required\": false,\n        \"min-length\": 1,\n        \"max-length\": 1000\n      },\n      \"additionalDisplayClass\": \"left-info\",\n      \"id\": -23800,\n      \"position\": -23800\n    },\n    {\n      \"name\": \"Vị trí công việc\",\n      \"type\": \"master_data_master_data_fo_1_vi_tri\",\n      \"staticContent\": \"<p style='font-size: 12px; color: #f44842'><i></i></p>\",\n      \"value\": \"{{ $('Edit Fields3').first().json['Vị trí công việc'] }}\",\n      \"display\": true,\n      \"conditions\": {\n        \"required\": true\n      },\n      \"additionalDisplayClass\": \"left-info\",\n      \"id\": -23750,\n      \"position\": -23750\n    },\n    {\n      \"name\": \"Loại yêu cầu\",\n      \"type\": \"select\",\n      \"staticContent\": \"<p style='font-size: 12px; color: #f44842'><i></i></p>\",\n      \"value\": \"{{ $('Edit Fields3').first().json['Loại yêu cầu'] }}\",\n      \"display\": true,\n      \"conditions\": {\n        \"multiple\": false,\n        \"required\": true,\n        \"data\": [\n          {\n            \"text\": \"\",\n            \"value\": \"\"\n          },\n          {\n            \"text\": \"Cấp mới\",\n            \"value\": \"Cấp mới\"\n          },\n          {\n            \"text\": \"Thay thế / Nâng cấp\",\n            \"value\": \"Thay thế / Nâng cấp\"\n          }\n        ]\n      },\n      \"additionalDisplayClass\": \"left-info\",\n      \"id\": -23700,\n      \"position\": -23700\n    },\n    {\n      \"name\": \"Loại tài sản\",\n      \"type\": \"select\",\n      \"staticContent\": \"<p style='font-size: 12px; color: #f44842'><i></i></p>\",\n      \"value\": \"{{ $('Edit Fields3').first().json['Loại tài sản'] }}\",\n      \"display\": true,\n      \"conditions\": {\n        \"multiple\": true,\n        \"required\": true,\n        \"data\": [\n          {\n            \"text\": \"Desktop (PC+Monitor)\",\n            \"value\": \"Desktop (PC+Monitor)\"\n          },\n          {\n            \"text\": \"Case PC\",\n            \"value\": \"Case PC\"\n          },\n          {\n            \"text\": \"IP Phone\",\n            \"value\": \"IP Phone\"\n          },\n          {\n            \"text\": \"Monitor\",\n            \"value\": \"Monitor\"\n          },          \n          {\n            \"text\": \"RAM\",\n            \"value\": \"RAM\"\n          }\n        ]\n      },\n      \"additionalDisplayClass\": \"left-info\",\n      \"id\": -23650,\n      \"position\": -23650\n    },\n    {\n      \"name\": \"Vị trí (Nơi lắp đặt sử dụng tài sản)\",\n      \"type\": \"textarea\",\n      \"staticContent\": \"<p style='font-size: 12px; color: #f44842'><i></i></p>\",\n      \"value\": \"vị trí làm việc\",\n      \"display\": true,\n      \"conditions\": {\n        \"required\": true\n      },\n      \"additionalDisplayClass\": \"left-info\",\n      \"id\": -23500,\n      \"position\": -23500\n    },\n    {\n      \"name\": \"Yêu cầu đặc biệt với tài sản cấp\",\n      \"type\": \"textarea\",\n      \"staticContent\": \"<p style='font-size: 12px; color: #f44842'><i></i></p>\",\n      \"value\": \"\",\n      \"conditions\": {\n        \"required\": false\n      },\n      \"additionalDisplayClass\": \"left-info\",\n      \"id\": -23450,\n      \"position\": -23450\n    },\n    {\n      \"name\": \"Đính kèm tiêu chuẩn, thông số yêu cầu đối với tài sản cấp\",\n      \"type\": \"upload\",\n      \"staticContent\": \"<p style='font-size: 12px; color: #f44842'><i></i></p>\",\n      \"value\": \"\",\n      \"display\": true,\n      \"conditions\": {\n        \"required\": false,\n        \"min-length\": 1,\n        \"max-length\": 1000\n      },\n      \"additionalDisplayClass\": \"left-info\",\n      \"id\": -23400,\n      \"position\": -23340\n    },\n    {\n      \"name\": \"Ghi chú\",\n      \"type\": \"textarea\",\n      \"staticContent\": \"<p style='font-size: 12px; color: #f44842'><i></i></p>\",\n      \"value\": \"\",\n      \"display\": true,\n      \"conditions\": {\n        \"required\": false\n      },\n      \"additionalDisplayClass\": \"left-info\",\n      \"id\": -23350,\n      \"position\": -23350\n    },\n    {\n      \"name\": \"Trình tự duyệt\",\n      \"type\": \"master_data_master_data_fo_1_lay_trinh_tu_duyet\",\n      \"staticContent\": \"<p style='font-size: 12px; color: #f44842'><i></i></p>\",\n      \"value\": \"\",\n      \"display\": false,\n      \"conditions\": {\n        \"required\": false\n      },\n      \"additionalDisplayClass\": \"right-info\",\n      \"id\": -23300,\n      \"position\": -23300\n    }\n  ]\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1080,
+        220
+      ],
+      "id": "8fefbf21-7bc7-4dae-b357-946513500cea",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://eoffice.fptonline.net/rest/sms/latest/integration-user/login",
+        "sendBody": true,
+        "contentType": "form-urlencoded",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "username",
+              "value": "itbot"
+            },
+            {
+              "name": "password",
+              "value": "fo@45934593"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1340,
+        220
+      ],
+      "id": "3ef8d93b-06db-4c1f-a801-afed4ac72258",
+      "name": "Get_S-token1"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://eoffice.fptonline.net/rest/sms/latest/integration-ticket/create",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "S-Token",
+              "value": "={{ $json.UserInfo.loginToken }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "form-urlencoded",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "title",
+              "value": "=Yêu cầu cấp tài sản - {{ $('Edit Fields1').first().json.individual[27].value }} - Chatbot - user {{ $('Edit Fields1').first().json.individual[3].value }}"
+            },
+            {
+              "name": "locationId",
+              "value": "2"
+            },
+            {
+              "name": "processId",
+              "value": "190"
+            },
+            {
+              "name": "detail",
+              "value": "={{ JSON.stringify($('Edit Fields1').item.json) }}"
+            },
+            {
+              "name": "informedUsers",
+              "value": "={{ $('Edit Fields1').first().json.individual[3].value }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1580,
+        220
+      ],
+      "id": "299bdd42-8b95-4928-94ec-de3933553645",
+      "name": "POST_ticket1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "6ea84d6f-d108-4c06-ab6f-757804161851",
+              "name": "IT Tiếp nhận yêu cầu",
+              "value": "={{ $json.name }}",
+              "type": "string"
+            },
+            {
+              "id": "45b7c0d7-0c86-4108-9998-39a9d465b311",
+              "name": "Trưởng bộ phận IT",
+              "value": "binhvh",
+              "type": "string"
+            },
+            {
+              "id": "30f87997-e4d2-4ca8-88f7-f5bab06e8a9b",
+              "name": "Kế toán tiếp nhận",
+              "value": "sangnc",
+              "type": "string"
+            },
+            {
+              "id": "a9b79f76-5dfa-4712-912f-8693a3d58cbd",
+              "name": "Trưởng phòng kế toán",
+              "value": "sinhnnd",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        880,
+        0
+      ],
+      "id": "fe2bc2a6-7e03-4658-baac-df77bc88de35",
+      "name": "Set_IT_AF_HCM"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "eb916dcc-daef-4126-aed7-316e78b572ce",
+              "name": "IT Tiếp nhận yêu cầu",
+              "value": "={{ $json.name }}",
+              "type": "string"
+            },
+            {
+              "id": "2269cebd-5cf3-4f89-b240-09000cd1a7b8",
+              "name": "Trưởng bộ phận IT",
+              "value": "binhvh",
+              "type": "string"
+            },
+            {
+              "id": "8b3d652d-ab1f-420c-8c65-846f0e73c940",
+              "name": "Kế toán tiếp nhận",
+              "value": "maint148,kieutrinh",
+              "type": "string"
+            },
+            {
+              "id": "e516a11d-08e1-475f-9c0c-e78e5232b85c",
+              "name": "Trưởng phòng kế toán",
+              "value": "hangltt",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        880,
+        220
+      ],
+      "id": "8d39db08-1f06-4944-9f9e-86627ffcf9ff",
+      "name": "Set_IT_AF_HN"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "3CLFRsq2Eob6a0d9",
+          "mode": "list",
+          "cachedResultName": "select_IT_HCM"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        700,
+        0
+      ],
+      "id": "b669008d-f853-43e1-b980-bb99321b672b",
+      "name": "select IT HCM"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "KHeemypVMnwCp84p",
+          "mode": "list",
+          "cachedResultName": "select_IT_HN"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        700,
+        220
+      ],
+      "id": "95a0b9af-e224-4f1a-aeaf-644fcd8f67b5",
+      "name": "select IT HN"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "bfa57bf0-8436-4718-96aa-ef5a95dc0304",
+              "name": "Người yêu cầu",
+              "value": "={{ $json['Người yêu cầu'] }}",
+              "type": "string"
+            },
+            {
+              "id": "4badcda2-ac80-4404-9bef-0db1c3552194",
+              "name": "Họ tên nguời yêu cầu",
+              "value": "={{ $json['Họ tên người yêu cầu'] }}",
+              "type": "string"
+            },
+            {
+              "id": "04ba026c-afa8-40e1-9ef6-3a9db70ef897",
+              "name": "Trưởng phòng phê duyệt",
+              "value": "={{ $json['Trưởng phòng phê duyệt'] }}",
+              "type": "string"
+            },
+            {
+              "id": "9b037ece-b956-4625-86d9-4b3ffdadac95",
+              "name": "Bộ phận",
+              "value": "={{ $json['Bộ phận'] }}",
+              "type": "string"
+            },
+            {
+              "id": "09d8b4cf-4b05-4703-9f8c-5f23ee42474a",
+              "name": "Vị trí công việc",
+              "value": "={{ $json['Vị trí công việc'] }}",
+              "type": "string"
+            },
+            {
+              "id": "6bcbccba-c18d-4916-869e-6713f028c7fa",
+              "name": "Loại yêu cầu",
+              "value": "={{ $json['Loại yêu cầu'] }}",
+              "type": "string"
+            },
+            {
+              "id": "1cff875e-a98e-4b44-8083-685555dff513",
+              "name": "Loại tài sản",
+              "value": "={{ $json['Loại tài sản'] }}",
+              "type": "string"
+            },
+            {
+              "id": "6a398591-8d58-434e-bc54-e97be12f438e",
+              "name": "Vùng miền",
+              "value": "={{ $json['Vùng miền'] }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        540,
+        0
+      ],
+      "id": "5e2ef2cf-d54c-4079-9fb0-a5f5bfa0238c",
+      "name": "Edit Fields2"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "bfa57bf0-8436-4718-96aa-ef5a95dc0304",
+              "name": "Người yêu cầu",
+              "value": "={{ $json['Người yêu cầu'] }}",
+              "type": "string"
+            },
+            {
+              "id": "4badcda2-ac80-4404-9bef-0db1c3552194",
+              "name": "Họ tên nguời yêu cầu",
+              "value": "={{ $json['Họ tên người yêu cầu'] }}",
+              "type": "string"
+            },
+            {
+              "id": "116d2863-23dd-4b34-9254-c337d512b7f1",
+              "name": "Trưởng phòng phê duyệt",
+              "value": "={{ $json['Trưởng phòng phê duyệt'] }}",
+              "type": "string"
+            },
+            {
+              "id": "9b037ece-b956-4625-86d9-4b3ffdadac95",
+              "name": "Bộ phận",
+              "value": "={{ $json['Bộ phận'] }}",
+              "type": "string"
+            },
+            {
+              "id": "09d8b4cf-4b05-4703-9f8c-5f23ee42474a",
+              "name": "Vị trí công việc",
+              "value": "={{ $json['Vị trí công việc'] }}",
+              "type": "string"
+            },
+            {
+              "id": "d9543db3-cb56-4ae8-b0a2-e9163094805b",
+              "name": "Loại yêu cầu",
+              "value": "={{ $json['Loại yêu cầu'] }}",
+              "type": "string"
+            },
+            {
+              "id": "256b04a4-24f9-4ba2-b94b-5bad1eb9a9d8",
+              "name": "Loại tài sản",
+              "value": "={{ $json['Loại tài sản'] }}",
+              "type": "string"
+            },
+            {
+              "id": "6a398591-8d58-434e-bc54-e97be12f438e",
+              "name": "Vùng miền",
+              "value": "={{ $json['Vùng miền'] }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        540,
+        220
+      ],
+      "id": "d58eac65-a2db-4edd-8d2e-2ca2adf323c9",
+      "name": "Edit Fields3"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "4ee1f1b0-ce87-4c0f-8c90-29e26c2ea1ea",
+              "name": "ID phiếu yêu cầu",
+              "value": "={{ $json.Data.id }}",
+              "type": "string"
+            },
+            {
+              "id": "73fcf4f9-c2ae-4b68-b139-229c5b2e1036",
+              "name": "Người yêu cầu",
+              "value": "={{ $('Edit Fields3').first().json['Họ tên nguời yêu cầu'] }}",
+              "type": "string"
+            },
+            {
+              "id": "f89e5c67-8f08-402e-a766-6a6a59ad9095",
+              "name": "Bộ phận",
+              "value": "={{ $('Edit Fields3').first().json['Bộ phận'] }}",
+              "type": "string"
+            },
+            {
+              "id": "ed7d71b5-53eb-4a64-acb0-2ceeddbe0d36",
+              "name": "Vùng miền",
+              "value": "={{ $('Edit Fields3').first().json['Vùng miền'] }}",
+              "type": "string"
+            },
+            {
+              "id": "309b09f1-86db-42bc-8217-3b1a4e861abb",
+              "name": "Loại yêu cầu",
+              "value": "={{ $('Edit Fields3').first().json['Loại yêu cầu'] }}",
+              "type": "string"
+            },
+            {
+              "id": "62eab169-bc99-4b6d-9e74-2db142fc63ec",
+              "name": "Loại tài sản",
+              "value": "={{ $('Edit Fields3').first().json['Loại tài sản'] }}",
+              "type": "string"
+            },
+            {
+              "id": "072a17a9-ce62-4c14-a9da-8a3ef2a35d18",
+              "name": "Người đang nhận task",
+              "value": "={{ (() => {\n  const username = $('select IT HN').item.json.name?.trim();\n  const map = {\n    'huynd54': 'Nguyễn Đắc Huy',\n    'trongnc2': 'Nguyễn Công Trọng',\n    'sanglt6': 'Lê Thanh Sang',\n    'huuduc': 'Nguyễn Hữu Đức',\n    'trungnd': 'Nguyễn Đức Trung',\n    'anhvt66': 'Vũ Trường Anh'\n  };\n\n  // Trường hợp đặc biệt cho binhvh\n  if (username === 'binhvh') {\n    return 'Do hiện tại tất cả các IT đang bận hỗ trợ các công việc khác nên yêu cầu của bạn sẽ được trưởng bộ phận IT điều phối lại ngay sau khi có IT sẵn sàng';\n  }\n\n  const result = map[username] || username;\n  return (result + '').replace(/[\\n\\r\\u2028\\u200B]+/g, '').trim();\n})() }}",
+              "type": "string"
+            },
+            {
+              "id": "d67a743f-bd41-4de7-8903-bd7a5a84ad39",
+              "name": "Đường link phiếu yêu cầu",
+              "value": "=https://eoffice.fptonline.net/secure/ViewTicket.jspa?id={{ $('POST_ticket1').item.json.Data.id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1780,
+        220
+      ],
+      "id": "fcef2e2b-233a-45f8-b33e-2519323caa74",
+      "name": "output info1"
+    },
+    {
+      "parameters": {
+        "jsCode": "return [\n  {\n    json: {\n      result: JSON.stringify(items[0].json, null, 2)\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2000,
+        220
+      ],
+      "id": "f2d3a64b-bfb7-4135-a93b-683c31d55ebc",
+      "name": "Code1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "4ee1f1b0-ce87-4c0f-8c90-29e26c2ea1ea",
+              "name": "ID phiếu yêu cầu",
+              "value": "={{ $json.Data.id }}",
+              "type": "string"
+            },
+            {
+              "id": "73fcf4f9-c2ae-4b68-b139-229c5b2e1036",
+              "name": "Người yêu cầu",
+              "value": "={{ $('Edit Fields2').first().json['Họ tên nguời yêu cầu'] }}",
+              "type": "string"
+            },
+            {
+              "id": "f89e5c67-8f08-402e-a766-6a6a59ad9095",
+              "name": "Bộ phận",
+              "value": "={{ $('Edit Fields2').first().json['Bộ phận'] }}",
+              "type": "string"
+            },
+            {
+              "id": "ed7d71b5-53eb-4a64-acb0-2ceeddbe0d36",
+              "name": "Vùng miền",
+              "value": "={{ $('Edit Fields2').first().json['Vùng miền'] }}",
+              "type": "string"
+            },
+            {
+              "id": "74985443-0874-4caf-ae54-d0e790e675d3",
+              "name": "Loại yêu cầu",
+              "value": "={{ $('Edit Fields2').first().json['Loại yêu cầu'] }}",
+              "type": "string"
+            },
+            {
+              "id": "309b09f1-86db-42bc-8217-3b1a4e861abb",
+              "name": "Loại tài sản",
+              "value": "={{ $('Edit Fields2').first().json['Loại tài sản'] }}",
+              "type": "string"
+            },
+            {
+              "id": "072a17a9-ce62-4c14-a9da-8a3ef2a35d18",
+              "name": "Người đang nhận task",
+              "value": "={{ (() => {\n  const username = $('select IT HCM').item.json.name?.trim();\n  const map = {\n    'huynd54': 'Nguyễn Đắc Huy',\n    'trongnc2': 'Nguyễn Công Trọng',\n    'sanglt6': 'Lê Thanh Sang',\n    'huuduc': 'Nguyễn Hữu Đức',\n    'trungnd': 'Nguyễn Đức Trung',\n    'anhvt66': 'Vũ Trường Anh'\n  };\n\n  // Trường hợp đặc biệt cho binhvh\n  if (username === 'binhvh') {\n    return 'Do hiện tại tất cả các IT đang bận hỗ trợ các công việc khác nên yêu cầu của bạn sẽ được trưởng bộ phận IT điều phối lại ngay sau khi có IT sẵn sàng';\n  }\n\n  const result = map[username] || username;\n  return (result + '').replace(/[\\n\\r\\u2028\\u200B]+/g, '').trim();\n})() }}",
+              "type": "string"
+            },
+            {
+              "id": "d67a743f-bd41-4de7-8903-bd7a5a84ad39",
+              "name": "Đường link phiếu yêu cầu",
+              "value": "=https://eoffice.fptonline.net/secure/ViewTicket.jspa?id={{ $('POST_ticket').first().json.Data.id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1780,
+        0
+      ],
+      "id": "2f799bf4-953e-49de-8cfc-73718654985f",
+      "name": "output info"
+    },
+    {
+      "parameters": {
+        "jsCode": "return [\n  {\n    json: {\n      result: JSON.stringify(items[0].json, null, 2)\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2000,
+        0
+      ],
+      "id": "8c4dee6c-841a-4ca2-906d-1a76bd83cd85",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "method": "DELETE",
+        "url": "https://eoffice.fptonline.net/rest/sms/latest/integration-user/logout",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "S-Token",
+              "value": "={{ $('Get_S-token').item.json.UserInfo.loginToken }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1780,
+        -200
+      ],
+      "id": "efdaa7d0-66c7-49d4-9201-ba01cf0a0a18",
+      "name": "Logout eoffice"
+    },
+    {
+      "parameters": {
+        "method": "DELETE",
+        "url": "https://eoffice.fptonline.net/rest/sms/latest/integration-user/logout",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "S-Token",
+              "value": "={{ $('Get_S-token1').item.json.UserInfo.loginToken }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1780,
+        440
+      ],
+      "id": "ace740ce-1c7a-4804-89fb-8385a9090caa",
+      "name": "Logout eoffice1"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Get_S-token",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get_S-token": {
+      "main": [
+        [
+          {
+            "node": "POST_ticket",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Get_S-token1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get_S-token1": {
+      "main": [
+        [
+          {
+            "node": "POST_ticket1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set_IT_AF_HCM": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set_IT_AF_HN": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "select IT HCM": {
+      "main": [
+        [
+          {
+            "node": "Set_IT_AF_HCM",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "select IT HN": {
+      "main": [
+        [
+          {
+            "node": "Set_IT_AF_HN",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "POST_ticket": {
+      "main": [
+        [
+          {
+            "node": "output info",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Logout eoffice",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "POST_ticket1": {
+      "main": [
+        [
+          {
+            "node": "output info1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Logout eoffice1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields2": {
+      "main": [
+        [
+          {
+            "node": "select IT HCM",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields3": {
+      "main": [
+        [
+          {
+            "node": "select IT HN",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "output info1": {
+      "main": [
+        [
+          {
+            "node": "Code1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "output info": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "9a5224e0-7486-4d18-893d-25e2b27337e9",
+  "meta": {
+    "instanceId": "1eb38babc8a8a45a31824b994b841421a7c46b5a123ae069344c5034178393e9"
+  },
+  "id": "LUw6fo6Tfvp2yHK5",
+  "tags": [
+    {
+      "createdAt": "2025-07-17T02:35:37.776Z",
+      "updatedAt": "2025-07-17T02:35:37.776Z",
+      "id": "X6dEXVHZk1tgTcAd",
+      "name": "ticket_bot"
+    }
+  ]
+}
