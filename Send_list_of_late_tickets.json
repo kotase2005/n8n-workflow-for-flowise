@@ -1,0 +1,337 @@
+{
+  "name": "Send list of late tickets",
+  "nodes": [
+    {
+      "parameters": {
+        "fieldToSplitOut": "ListData",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        140,
+        0
+      ],
+      "id": "7da9bab0-932f-4d17-8b92-75def64023ad",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "37c441c1-9d07-463c-b8a8-7b9a88c5ad15",
+              "leftValue": "={{ new Date($json.estimateFinishedTime).getTime() }}",
+              "rightValue": "={{ Date.now() }}\n",
+              "operator": {
+                "type": "number",
+                "operation": "lt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        380,
+        0
+      ],
+      "id": "d7745511-12b6-4955-9eb2-b13853306756",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "fromEmail": "admin@fptonline.net",
+        "toEmail": "fo-it@fpt.com",
+        "subject": "Danh sách các ticket bị trễ",
+        "html": "=<p>Danh sách ticket bị trễ:</p>\n<table border=\"1\" cellspacing=\"0\" cellpadding=\"5\">\n  <tr>\n    <th>STT</th>\n    <th>ID</th>\n    <th>Title</th>\n    <th>Service</th>\n    <th>Cá nhân trễ task</th>    \n    <th>Created Time</th>\n    <th>Estimate Finished Time</th>\n    <th>Thời gian trễ thực tế</th>\n  </tr>\n  {{\n    $json.data.map((ticket, index) => {\n      const now = new Date(new Date().toLocaleString(\"en-US\", { timeZone: \"Asia/Bangkok\" }));\n      const estimateTime = new Date(new Date(ticket.estimateFinishedTime).toLocaleString(\"en-US\", { timeZone: \"Asia/Bangkok\" }));\n\n      function calculateWorkingDelay(estimateTime, now) {\n        if (now <= estimateTime) return 0;\n\n        const WORK_PERIODS = [\n          { start: [8, 0], end: [12, 0] },\n          { start: [13, 30], end: [17, 30] }\n        ];\n        const MINUTES_PER_DAY = 8 * 60;\n\n        let delayMinutes = 0;\n\n        let current = new Date(estimateTime);\n        current.setSeconds(0, 0);\n\n        while (current.toDateString() !== now.toDateString()) {\n          const day = current.getDay();\n\n          if (day !== 0 && day !== 6) {\n            WORK_PERIODS.forEach(period => {\n              const periodStart = new Date(current);\n              periodStart.setHours(period.start[0], period.start[1], 0, 0);\n\n              const periodEnd = new Date(current);\n              periodEnd.setHours(period.end[0], period.end[1], 0, 0);\n\n              if (estimateTime < periodStart) {\n                delayMinutes += (periodEnd - periodStart) / (1000 * 60);\n              } else if (estimateTime < periodEnd) {\n                delayMinutes += (periodEnd - estimateTime) / (1000 * 60);\n              }\n            });\n          }\n\n          current.setDate(current.getDate() + 1);\n          current.setHours(0, 0, 0, 0);\n          estimateTime = new Date(current);\n          estimateTime.setHours(8, 0, 0, 0);\n        }\n\n        const dayToday = now.getDay();\n        if (dayToday !== 0 && dayToday !== 6) {\n          WORK_PERIODS.forEach(period => {\n            const periodStart = new Date(now);\n            periodStart.setHours(period.start[0], period.start[1], 0, 0);\n\n            const periodEnd = new Date(now);\n            periodEnd.setHours(period.end[0], period.end[1], 0, 0);\n\n            if (now > periodStart) {\n              const start = estimateTime > periodStart ? estimateTime : periodStart;\n              const end = now > periodEnd ? periodEnd : now;\n\n              if (end > start) {\n                delayMinutes += (end - start) / (1000 * 60);\n              }\n            }\n          });\n        }\n\n        return Math.max(0, Math.floor(delayMinutes));\n      }\n\n      const diffMinutes = calculateWorkingDelay(estimateTime, now);\n\n      let formattedDelay = '0 phút';\n      if (diffMinutes > 0) {\n        const days = Math.floor(diffMinutes / 480);\n        let remainingMinutes = diffMinutes % 480;\n\n        const hours = Math.floor(remainingMinutes / 60);\n        const minutes = remainingMinutes % 60;\n\n        let parts = [];\n        if (days > 0) parts.push(`${days} ngày`);\n        if (hours > 0) parts.push(`${hours} giờ`);\n        if (minutes > 0) parts.push(`${minutes} phút`);\n        if (parts.length === 0) parts.push(`0 phút`);\n\n        formattedDelay = parts.join(' ');\n      }\n\n      return `\n        <tr>\n          <td>${index + 1}</td>\n          <td><a href=\"https://eoffice.fptonline.net/secure/ViewTicket.jspa?id=${ticket.id}\" target=\"_blank\">${ticket.id}</a></td>\n          <td>${ticket.title}</td>\n          <td>${ticket.service}</td>\n          <td>${ticket.owner}</td>\n          <td>${ticket.created_time}</td>\n          <td>${ticket.estimateFinishedTime}</td>\n          <td>${formattedDelay}</td>\n        </tr>\n      `;\n    }).join('')\n  }}\n</table>\n\n<tr>\n  <td colspan=\"8\" style=\"text-align:right;\"><strong>Tổng số ticket bị trễ: {{$json.data.length}}</strong></td>\n</tr>\n\n<p>Số lượng ticket đã tạo:</p>\n- Ongoing:    <strong> {{ $('Get number of tickets').item.json.Data.ongoing }} </strong><br>\n- Finished:   <strong> {{ $('Get number of tickets').item.json.Data.finish }} </strong><br>\n- Cancel:     <strong> {{ $('Get number of tickets').item.json.Data.cancel }} </strong>\n",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        800,
+        -120
+      ],
+      "id": "45eedaca-e073-4390-abbf-340a3abd25f4",
+      "name": "Send Email",
+      "webhookId": "7eac2bb5-3c46-4caa-9c6a-c1d3bc82005f",
+      "credentials": {
+        "smtp": {
+          "id": "Ih51aPDMfHOq5IOb",
+          "name": "SMTP Huy gửi mail"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        580,
+        -120
+      ],
+      "id": "493bd1b9-216e-4719-b02b-cc75fde20916",
+      "name": "Aggregate"
+    },
+    {
+      "parameters": {
+        "url": "https://eoffice.fptonline.net/rest/sms/latest/integration-my-request/totalSummary",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "S-Token",
+              "value": "={{ $json.UserInfo.loginToken }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -300,
+        0
+      ],
+      "id": "38e5863d-0b05-4671-ac2b-ed9eed49b16b",
+      "name": "Get number of tickets"
+    },
+    {
+      "parameters": {
+        "url": "https://eoffice.fptonline.net/rest/sms/latest/integration-my-request/list?statusType=ongoing&pageSize=150&currentPages=1&asc=1",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "statusType",
+              "value": "ongoing"
+            },
+            {
+              "name": "pageSize",
+              "value": "100"
+            },
+            {
+              "name": "currentPages",
+              "value": "1"
+            },
+            {
+              "name": "asc",
+              "value": "1"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "S-Token",
+              "value": "={{ $('Get_S-token').item.json.UserInfo.loginToken }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -60,
+        0
+      ],
+      "id": "74adfd10-b420-4eca-8b0e-34a90da37ea9",
+      "name": "Get ongoing ticket detail"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://eoffice.fptonline.net/rest/sms/latest/integration-user/login",
+        "sendBody": true,
+        "contentType": "form-urlencoded",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "username",
+              "value": "itbot"
+            },
+            {
+              "name": "password",
+              "value": "fo@45934593"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -520,
+        0
+      ],
+      "id": "02455ac3-c62c-419d-8ab3-49807f996b7c",
+      "name": "Get_S-token"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 18
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -760,
+        0
+      ],
+      "id": "d61ef617-e297-411d-8af2-8b9d78ed7429",
+      "name": "Run at 6PM each day"
+    },
+    {
+      "parameters": {
+        "method": "DELETE",
+        "url": "https://eoffice.fptonline.net/rest/sms/latest/integration-user/logout",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "S-Token",
+              "value": "={{ $('Get_S-token').item.json.UserInfo.loginToken }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        140,
+        -160
+      ],
+      "id": "4ccd4ecb-0ef3-468f-9d9c-0a2bb21a8695",
+      "name": "Logout eoffice"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Aggregate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate": {
+      "main": [
+        [
+          {
+            "node": "Send Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get number of tickets": {
+      "main": [
+        [
+          {
+            "node": "Get ongoing ticket detail",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get ongoing ticket detail": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Logout eoffice",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get_S-token": {
+      "main": [
+        [
+          {
+            "node": "Get number of tickets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Run at 6PM each day": {
+      "main": [
+        [
+          {
+            "node": "Get_S-token",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "Asia/Ho_Chi_Minh",
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "versionId": "6292c69f-80a5-494f-8e78-f88af002bb10",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "1eb38babc8a8a45a31824b994b841421a7c46b5a123ae069344c5034178393e9"
+  },
+  "id": "69Ck6nFTHQQPDpZm",
+  "tags": [
+    {
+      "createdAt": "2025-07-17T02:47:06.733Z",
+      "updatedAt": "2025-07-17T02:47:06.733Z",
+      "id": "gqWFr4Wc3LwPGkhr",
+      "name": "report_late_tickets"
+    }
+  ]
+}
