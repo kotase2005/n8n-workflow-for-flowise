@@ -1,0 +1,109 @@
+{
+  "name": "log_activities",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "flowise/activity-log",
+        "responseMode": "responseNode",
+        "options": {
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -220,
+        0
+      ],
+      "name": "Webhook (POST)",
+      "webhookMethods": {
+        "POST": true
+      },
+      "id": "c9752c36-b375-4b35-8668-fb1d85cfe681",
+      "webhookId": "64870d41-514b-4041-845c-fc148d456df5"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO logs_user_activities (user_id, activity_log)\nVALUES (\n  {{$json[\"user_id\"]}},\n  {{$json[\"activity_log\"]}}  \n)",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2,
+      "position": [
+        400,
+        0
+      ],
+      "name": "Postgres → INSERT",
+      "id": "368bcba6-d0a3-492b-9ef9-c36432cab3f3",
+      "credentials": {
+        "postgres": {
+          "id": "OzOB0lLRA6vftfxv",
+          "name": "Postgres IT_Agent"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        640,
+        0
+      ],
+      "name": "Respond 200",
+      "id": "6f617650-635f-411a-a2af-20e388934021"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook (POST)": {
+      "main": [
+        [
+          {
+            "node": "Postgres → INSERT",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Postgres → INSERT": {
+      "main": [
+        [
+          {
+            "node": "Respond 200",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Respond 200": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "e4147ac0-f16d-46f6-b367-3cc51eec297e",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "1eb38babc8a8a45a31824b994b841421a7c46b5a123ae069344c5034178393e9"
+  },
+  "id": "3QfqGiMDWya8WCPq",
+  "tags": []
+}
