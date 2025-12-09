@@ -1,0 +1,1534 @@
+{
+  "name": "check_it_cocheckin",
+  "nodes": [
+    {
+      "parameters": {
+        "url": "https://internal.fptonline.net/api/getDayOffByEmp?",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "EmployeeID",
+              "value": "00171946"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1320,
+        -480
+      ],
+      "id": "8265c44a-1abf-45f6-af9c-66e6dce59c4e",
+      "name": "checkin_huynd54"
+    },
+    {
+      "parameters": {
+        "url": "https://internal.fptonline.net/api/getDayOffByEmp?",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "EmployeeID",
+              "value": "00140461"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1320,
+        -260
+      ],
+      "id": "b7b27222-b159-4871-985c-539c36c80003",
+      "name": "checkin_sanglt6"
+    },
+    {
+      "parameters": {
+        "url": "https://internal.fptonline.net/api/getDayOffByEmp?",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "EmployeeID",
+              "value": "00291229"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1320,
+        -40
+      ],
+      "id": "2faeb8e4-886b-4281-abf3-c964b4216654",
+      "name": "checkin_trongnc2"
+    },
+    {
+      "parameters": {
+        "url": "https://internal.fptonline.net/api/getDayOffByEmp?",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "EmployeeID",
+              "value": "00174606"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1320,
+        200
+      ],
+      "id": "bc6dcd5c-e424-4d72-8672-f4eae0595fa3",
+      "name": "checkin_trungnd"
+    },
+    {
+      "parameters": {
+        "url": "https://internal.fptonline.net/api/getDayOffByEmp?",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "EmployeeID",
+              "value": "00255629"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1320,
+        420
+      ],
+      "id": "f68deaf3-7670-4943-8848-422e0e44af52",
+      "name": "checkin_anhvt66"
+    },
+    {
+      "parameters": {
+        "url": "https://internal.fptonline.net/api/getDayOffByEmp?",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "EmployeeID",
+              "value": "00148670"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1320,
+        640
+      ],
+      "id": "d9778ea2-cb76-4016-b531-7a9af766ac7f",
+      "name": "checkin_huuduc"
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "it_support",
+          "mode": "list",
+          "cachedResultName": "it_support"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "user_name": "={{ $json.user }}",
+            "location": "={{ $json.location }}",
+            "creation_time": "={{ Date.parse($json.creation_time) }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "user_name",
+              "displayName": "user_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "location",
+              "displayName": "location",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "creation_time",
+              "displayName": "creation_time",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        2000,
+        -580
+      ],
+      "id": "d4e2ae97-6dd3-4c08-bb91-3e1d5db136c2",
+      "name": "Postgres",
+      "credentials": {
+        "postgres": {
+          "id": "OzOB0lLRA6vftfxv",
+          "name": "Postgres IT_Agent"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "477ff064-db75-4e8d-9d42-2444b600062c",
+              "leftValue": "={{ $json.data }}",
+              "rightValue": "null",
+              "operator": {
+                "type": "string",
+                "operation": "notContains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1540,
+        -480
+      ],
+      "id": "0109a68e-edf1-4fde-acb1-80d90c6e119b",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a7c6e054-89f5-4ed8-9887-0f4a31a40d5c",
+              "name": "user",
+              "value": "huynd54",
+              "type": "string"
+            },
+            {
+              "id": "caf92ec8-189b-4b9c-a307-cad7b1c19b64",
+              "name": "location",
+              "value": "HCM",
+              "type": "string"
+            },
+            {
+              "id": "615ca08e-32ab-4a8b-bb9b-91608b5e6a4d",
+              "name": "creation_time",
+              "value": "={{ $now }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1760,
+        -580
+      ],
+      "id": "b565a5af-2f6b-4264-8d97-a4f91a2c2904",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "it_support",
+          "mode": "list",
+          "cachedResultName": "it_support"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "user_name": "={{ $json.user }}",
+            "location": "={{ $json.location }}",
+            "creation_time": "={{ Date.parse($json.creation_time) }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "user_name",
+              "displayName": "user_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "location",
+              "displayName": "location",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "creation_time",
+              "displayName": "creation_time",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        2000,
+        -360
+      ],
+      "id": "c9371341-6983-4197-a73b-ffe457933c8f",
+      "name": "Postgres1",
+      "credentials": {
+        "postgres": {
+          "id": "OzOB0lLRA6vftfxv",
+          "name": "Postgres IT_Agent"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "477ff064-db75-4e8d-9d42-2444b600062c",
+              "leftValue": "={{ $json.data }}",
+              "rightValue": "null",
+              "operator": {
+                "type": "string",
+                "operation": "notContains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1540,
+        -260
+      ],
+      "id": "d971d07f-ad8b-4445-8615-02bd4a9e5a8f",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a7c6e054-89f5-4ed8-9887-0f4a31a40d5c",
+              "name": "user",
+              "value": "sanglt6",
+              "type": "string"
+            },
+            {
+              "id": "caf92ec8-189b-4b9c-a307-cad7b1c19b64",
+              "name": "location",
+              "value": "HCM",
+              "type": "string"
+            },
+            {
+              "id": "795b3783-c6f7-4de6-960e-b10a070801a6",
+              "name": "creation_time",
+              "value": "={{ $now }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1760,
+        -360
+      ],
+      "id": "98251a83-3810-4b57-95b3-029874c8c665",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "it_support",
+          "mode": "list",
+          "cachedResultName": "it_support"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "user_name": "={{ $json.user }}",
+            "location": "={{ $json.location }}",
+            "creation_time": "={{ Date.parse($json.creation_time) }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "user_name",
+              "displayName": "user_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "location",
+              "displayName": "location",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "creation_time",
+              "displayName": "creation_time",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        2000,
+        -140
+      ],
+      "id": "d3d6dc0b-0449-4ec8-8622-119606acd5d3",
+      "name": "Postgres2",
+      "credentials": {
+        "postgres": {
+          "id": "OzOB0lLRA6vftfxv",
+          "name": "Postgres IT_Agent"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "477ff064-db75-4e8d-9d42-2444b600062c",
+              "leftValue": "={{ $json.data }}",
+              "rightValue": "null",
+              "operator": {
+                "type": "string",
+                "operation": "notContains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1540,
+        -40
+      ],
+      "id": "204c8d6c-46d0-494a-8df3-ae8388340420",
+      "name": "If2"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a7c6e054-89f5-4ed8-9887-0f4a31a40d5c",
+              "name": "user",
+              "value": "trongnc2",
+              "type": "string"
+            },
+            {
+              "id": "caf92ec8-189b-4b9c-a307-cad7b1c19b64",
+              "name": "location",
+              "value": "HCM",
+              "type": "string"
+            },
+            {
+              "id": "388d0059-32c5-4d8c-9920-b7eeec2ea51d",
+              "name": "creation_time",
+              "value": "={{ $now }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1760,
+        -140
+      ],
+      "id": "4893f686-afe9-4c87-ae72-798cd524040b",
+      "name": "Edit Fields2"
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "it_support",
+          "mode": "list",
+          "cachedResultName": "it_support"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "user_name": "={{ $json.user }}",
+            "location": "={{ $json.location }}",
+            "creation_time": "={{ Date.parse($json.creation_time) }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "user_name",
+              "displayName": "user_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "location",
+              "displayName": "location",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "creation_time",
+              "displayName": "creation_time",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        2000,
+        100
+      ],
+      "id": "5e32a8b8-7af5-4dbb-b8ad-e3511470a07a",
+      "name": "Postgres3",
+      "credentials": {
+        "postgres": {
+          "id": "OzOB0lLRA6vftfxv",
+          "name": "Postgres IT_Agent"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "477ff064-db75-4e8d-9d42-2444b600062c",
+              "leftValue": "={{ $json.data }}",
+              "rightValue": "null",
+              "operator": {
+                "type": "string",
+                "operation": "notContains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1540,
+        200
+      ],
+      "id": "9d8bfd83-ba63-44d2-8937-37415b17cc1f",
+      "name": "If3"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a7c6e054-89f5-4ed8-9887-0f4a31a40d5c",
+              "name": "user",
+              "value": "trungnd",
+              "type": "string"
+            },
+            {
+              "id": "caf92ec8-189b-4b9c-a307-cad7b1c19b64",
+              "name": "location",
+              "value": "HN",
+              "type": "string"
+            },
+            {
+              "id": "80fe6e9c-9fea-4e3b-8277-b95c396a3be0",
+              "name": "creation_time",
+              "value": "={{ $now }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1760,
+        100
+      ],
+      "id": "40abc609-dbc1-4b94-bc46-2ece40929259",
+      "name": "Edit Fields3"
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "it_support",
+          "mode": "list",
+          "cachedResultName": "it_support"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "user_name": "={{ $json.user }}",
+            "location": "={{ $json.location }}",
+            "creation_time": "={{ Date.parse($json.creation_time) }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "user_name",
+              "displayName": "user_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "location",
+              "displayName": "location",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "creation_time",
+              "displayName": "creation_time",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        2000,
+        320
+      ],
+      "id": "97d6d3ed-669f-496d-b4c4-4ab083c552c2",
+      "name": "Postgres4",
+      "credentials": {
+        "postgres": {
+          "id": "OzOB0lLRA6vftfxv",
+          "name": "Postgres IT_Agent"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "477ff064-db75-4e8d-9d42-2444b600062c",
+              "leftValue": "={{ $json.data }}",
+              "rightValue": "null",
+              "operator": {
+                "type": "string",
+                "operation": "notContains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1540,
+        420
+      ],
+      "id": "a62fdfb1-2da9-43a4-834e-b14e3e8ac595",
+      "name": "If4"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a7c6e054-89f5-4ed8-9887-0f4a31a40d5c",
+              "name": "user",
+              "value": "anhvt66",
+              "type": "string"
+            },
+            {
+              "id": "caf92ec8-189b-4b9c-a307-cad7b1c19b64",
+              "name": "location",
+              "value": "HN",
+              "type": "string"
+            },
+            {
+              "id": "f9f198db-75ea-4d21-bf81-45fcde0139ee",
+              "name": "creation_time",
+              "value": "={{ $now }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1760,
+        320
+      ],
+      "id": "ff98c25b-1a90-4909-a3af-a45801eb2ea3",
+      "name": "Edit Fields4"
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "it_support",
+          "mode": "list",
+          "cachedResultName": "it_support"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "user_name": "={{ $json.user }}",
+            "location": "={{ $json.location }}",
+            "creation_time": "={{ Date.parse($json.creation_time) }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "user_name",
+              "displayName": "user_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "location",
+              "displayName": "location",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "creation_time",
+              "displayName": "creation_time",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        2000,
+        540
+      ],
+      "id": "a18ecb2d-96e6-4a55-85ee-de51a1eeb705",
+      "name": "Postgres5",
+      "credentials": {
+        "postgres": {
+          "id": "OzOB0lLRA6vftfxv",
+          "name": "Postgres IT_Agent"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "477ff064-db75-4e8d-9d42-2444b600062c",
+              "leftValue": "={{ $json.data }}",
+              "rightValue": "null",
+              "operator": {
+                "type": "string",
+                "operation": "notContains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1540,
+        640
+      ],
+      "id": "0223856d-5a3f-4536-8231-616c120bf09d",
+      "name": "If5"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a7c6e054-89f5-4ed8-9887-0f4a31a40d5c",
+              "name": "user",
+              "value": "huuduc",
+              "type": "string"
+            },
+            {
+              "id": "caf92ec8-189b-4b9c-a307-cad7b1c19b64",
+              "name": "location",
+              "value": "HN",
+              "type": "string"
+            },
+            {
+              "id": "8299bef1-f67c-4d3e-8502-49de804fb0bf",
+              "name": "creation_time",
+              "value": "={{ $now }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1760,
+        540
+      ],
+      "id": "b7400ea9-5d10-4ea9-bc31-15ff92260b73",
+      "name": "Edit Fields5"
+    },
+    {
+      "parameters": {
+        "operation": "select",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "it_support_users_on_duty",
+          "mode": "list",
+          "cachedResultName": "it_support_users_on_duty"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -340,
+        -20
+      ],
+      "id": "5fb7e57d-2b21-443a-af20-347fef036b82",
+      "name": "query_db_it_khongnghiphep",
+      "credentials": {
+        "postgres": {
+          "id": "OzOB0lLRA6vftfxv",
+          "name": "Postgres IT_Agent"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "https://internal.fptonline.net/api/getDayOffByEmp?",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "EmployeeID",
+              "value": "={{ encodeURIComponent(({\n  \"huynd54\": \"00171946\",\n  \"sanglt6\": \"00140461\",\n  \"trongnc2\": \"00291229\",\n  \"trungnd\": \"00174606\",\n  \"anhvt66\": \"00255629\",\n  \"huuduc\": \"00148670\"\n})[$json.user_name]) }}"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {}
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -120,
+        -20
+      ],
+      "id": "9aa6f29e-88b5-480a-a8b2-efae82bc3407",
+      "name": "checkin"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "e1b7d9e5-9da2-4db0-98d4-511104a0a2f7",
+              "leftValue": "={{ $json.data }}",
+              "rightValue": "null",
+              "operator": {
+                "type": "string",
+                "operation": "notContains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        320,
+        -20
+      ],
+      "id": "1b58c2fa-2189-4f91-bf20-f72d89934d7a",
+      "name": "If6"
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "it_support",
+          "mode": "list",
+          "cachedResultName": "it_support"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "user_name": "={{ $json.name }}",
+            "location": "={{ $json.location }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "user_name",
+              "displayName": "user_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "location",
+              "displayName": "location",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "creation_time",
+              "displayName": "creation_time",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        580,
+        -160
+      ],
+      "id": "136a5905-38c9-4b83-a038-32672b22eb34",
+      "name": "write_to_db_it_support",
+      "credentials": {
+        "postgres": {
+          "id": "OzOB0lLRA6vftfxv",
+          "name": "Postgres IT_Agent"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "deleteTable",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "it_support",
+          "mode": "list",
+          "cachedResultName": "it_support"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -560,
+        -20
+      ],
+      "id": "c0b00840-8fca-444f-8036-8cce7c307282",
+      "name": "del_rows_db_it_support",
+      "credentials": {
+        "postgres": {
+          "id": "OzOB0lLRA6vftfxv",
+          "name": "Postgres IT_Agent"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "5afc5e3a-9bb1-405a-ad9f-e5dbec3ecc57",
+              "name": "name",
+              "value": "={{ $('query_db_it_khongnghiphep').item.json.user_name }}",
+              "type": "string"
+            },
+            {
+              "id": "342149a5-e087-4246-967e-307b8d136953",
+              "name": "location",
+              "value": "={{ $('query_db_it_khongnghiphep').item.json.location }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        100,
+        -20
+      ],
+      "id": "4f46824c-9004-4a89-a824-3e0c694679e2",
+      "name": "ghep_username"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get original items (user_name) từ node trước đó (ví dụ node 'Set User')\nconst originalData = $items('query_db_it_khongnghiphep');\n\n// Get kết quả từ HTTP (checkin)\nconst checkinData = $items('checkin');\n\n// Kết hợp từng dòng theo thứ tự\nconst merged = originalData.map((item, index) => {\n  return {\n    json: {\n      user_name: item.json.user_name,\n      location: item.json.location,\n      data: checkinData[index].json.data,\n    }\n  };\n});\n\nreturn merged;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        100,
+        -260
+      ],
+      "id": "4e5c7c5f-9525-435b-a98f-d71f267cec49",
+      "name": "ghep_username_vao_output_api"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "30-59/5 7 * * 1-5"
+            },
+            {
+              "field": "cronExpression",
+              "expression": "0-30/5 8 * * 1-5"
+            },
+            {
+              "field": "cronExpression",
+              "expression": "0 9-17 * * 1-5"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -780,
+        -20
+      ],
+      "id": "97643407-cb42-45a1-87da-30096d121030",
+      "name": "Run_each_1hour"
+    },
+    {
+      "parameters": {
+        "content": "Chạy từ thứ 2 đến thứ 6\n-Từ 7:30 đến 8:30 chạy mỗi 5 phút\n-Từ 9:00 đến 17:00 mỗi lần chạy cách nhau 1h",
+        "height": 100,
+        "width": 260
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -840,
+        -140
+      ],
+      "id": "6d7493a0-6a40-4841-a7d9-1bd0e3d575c5",
+      "name": "Sticky Note"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "checkin_huynd54": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Postgres",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Postgres1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "checkin_sanglt6": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If2": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields2": {
+      "main": [
+        [
+          {
+            "node": "Postgres2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "checkin_trongnc2": {
+      "main": [
+        [
+          {
+            "node": "If2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If3": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields3": {
+      "main": [
+        [
+          {
+            "node": "Postgres3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "checkin_trungnd": {
+      "main": [
+        [
+          {
+            "node": "If3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If4": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields4": {
+      "main": [
+        [
+          {
+            "node": "Postgres4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "checkin_anhvt66": {
+      "main": [
+        [
+          {
+            "node": "If4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If5": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields5": {
+      "main": [
+        [
+          {
+            "node": "Postgres5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "checkin_huuduc": {
+      "main": [
+        [
+          {
+            "node": "If5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "query_db_it_khongnghiphep": {
+      "main": [
+        [
+          {
+            "node": "checkin",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "checkin": {
+      "main": [
+        [
+          {
+            "node": "ghep_username",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If6": {
+      "main": [
+        [
+          {
+            "node": "write_to_db_it_support",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "del_rows_db_it_support": {
+      "main": [
+        [
+          {
+            "node": "query_db_it_khongnghiphep",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ghep_username": {
+      "main": [
+        [
+          {
+            "node": "If6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ghep_username_vao_output_api": {
+      "main": [
+        []
+      ]
+    },
+    "Run_each_1hour": {
+      "main": [
+        [
+          {
+            "node": "del_rows_db_it_support",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "Asia/Ho_Chi_Minh",
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "versionId": "e2330a94-5b0d-4386-ba20-09e978df8cd3",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "1eb38babc8a8a45a31824b994b841421a7c46b5a123ae069344c5034178393e9"
+  },
+  "id": "cwa7y9mLNunagK50",
+  "tags": []
+}
