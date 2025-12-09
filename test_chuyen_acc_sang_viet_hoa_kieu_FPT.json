@@ -1,0 +1,74 @@
+{
+  "name": "test_chuyen_acc_sang_viet_hoa_kieu_FPT",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "Suy luận Account Name",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Họ tên",
+              "placeholder": "Nhập họ tên đầy đủ, ví dụ: Nguyễn Văn Huy"
+            },
+            {
+              "fieldLabel": "Account user",
+              "placeholder": "Nhập account user, ví dụ: huynv"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.2,
+      "position": [
+        -380,
+        -80
+      ],
+      "name": "Form Input",
+      "webhookId": "auto-gen-account-format",
+      "id": "1bec105b-7410-483f-ac67-37de20a7d2d1"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Lấy dữ liệu từ form\nconst nameFull = $json[\"Họ tên\"] || $json[\"ho_ten\"] || \"\";\nconst account = $json[\"Account user\"] || $json[\"account_user\"] || \"\";\n\n// Nếu thiếu dữ liệu, trả lại nguyên\nif (!nameFull || !account) {\n  return [{ nameFull, account, result: account }];\n}\n\n// Chuẩn hoá tên\nconst nameParts = nameFull\n  .normalize(\"NFD\")\n  .replace(/[\\u0300-\\u036f]/g, \"\")\n  .toLowerCase()\n  .split(/\\s+/)\n  .filter(Boolean);\n\nconst accountLower = account.toLowerCase();\n\n// Lấy phần tên chính (từ cuối cùng trong họ tên)\nconst firstName = nameParts[nameParts.length - 1];\n\n// Nếu account không bắt đầu bằng tên, trả nguyên\nif (!accountLower.startsWith(firstName)) {\n  return [{ nameFull, account, result: account }];\n}\n\n// Phần còn lại sau tên\nconst suffix = accountLower.slice(firstName.length);\n\n// Viết hoa theo quy tắc: phần tên hoa chữ đầu, phần còn lại viết hoa toàn bộ\nconst result =\n  firstName[0].toUpperCase() +\n  firstName.slice(1).toLowerCase() +\n  suffix.toUpperCase();\n\n// ✅ Trả về mảng chứa một object (đúng định dạng n8n yêu cầu)\nreturn [{ nameFull, account, result }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -100,
+        -80
+      ],
+      "name": "Xử lý Account Name",
+      "id": "e9d7a1da-463b-4e07-90e0-f1721767c74f"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Form Input": {
+      "main": [
+        [
+          {
+            "node": "Xử lý Account Name",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Xử lý Account Name": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "7daa4d4b-5718-412b-8c95-5187632ed66f",
+  "meta": {
+    "instanceId": "1eb38babc8a8a45a31824b994b841421a7c46b5a123ae069344c5034178393e9"
+  },
+  "id": "XrNfcITkN3Th9lI9",
+  "tags": []
+}
