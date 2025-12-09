@@ -1,0 +1,512 @@
+{
+  "name": "chatbot_via_email",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "output": "fields",
+        "filters": {},
+        "options": {}
+      },
+      "type": "n8n-nodes-base.microsoftOutlookTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1800,
+        120
+      ],
+      "id": "9d3991a0-499b-4638-a47a-9d4cdc9c4a98",
+      "name": "Microsoft Outlook Trigger",
+      "credentials": {
+        "microsoftOutlookOAuth2Api": {
+          "id": "mcRaw18js51tzkdu",
+          "name": "Outlook neo"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://it-ask.fptonline.net/api/v1/prediction/d5002ac6-d358-46eb-a0ab-3e4d116f3872",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "question",
+              "value": "=Tài khoản người dùng: {{ $('Code').item.json.account }}\n\nHistory:{{ $('Get History - account').item.json.propertyName }}\n\nUser Question now: {{ $('Code').item.json.body }}\n"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -780,
+        -20
+      ],
+      "id": "d8c770dd-30c2-4fd7-acd7-9b16fc98e249",
+      "name": "HTTP Request",
+      "retryOnFail": true
+    },
+    {
+      "parameters": {
+        "jsCode": "return items.map(item => {\n  const data = item.json;\n\n  const fromEmail = data.from?.emailAddress?.address || '';\n  const account = fromEmail.split('@')[0]?.toLowerCase() || '';\n\n  const toList = Array.isArray(data.to)\n    ? data.to.map(to => (typeof to === 'string' ? to : to?.emailAddress?.address || '')).join(', ')\n    : '';\n\n  const originalBody = data.bodyPreview || '';\n  const newBody = `${originalBody}`;\n\n  return {\n    json: {\n      id: data.id || '',\n      conversationId: data.conversationId || '',\n      subject: data.subject || '',\n      body: newBody,\n      from: fromEmail,\n      to: toList,\n      account: account\n    }\n  };\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1340,
+        -20
+      ],
+      "id": "4f89fe17-e031-4185-91f7-15cfdd0e69ed",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "key": "={{ $('Code').item.json.from }}",
+        "options": {}
+      },
+      "id": "e8daa385-de44-4e14-b5e2-eeb701fb02d3",
+      "name": "Get History - account",
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        -1040,
+        -20
+      ],
+      "credentials": {
+        "redis": {
+          "id": "7363I5GTmVhxhwKb",
+          "name": "Redis account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "delete",
+        "key": "={{ $('Code').item.json.from }}"
+      },
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        40,
+        -40
+      ],
+      "id": "c8f2d204-c6ba-4cd3-8f33-6097195613be",
+      "name": "Redis clear",
+      "credentials": {
+        "redis": {
+          "id": "7363I5GTmVhxhwKb",
+          "name": "Redis account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "set",
+        "key": "={{ $('Code').item.json.from }}",
+        "value": "={{ JSON.stringify($json.history) }}",
+        "expire": true,
+        "ttl": 259200
+      },
+      "type": "n8n-nodes-base.redis",
+      "typeVersion": 1,
+      "position": [
+        340,
+        -40
+      ],
+      "id": "57b408f0-cff8-429f-be84-b898859a07a1",
+      "name": "Redis tao moi1",
+      "credentials": {
+        "redis": {
+          "id": "7363I5GTmVhxhwKb",
+          "name": "Redis account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "00e2b44f-4a4d-44f2-901c-b1ccb5915ac9",
+              "leftValue": "={{ $json.text }}",
+              "rightValue": "https://eoffice.fptonline.net/secure/ViewTicket.jspa?id=",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -560,
+        -20
+      ],
+      "id": "dc57b8ee-88ff-4234-968e-469a321a5f73",
+      "name": "If tiket"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "1a262008-a628-4b80-bbe7-c8ec997a0786",
+              "name": "history",
+              "value": "={{ $('Get History - account').item.json.propertyName }}\n---\nCâu hỏi:{{ $('Code').item.json.body }}\nCâu trả lời:{{ $('HTTP Request').item.json.text }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -280,
+        60
+      ],
+      "id": "bf529376-6121-499b-b73d-51d06722329e",
+      "name": "list item history"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "3234f498-a934-43cf-9bbe-52775c73a957",
+              "name": "history",
+              "value": "=Câu hỏi:{{ $('Code').item.json.body }}\nCâu trả lời:{{ $('HTTP Request').item.json.text }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -280,
+        -300
+      ],
+      "id": "44d4dc5e-9b9a-46ba-aae5-136117b5ddf4",
+      "name": "last item history"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "82199407-4170-4a00-bd26-d86c6b1c3cf8",
+              "name": "propertyName",
+              "value": "=[{{ JSON.parse($json.propertyName) }}]",
+              "type": "array"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -560,
+        140
+      ],
+      "id": "46b38213-d873-406e-bea6-aa162f566738",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "mode": "markdownToHtml",
+        "markdown": "={{ $('HTTP Request').item.json.text }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.markdown",
+      "typeVersion": 1,
+      "position": [
+        580,
+        -40
+      ],
+      "id": "77924e0c-ba35-4a19-8a13-0e71e88f150b",
+      "name": "Markdown"
+    },
+    {
+      "parameters": {
+        "toRecipients": "={{ $('Code').item.json.from }}",
+        "subject": "=Re: {{ $('Code').item.json.subject }}",
+        "bodyContent": "=Dear {{ $('Code').item.json.account }},\n<br><br>\nTôi đã nhận được mail của bạn và có phản hồi như sau:\n\n{{ $json.data + \"<br>TECH Department <br>Neo\" }}\n\n",
+        "additionalFields": {
+          "bodyContentType": "html"
+        }
+      },
+      "type": "n8n-nodes-base.microsoftOutlook",
+      "typeVersion": 2,
+      "position": [
+        860,
+        -40
+      ],
+      "id": "222ece3c-d012-4b63-8e6c-92a612cfcc69",
+      "name": "gửi mail trả lại user",
+      "webhookId": "f1f2f575-f598-4430-8e9e-cf90c5fd4bae",
+      "credentials": {
+        "microsoftOutlookOAuth2Api": {
+          "id": "mcRaw18js51tzkdu",
+          "name": "Outlook neo"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "75f03f0a-e403-40c3-94c2-17e5f95892c0",
+              "leftValue": "={{ $json.from.emailAddress.address }}",
+              "rightValue": "neo@fpt.com",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -1580,
+        120
+      ],
+      "id": "ee848ceb-974f-4f39-957e-8d6c9d89729e",
+      "name": "If"
+    }
+  ],
+  "pinData": {
+    "Microsoft Outlook Trigger": [
+      {
+        "json": {
+          "@odata.etag": "W/\"CQAAABYAAADKQ7PgEkq3S5c1ke3zQze+AAADGDI/\"",
+          "id": "AAMkAGE5MDA3ODRiLWRiYmMtNDEyNi1iM2ZmLWU5OGE4ZmJiYWQwZABGAAAAAACYJrQBkG0FTJnPDEAv7CQGBwD0HZDqOI4yQpdahWI4A-WnAAAAAAEMAADKQ7PgEkq3S5c1ke3zQze_AAADGiI9AAA=",
+          "createdDateTime": "2025-08-14T09:03:08Z",
+          "lastModifiedDateTime": "2025-08-14T09:03:13Z",
+          "changeKey": "CQAAABYAAADKQ7PgEkq3S5c1ke3zQze+AAADGDI/",
+          "categories": [],
+          "receivedDateTime": "2025-08-14T09:03:09Z",
+          "sentDateTime": "2025-08-14T09:03:07Z",
+          "hasAttachments": false,
+          "internetMessageId": "<KL1PR0601MB464367CE4A04C0B73510201EB835A@KL1PR0601MB4643.apcprd06.prod.outlook.com>",
+          "subject": "thông tin hỗ trợ",
+          "bodyPreview": "Xin chào Neo,\r\n\r\nTôi đã được tạo ticket hỗ trợ\r\nbạn đã xử lý issue của tôi chưa?",
+          "importance": "normal",
+          "parentFolderId": "AAMkAGE5MDA3ODRiLWRiYmMtNDEyNi1iM2ZmLWU5OGE4ZmJiYWQwZAAuAAAAAACYJrQBkG0FTJnPDEAv7CQGAQD0HZDqOI4yQpdahWI4A-WnAAAAAAEMAAA=",
+          "conversationId": "AAQkAGE5MDA3ODRiLWRiYmMtNDEyNi1iM2ZmLWU5OGE4ZmJiYWQwZAAQAJAtlh05ifZFsALPvi54nKg=",
+          "conversationIndex": "AQHcDPo6kC2WHTmJ9kWwAs++LnicqA==",
+          "isDeliveryReceiptRequested": false,
+          "isReadReceiptRequested": false,
+          "isRead": false,
+          "isDraft": false,
+          "webLink": "https://outlook.office365.com/owa/?ItemID=AAMkAGE5MDA3ODRiLWRiYmMtNDEyNi1iM2ZmLWU5OGE4ZmJiYWQwZABGAAAAAACYJrQBkG0FTJnPDEAv7CQGBwD0HZDqOI4yQpdahWI4A%2FWnAAAAAAEMAADKQ7PgEkq3S5c1ke3zQze%2BAAADGiI9AAA%3D&exvsurl=1&viewmodel=ReadMessageItem",
+          "inferenceClassification": "focused",
+          "body": {
+            "contentType": "html",
+            "content": "<html><head>\r\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"><style type=\"text/css\" style=\"display:none\">\r\n<!--\r\np\r\n\t{margin-top:0;\r\n\tmargin-bottom:0}\r\n-->\r\n</style></head><body dir=\"ltr\"><div class=\"elementToProof\" style=\"font-family:Aptos,&quot;Aptos_EmbeddedFont&quot;,&quot;Aptos_MSFontService&quot;,Calibri,Helvetica,sans-serif; font-size:12pt; color:rgb(0,0,0)\">Xin chào Neo,</div><div class=\"elementToProof\" style=\"font-family:Aptos,&quot;Aptos_EmbeddedFont&quot;,&quot;Aptos_MSFontService&quot;,Calibri,Helvetica,sans-serif; font-size:12pt; color:rgb(0,0,0)\"><br></div><div class=\"elementToProof\" style=\"font-family:Aptos,&quot;Aptos_EmbeddedFont&quot;,&quot;Aptos_MSFontService&quot;,Calibri,Helvetica,sans-serif; font-size:12pt; color:rgb(0,0,0)\">Tôi đã được tạo ticket hỗ trợ</div><div class=\"elementToProof\" style=\"font-family:Aptos,&quot;Aptos_EmbeddedFont&quot;,&quot;Aptos_MSFontService&quot;,Calibri,Helvetica,sans-serif; font-size:12pt; color:rgb(0,0,0)\">bạn đã xử lý issue của tôi chưa?</div></body></html>"
+          },
+          "sender": {
+            "emailAddress": {
+              "name": "Huy Nguyen Dac",
+              "address": "HuyND54@fpt.com"
+            }
+          },
+          "from": {
+            "emailAddress": {
+              "name": "Huy Nguyen Dac",
+              "address": "HuyND54@fpt.com"
+            }
+          },
+          "toRecipients": [
+            {
+              "emailAddress": {
+                "name": "Neo",
+                "address": "neo@fpt.com"
+              }
+            }
+          ],
+          "ccRecipients": [],
+          "bccRecipients": [],
+          "replyTo": [],
+          "flag": {
+            "flagStatus": "notFlagged"
+          }
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Microsoft Outlook Trigger": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "If tiket",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Get History - account",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get History - account": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Redis clear": {
+      "main": [
+        [
+          {
+            "node": "Redis tao moi1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Redis tao moi1": {
+      "main": [
+        [
+          {
+            "node": "Markdown",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If tiket": {
+      "main": [
+        [
+          {
+            "node": "last item history",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "list item history",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "list item history": {
+      "main": [
+        [
+          {
+            "node": "Redis clear",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "last item history": {
+      "main": [
+        [
+          {
+            "node": "Redis clear",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Markdown": {
+      "main": [
+        [
+          {
+            "node": "gửi mail trả lại user",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "Asia/Ho_Chi_Minh",
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "versionId": "d2b43fbc-ad71-40fe-856b-801171a37bea",
+  "meta": {
+    "instanceId": "1eb38babc8a8a45a31824b994b841421a7c46b5a123ae069344c5034178393e9"
+  },
+  "id": "8GSd2hOZqACuYHjK",
+  "tags": []
+}
