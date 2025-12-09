@@ -1,0 +1,1615 @@
+{
+  "name": "MCP_IT_Support",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "fb567e7b-5762-4dca-b6d7-87eb744de243"
+      },
+      "type": "@n8n/n8n-nodes-langchain.mcpTrigger",
+      "typeVersion": 1,
+      "position": [
+        240,
+        -220
+      ],
+      "id": "36c81fdb-a41a-4bc1-9587-3e45503d6890",
+      "name": "MCP Server Trigger",
+      "webhookId": "fb567e7b-5762-4dca-b6d7-87eb744de243"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1RX3sNsu_YGEl2qEAd66iqaY8UbJy37BTO2BUjjxwBYw",
+          "mode": "list",
+          "cachedResultName": "Master Data FO",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1RX3sNsu_YGEl2qEAd66iqaY8UbJy37BTO2BUjjxwBYw/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 16100127,
+          "mode": "list",
+          "cachedResultName": "DS_Final",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/19uaTJQm8OCtuJ7p8XI82ocp3ndc4KDqigiVF_KpRSP8/edit#gid=16100127"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Tài khoản",
+              "lookupValue": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('values0_Value', ``, 'string') }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.6,
+      "position": [
+        -320,
+        40
+      ],
+      "id": "eeaa434e-ee18-438b-9001-6359d3c784a1",
+      "name": "get_user_info",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "QatTQoMeZfYT8YNF",
+          "name": "Google Sheets account huynd"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "7ApV3XCB3VbB9Me5",
+          "mode": "list",
+          "cachedResultName": "Setdata_ticket"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Người yêu cầu": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Ng__i_y_u_c_u', ``, 'string') }}",
+            "Họ tên người yêu cầu": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('H__t_n_ng__i_y_u_c_u', ``, 'string') }}",
+            "Bộ phận": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('B__ph_n', ``, 'string') }}",
+            "Vị trí công việc": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('V__tr__c_ng_vi_c', ``, 'string') }}",
+            "Vấn đề cần hỗ trợ": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('V_n____c_n_h__tr_', ``, 'string') }}",
+            "Vùng miền": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('V_ng_mi_n', ``, 'string') }}",
+            "IT tiếp nhận yêu cầu": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('IT_ti_p_nh_n_y_u_c_u', ``, 'string') }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Người yêu cầu",
+              "displayName": "Người yêu cầu",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "Họ tên người yêu cầu",
+              "displayName": "Họ tên người yêu cầu",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "Bộ phận",
+              "displayName": "Bộ phận",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "Vị trí công việc",
+              "displayName": "Vị trí công việc",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "IT tiếp nhận yêu cầu",
+              "displayName": "IT tiếp nhận yêu cầu",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "Vấn đề cần hỗ trợ",
+              "displayName": "Vấn đề cần hỗ trợ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "Vùng miền",
+              "displayName": "Vùng miền",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        -140,
+        40
+      ],
+      "id": "75545ae1-6157-4a8b-bbde-4e78f6e992b6",
+      "name": "Call set data"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "JbeMJqGBvkqzMpY1",
+          "mode": "list",
+          "cachedResultName": "sucomang"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Người yêu cầu": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Ng__i_y_u_c_u', ``, 'string') }}",
+            "Họ tên người yêu cầu": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('H__t_n_ng__i_y_u_c_u', ``, 'string') }}",
+            "Bộ phận": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('B__ph_n', ``, 'string') }}",
+            "Vị trí công việc": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('V__tr__c_ng_vi_c', ``, 'string') }}",
+            "IT tiếp nhận yêu cầu": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('IT_ti_p_nh_n_y_u_c_u', ``, 'string') }}",
+            "Chi tiết lỗi": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Chi_ti_t_l_i', ``, 'string') }}",
+            "Vùng miền": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('V_ng_mi_n', ``, 'string') }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Người yêu cầu",
+              "displayName": "Người yêu cầu",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "Họ tên người yêu cầu",
+              "displayName": "Họ tên người yêu cầu",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "Bộ phận",
+              "displayName": "Bộ phận",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "Vị trí công việc",
+              "displayName": "Vị trí công việc",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "IT tiếp nhận yêu cầu",
+              "displayName": "IT tiếp nhận yêu cầu",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "Chi tiết lỗi",
+              "displayName": "Chi tiết lỗi",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "Vùng miền",
+              "displayName": "Vùng miền",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        20,
+        40
+      ],
+      "id": "b0159153-0d98-4504-ba15-6c7f85e7b6f7",
+      "name": "call su co mang"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "DW4pn48abva1mVY5",
+          "mode": "list",
+          "cachedResultName": "capphukien"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Người yêu cầu": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Ng__i_y_u_c_u', ``, 'string') }}",
+            "Họ tên người yêu cầu": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('H__t_n_ng__i_y_u_c_u', ``, 'string') }}",
+            "Bộ phận": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('B__ph_n', ``, 'string') }}",
+            "Vị trí công việc": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('V__tr__c_ng_vi_c', ``, 'string') }}",
+            "IT tiếp nhận yêu cầu": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('IT_ti_p_nh_n_y_u_c_u', ``, 'string') }}",
+            "Vùng miền": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('V_ng_mi_n', ``, 'string') }}",
+            "Yêu cầu thay đổi": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Y_u_c_u_thay___i', ``, 'string') }}",
+            "Kế toán tiếp nhận": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('K__to_n_ti_p_nh_n', ``, 'string') }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Người yêu cầu",
+              "displayName": "Người yêu cầu",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "Họ tên người yêu cầu",
+              "displayName": "Họ tên người yêu cầu",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "Bộ phận",
+              "displayName": "Bộ phận",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "Vị trí công việc",
+              "displayName": "Vị trí công việc",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "IT tiếp nhận yêu cầu",
+              "displayName": "IT tiếp nhận yêu cầu",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "Kế toán tiếp nhận",
+              "displayName": "Kế toán tiếp nhận",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "Yêu cầu thay đổi",
+              "displayName": "Yêu cầu thay đổi",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "Vùng miền",
+              "displayName": "Vùng miền",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        180,
+        40
+      ],
+      "id": "54763ffa-5327-4e7a-9084-3d5fe20a7bbd",
+      "name": "call cap phu kien"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "SJW3DhhTiXIF5T9C",
+          "mode": "list",
+          "cachedResultName": "checkphancung"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Người yêu cầu": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Ng__i_y_u_c_u', ``, 'string') }}",
+            "Họ tên người yêu cầu": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('H__t_n_ng__i_y_u_c_u', ``, 'string') }}",
+            "Bộ phận": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('B__ph_n', ``, 'string') }}",
+            "Vị trí công việc": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('V__tr__c_ng_vi_c', ``, 'string') }}",
+            "IT tiếp nhận yêu cầu": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('IT_ti_p_nh_n_y_u_c_u', ``, 'string') }}",
+            "Vùng miền": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('V_ng_mi_n', ``, 'string') }}",
+            "Bộ phận cấp 1": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('B__ph_n_c_p_1', ``, 'string') }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Người yêu cầu",
+              "displayName": "Người yêu cầu",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "Họ tên người yêu cầu",
+              "displayName": "Họ tên người yêu cầu",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "Bộ phận",
+              "displayName": "Bộ phận",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "Bộ phận cấp 1",
+              "displayName": "Bộ phận cấp 1",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "Vị trí công việc",
+              "displayName": "Vị trí công việc",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "IT tiếp nhận yêu cầu",
+              "displayName": "IT tiếp nhận yêu cầu",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "Vùng miền",
+              "displayName": "Vùng miền",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        340,
+        40
+      ],
+      "id": "67db6fd0-58b8-4984-893f-0d0c502b9952",
+      "name": "call check phan cung"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "kwv0sJ2wUEdkxVPN",
+          "mode": "list",
+          "cachedResultName": "loiphancung"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Người yêu cầu": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Ng__i_y_u_c_u', ``, 'string') }}",
+            "Họ tên người yêu cầu": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('H__t_n_ng__i_y_u_c_u', ``, 'string') }}",
+            "Bộ phận": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('B__ph_n', ``, 'string') }}",
+            "Vị trí công việc": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('V__tr__c_ng_vi_c', ``, 'string') }}",
+            "IT tiếp nhận yêu cầu": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('IT_ti_p_nh_n_y_u_c_u', ``, 'string') }}",
+            "Chi tiết lỗi": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Chi_ti_t_l_i', ``, 'string') }}",
+            "Vùng miền": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('V_ng_mi_n', ``, 'string') }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Người yêu cầu",
+              "displayName": "Người yêu cầu",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "Họ tên người yêu cầu",
+              "displayName": "Họ tên người yêu cầu",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "Bộ phận",
+              "displayName": "Bộ phận",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "Vị trí công việc",
+              "displayName": "Vị trí công việc",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "IT tiếp nhận yêu cầu",
+              "displayName": "IT tiếp nhận yêu cầu",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "Chi tiết lỗi",
+              "displayName": "Chi tiết lỗi",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "Vùng miền",
+              "displayName": "Vùng miền",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        500,
+        40
+      ],
+      "id": "dd07bb04-5fb4-4bbe-a0f9-fd4b89a72031",
+      "name": "call loi phan cung"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "2WBzEX9K8czAxa85",
+          "mode": "list",
+          "cachedResultName": "loiphanmem"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Người yêu cầu": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Ng__i_y_u_c_u', ``, 'string') }}",
+            "Họ tên người yêu cầu": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('H__t_n_ng__i_y_u_c_u', ``, 'string') }}",
+            "Bộ phận": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('B__ph_n', ``, 'string') }}",
+            "Vị trí công việc": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('V__tr__c_ng_vi_c', ``, 'string') }}",
+            "IT tiếp nhận yêu cầu": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('IT_ti_p_nh_n_y_u_c_u', ``, 'string') }}",
+            "Chi tiết lỗi": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Chi_ti_t_l_i', ``, 'string') }}",
+            "Vùng miền": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('V_ng_mi_n', ``, 'string') }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Người yêu cầu",
+              "displayName": "Người yêu cầu",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "Họ tên người yêu cầu",
+              "displayName": "Họ tên người yêu cầu",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "Bộ phận",
+              "displayName": "Bộ phận",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "Vị trí công việc",
+              "displayName": "Vị trí công việc",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "IT tiếp nhận yêu cầu",
+              "displayName": "IT tiếp nhận yêu cầu",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "Chi tiết lỗi",
+              "displayName": "Chi tiết lỗi",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "Vùng miền",
+              "displayName": "Vùng miền",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        660,
+        40
+      ],
+      "id": "4e1c6e5e-e333-4db2-86d6-ddecd118cefc",
+      "name": "call loi phan mem"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "NdDCEMzMqK2t5g9b",
+          "mode": "list",
+          "cachedResultName": "resetpassword"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Vùng miền": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('V_ng_mi_n', ``, 'string') }}",
+            "Account cần khôi phục": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Account_c_n_kh_i_ph_c', ``, 'string') }}",
+            "IT xử lý": "=akabot",
+            "Email": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Email', ``, 'string') }}",
+            "Họ tên người yêu cầu": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('H__t_n_ng__i_y_u_c_u', ``, 'string') }}",
+            "Bộ phận": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('B__ph_n', ``, 'string') }}",
+            "Vị trí công việc": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('V__tr__c_ng_vi_c', ``, 'string') }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Account cần khôi phục",
+              "displayName": "Account cần khôi phục",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "Họ tên người yêu cầu",
+              "displayName": "Họ tên người yêu cầu",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "Bộ phận",
+              "displayName": "Bộ phận",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "Vị trí công việc",
+              "displayName": "Vị trí công việc",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "IT xử lý",
+              "displayName": "IT xử lý",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "Vùng miền",
+              "displayName": "Vùng miền",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        820,
+        40
+      ],
+      "id": "df8f995c-b728-46e4-b920-0a1d59c76fe4",
+      "name": "call reset pass"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "DeIwAkD7bUyxSmAR",
+          "mode": "list",
+          "cachedResultName": "caidatsoft"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Người yêu cầu": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Ng__i_y_u_c_u', ``, 'string') }}",
+            "Họ tên người yêu cầu": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('H__t_n_ng__i_y_u_c_u', ``, 'string') }}",
+            "Bộ phận": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('B__ph_n', ``, 'string') }}",
+            "Vị trí công việc": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('V__tr__c_ng_vi_c', ``, 'string') }}",
+            "Vùng miền": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('V_ng_mi_n', ``, 'string') }}",
+            "IT xử lý": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('IT_x__l_', ``, 'string') }}",
+            "Chi tiết yêu cầu": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Chi_ti_t_y_u_c_u', ``, 'string') }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Người yêu cầu",
+              "displayName": "Người yêu cầu",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "Họ tên người yêu cầu",
+              "displayName": "Họ tên người yêu cầu",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "Bộ phận",
+              "displayName": "Bộ phận",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "Vị trí công việc",
+              "displayName": "Vị trí công việc",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "IT xử lý",
+              "displayName": "IT xử lý",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "Chi tiết yêu cầu",
+              "displayName": "Chi tiết yêu cầu",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "Vùng miền",
+              "displayName": "Vùng miền",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        980,
+        40
+      ],
+      "id": "46e2aa77-66f8-437e-ba44-66f5b411826b",
+      "name": "call cai dat soft"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "LUw6fo6Tfvp2yHK5",
+          "mode": "list",
+          "cachedResultName": "captaisan"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Người yêu cầu": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Ng__i_y_u_c_u', ``, 'string') }}",
+            "Họ tên người yêu cầu": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('H__t_n_ng__i_y_u_c_u', ``, 'string') }}",
+            "Bộ phận": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('B__ph_n', ``, 'string') }}",
+            "Vị trí công việc": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('V__tr__c_ng_vi_c', ``, 'string') }}",
+            "Vùng miền": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('V_ng_mi_n', ``, 'string') }}",
+            "IT xử lý": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('IT_x__l_', ``, 'string') }}",
+            "Trưởng phòng phê duyệt": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Tr__ng_ph_ng_ph__duy_t', ``, 'string') }}",
+            "Loại yêu cầu": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Lo_i_y_u_c_u', ``, 'string') }}",
+            "Loại tài sản": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Lo_i_t_i_s_n', ``, 'string') }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Người yêu cầu",
+              "displayName": "Người yêu cầu",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "Họ tên người yêu cầu",
+              "displayName": "Họ tên người yêu cầu",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "Trưởng phòng phê duyệt",
+              "displayName": "Trưởng phòng phê duyệt",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "Bộ phận",
+              "displayName": "Bộ phận",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "Vị trí công việc",
+              "displayName": "Vị trí công việc",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "Loại yêu cầu",
+              "displayName": "Loại yêu cầu",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "Loại tài sản",
+              "displayName": "Loại tài sản",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "IT xử lý",
+              "displayName": "IT xử lý",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "Vùng miền",
+              "displayName": "Vùng miền",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        1140,
+        40
+      ],
+      "id": "26475e46-2b52-4c62-99a8-a2c001c36aaa",
+      "name": "call cap tai san"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "FdUxrLpgJO40YPxf",
+          "mode": "list",
+          "cachedResultName": "capquyenusb"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Người yêu cầu": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Ng__i_y_u_c_u', ``, 'string') }}",
+            "Họ tên người yêu cầu": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('H__t_n_ng__i_y_u_c_u', ``, 'string') }}",
+            "Bộ phận": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('B__ph_n', ``, 'string') }}",
+            "Vị trí công việc": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('V__tr__c_ng_vi_c', ``, 'string') }}",
+            "Vùng miền": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('V_ng_mi_n', ``, 'string') }}",
+            "Trưởng phòng": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Tr__ng_ph_ng', ``, 'string') }}",
+            "Mục đích sử dụng": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('M_c___ch_s__d_ng', ``, 'string') }}",
+            "IT tiếp nhận yêu cầu": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('IT_ti_p_nh_n_y_u_c_u', ``, 'string') }}",
+            "Bộ phận cấp 1": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('B__ph_n_c_p_1', ``, 'string') }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Người yêu cầu",
+              "displayName": "Người yêu cầu",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "Họ tên người yêu cầu",
+              "displayName": "Họ tên người yêu cầu",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "Trưởng phòng",
+              "displayName": "Trưởng phòng",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "Bộ phận",
+              "displayName": "Bộ phận",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "Bộ phận cấp 1",
+              "displayName": "Bộ phận cấp 1",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "Vị trí công việc",
+              "displayName": "Vị trí công việc",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "Mục đích sử dụng",
+              "displayName": "Mục đích sử dụng",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "IT tiếp nhận yêu cầu",
+              "displayName": "IT tiếp nhận yêu cầu",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "Vùng miền",
+              "displayName": "Vùng miền",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        1300,
+        40
+      ],
+      "id": "09a73926-7f85-4a3c-baff-9803e1fb3d85",
+      "name": "call cap quyen usb"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "P2kBp1ggAhqcg71A",
+          "mode": "list",
+          "cachedResultName": "getticketdetail"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('id', ``, 'string') }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        1460,
+        40
+      ],
+      "id": "6bf69f61-62ad-4bad-8311-66146b083ef5",
+      "name": "Call get ticket detail"
+    },
+    {
+      "parameters": {
+        "content": "Truyền vào username lấy ra các thông tin khác",
+        "height": 80,
+        "width": 150
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -360,
+        200
+      ],
+      "id": "6f56bff0-d065-4d19-9892-b0929f5b151b",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "Gọi workflow tạo ticket loại \nIT.FO.04-Hỗ trợ khác\n",
+        "height": 100,
+        "width": 150
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -180,
+        200
+      ],
+      "typeVersion": 1,
+      "id": "780837fe-c36f-4682-a032-041da9860ab3",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "Gọi workflow tạo ticket loại \nKhắc phục sự cố mạng\n",
+        "height": 100,
+        "width": 150
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -20,
+        200
+      ],
+      "typeVersion": 1,
+      "id": "68b0be30-4900-4502-ae38-5b1c8ea7c2f6",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "Gọi workflow tạo ticket loại \nYêu cầu cấp phụ kiện tài sản công nghệ thông tin\n",
+        "height": 120,
+        "width": 150
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        140,
+        200
+      ],
+      "typeVersion": 1,
+      "id": "91d1fc9c-93cf-4f18-a5e2-ae2b36dd0e14",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "content": "Gọi workflow tạo ticket loại \nKiểm tra thông tin Hardware\n",
+        "height": 100,
+        "width": 150
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        300,
+        200
+      ],
+      "typeVersion": 1,
+      "id": "b5de5d67-b0d2-4762-b951-b031aaec9e73",
+      "name": "Sticky Note4"
+    },
+    {
+      "parameters": {
+        "content": "Gọi workflow tạo ticket loại \nHỗ trợ xử lý lỗi phần cứng",
+        "height": 100,
+        "width": 150
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        460,
+        200
+      ],
+      "typeVersion": 1,
+      "id": "ffb63897-e4a5-4ba3-8790-6898348aadbd",
+      "name": "Sticky Note5"
+    },
+    {
+      "parameters": {
+        "content": "Gọi workflow tạo ticket loại \nHỗ trợ xử lý lỗi phần mềm",
+        "height": 100,
+        "width": 150
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        620,
+        200
+      ],
+      "typeVersion": 1,
+      "id": "0e8aa9e4-697f-4f52-a95e-c693d4414589",
+      "name": "Sticky Note6"
+    },
+    {
+      "parameters": {
+        "content": "Gọi workflow tạo ticket loại \nKhôi phục password domain",
+        "height": 100,
+        "width": 150
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        780,
+        200
+      ],
+      "typeVersion": 1,
+      "id": "5bfabf4e-478f-45ae-a8b5-07238b4fce91",
+      "name": "Sticky Note7"
+    },
+    {
+      "parameters": {
+        "content": "Gọi workflow tạo ticket loại \nYêu cầu cài đặt phần mềm mới - Nâng cấp phần mềm",
+        "height": 140,
+        "width": 150
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        940,
+        200
+      ],
+      "typeVersion": 1,
+      "id": "d6ecdd26-917e-4119-be99-cfa87f1d17fb",
+      "name": "Sticky Note8"
+    },
+    {
+      "parameters": {
+        "content": "Gọi workflow tạo ticket loại \nYêu cầu cấp tài sản công nghệ thông tin",
+        "height": 120,
+        "width": 150
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1100,
+        200
+      ],
+      "typeVersion": 1,
+      "id": "d0260318-8b8d-4fe9-a9a6-f8c062b00c92",
+      "name": "Sticky Note9"
+    },
+    {
+      "parameters": {
+        "content": "Gọi workflow tạo ticket loại \nYêu cầu liên quan đến cổng USB",
+        "height": 100,
+        "width": 150
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1260,
+        200
+      ],
+      "typeVersion": 1,
+      "id": "9d9a2fdd-67c2-4967-88e7-8deec7c68606",
+      "name": "Sticky Note10"
+    },
+    {
+      "parameters": {
+        "content": "Gọi workflow check ticket detail",
+        "height": 80,
+        "width": 150
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1420,
+        200
+      ],
+      "typeVersion": 1,
+      "id": "41a0178d-3dcf-4285-8f4d-1494b6da7244",
+      "name": "Sticky Note11"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "X48Smlg5QXdiQmf6",
+          "mode": "list",
+          "cachedResultName": "write_log_activity"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "user_id": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('user_id', ``, 'string') }}",
+            "activity_log": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('activity_log', ``, 'string') }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "user_id",
+              "displayName": "user_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "activity_log",
+              "displayName": "activity_log",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        1620,
+        40
+      ],
+      "id": "90966bec-6a61-49a3-be0b-a2d7ec5ae4b3",
+      "name": "Call write log activity"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "jrhyvLWvwDIruwZc",
+          "mode": "list",
+          "cachedResultName": "query_log_activities"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "user_id": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('user_id', ``, 'string') }}"
+          },
+          "matchingColumns": [
+            "user_id"
+          ],
+          "schema": [
+            {
+              "id": "user_id",
+              "displayName": "user_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        880,
+        -220
+      ],
+      "id": "fba3102e-a3dd-45b0-b1f5-78ac00a842b0",
+      "name": "Call query log activity"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "get_user_info": {
+      "ai_tool": [
+        [
+          {
+            "node": "MCP Server Trigger",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call set data": {
+      "ai_tool": [
+        [
+          {
+            "node": "MCP Server Trigger",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "call su co mang": {
+      "ai_tool": [
+        [
+          {
+            "node": "MCP Server Trigger",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "call cap phu kien": {
+      "ai_tool": [
+        [
+          {
+            "node": "MCP Server Trigger",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "call check phan cung": {
+      "ai_tool": [
+        [
+          {
+            "node": "MCP Server Trigger",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "call loi phan cung": {
+      "ai_tool": [
+        [
+          {
+            "node": "MCP Server Trigger",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "call loi phan mem": {
+      "ai_tool": [
+        [
+          {
+            "node": "MCP Server Trigger",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "call reset pass": {
+      "ai_tool": [
+        [
+          {
+            "node": "MCP Server Trigger",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "call cai dat soft": {
+      "ai_tool": [
+        [
+          {
+            "node": "MCP Server Trigger",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "call cap tai san": {
+      "ai_tool": [
+        [
+          {
+            "node": "MCP Server Trigger",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "call cap quyen usb": {
+      "ai_tool": [
+        [
+          {
+            "node": "MCP Server Trigger",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call get ticket detail": {
+      "ai_tool": [
+        [
+          {
+            "node": "MCP Server Trigger",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call write log activity": {
+      "ai_tool": [
+        [
+          {
+            "node": "MCP Server Trigger",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call query log activity": {
+      "ai_tool": [
+        [
+          {
+            "node": "MCP Server Trigger",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "Asia/Ho_Chi_Minh",
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "versionId": "3ea9e618-ad6e-454d-a5e5-b752e12fc5e1",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "1eb38babc8a8a45a31824b994b841421a7c46b5a123ae069344c5034178393e9"
+  },
+  "id": "OuwbyAnVjOnfcg6v",
+  "tags": [
+    {
+      "createdAt": "2025-07-17T02:38:29.809Z",
+      "updatedAt": "2025-07-17T02:38:29.809Z",
+      "id": "MwHrXtPnxULhZVwa",
+      "name": "main_call_for_flowise"
+    }
+  ]
+}
