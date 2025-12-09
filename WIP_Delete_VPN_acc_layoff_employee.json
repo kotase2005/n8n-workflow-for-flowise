@@ -1,0 +1,1065 @@
+{
+  "name": "WIP_Delete_VPN_acc_layoff_employee",
+  "nodes": [
+    {
+      "parameters": {
+        "url": "https://eoffice.fptonline.net/rest/sms/latest/integration-phase/detail?",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "getHidden",
+              "value": "true"
+            },
+            {
+              "name": "id",
+              "value": "={{ $json.phase_id }}"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "S-Token",
+              "value": "f4edee82-bac6-4464-a957-742f2c465d78"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        60,
+        -40
+      ],
+      "id": "feda61aa-ec1b-4359-a82f-61252fc9a543",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "language": "javascript",
+        "jsCode": "// items ở đây chính là array output từ HTTP Request\nreturn items.map(item => {\n  return {\n    json: {\n      raw: JSON.stringify(item.json, null, 2)\n    }\n  };\n});"
+      },
+      "id": "fcd29e52-ae02-4fd4-a6a3-d10f17a0b2b0",
+      "name": "Code Preprocess JSON",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 1,
+      "position": [
+        300,
+        -40
+      ]
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-4O-MINI"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "Bạn là công cụ trích xuất có cấu trúc.  \nĐầu vào là JSON của API “Hoàn tất thủ tục thôi việc”.  \nHãy chỉ trả về JSON hợp lệ (UTF-8, double quotes), không kèm giải thích.\n\nYêu cầu trích xuất các trường:\n\n- account: lấy từ PhaseInput[*].detail.individual hoặc PhaseOutput[*].detail.individual, xác định bằng name hoặc nameText = “Nhân viên thôi việc” hoặc “Result”, hoặc definedId = -14. Đây chính là account nhân viên thôi việc.  \n- bo_phan: lấy từ PhaseInput[*].detail.individual hoặc PhaseInfos, trường có nameText = “Bộ phận” hoặc “Bộ phận chi tiết”.  \n  Chỉ giữ phần tên trước dấu gạch ngang \"-\" đầu tiên. Ví dụ:  \n  - \"ADS-SEC-CUS-CUS\" → \"ADS\"  \n  - \"NEWS-HN\" → \"NEWS\"  \n  - \"TECH\" → \"TECH\" (không đổi nếu không có dấu \"-\").\n\nQuy tắc:\n- Nếu có nhiều record thì trả về mảng các object theo thứ tự position tăng dần.\n- Nếu thiếu trường thì đặt null.\n- Không thêm trường nào khác.\n- Đảm bảo output là JSON duy nhất theo đúng schema:\n\n{\"data\":[{\"account\":\"...\",\"bo_phan\":\"...\"}]}",
+              "role": "system"
+            },
+            {
+              "content": "=={{ JSON.stringify($json) }}"
+            }
+          ]
+        },
+        "jsonOutput": true,
+        "options": {
+          "temperature": 0.1
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        520,
+        -40
+      ],
+      "id": "25de0b76-f430-4b2b-a84e-f658d6da5342",
+      "name": "OpenAI",
+      "credentials": {
+        "openAiApi": {
+          "id": "kAaqxCSpUpx5lqwi",
+          "name": "OpenAi API Huy"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "Khi nhận mail từ Uservice gửi đến --> trigger --> Trong body mail chứa đường link tới phaseId --> Dùng phaseId này đưa vào API ",
+        "height": 120
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -700,
+        -180
+      ],
+      "typeVersion": 1,
+      "id": "f02e7527-20d5-46a8-9c9e-c4a4841e770b",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "jsCode": "return items.map(item => {\n  const data = item.json.message?.content?.data || [];\n  \n  const newData = data.map(obj => {\n    let boPhan = obj.bo_phan;\n    if (boPhan && typeof boPhan === \"string\") {\n      boPhan = boPhan.split(\"-\")[0].trim(); // cắt lấy phần trước dấu \"-\"\n    }\n    return {\n      account: obj.account || null,\n      bo_phan: boPhan || null\n    };\n  });\n\n  return {\n    json: {\n      data: newData\n    }\n  };\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        880,
+        -40
+      ],
+      "id": "cd8622a8-1941-4fff-bd3f-1f4a991370ec",
+      "name": "Acc_Department_layoff_user"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "836177b5-168c-46a7-9a2a-7cd8efa81ff7",
+              "leftValue": "={{ $json.data[0].bo_phan }}",
+              "rightValue": "NEWS",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1300,
+        200
+      ],
+      "id": "8481f4b5-3625-4328-a469-45165627b5b9",
+      "name": "If_Department_is_NEWS"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "836177b5-168c-46a7-9a2a-7cd8efa81ff7",
+              "leftValue": "={{ $json.data[0].bo_phan }}",
+              "rightValue": "TECH",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1540,
+        520
+      ],
+      "id": "0fd8ca56-73b4-4522-8e11-763e4bef3cfc",
+      "name": "If_Department_is_TECH"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://111.65.255.239:8441/edge/management/v1/authenticate?",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "method",
+              "value": "password"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n    \"username\": \"admin\",\n    \"password\": \"inf123!@#\"\n}",
+        "options": {
+          "allowUnauthorizedCerts": true
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1320,
+        -260
+      ],
+      "id": "7e8770ec-7a8c-42f5-9dbe-4c68da9fd9d9",
+      "name": "Login"
+    },
+    {
+      "parameters": {
+        "url": "https://111.65.255.239:8441/edge/management/v1/identities/?",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "filter",
+              "value": "=name=\"{{ $('Pick_layoff_account_vpn').item.json.account }}\""
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "zt-session",
+              "value": "={{ $json.data.token }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "options": {
+          "allowUnauthorizedCerts": true
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1540,
+        -260
+      ],
+      "id": "a135e3cc-87d8-4c18-894d-69f6261f905f",
+      "name": "Search for ID Identity"
+    },
+    {
+      "parameters": {
+        "method": "DELETE",
+        "url": "=https://111.65.255.239:8441/edge/management/v1/identities/{{ $('Search for ID Identity').item.json.data[0].id }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "zt-session",
+              "value": "={{ $('Login').item.json.data.token }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "options": {
+          "allowUnauthorizedCerts": true
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1740,
+        -260
+      ],
+      "id": "3048dca7-4452-4a0b-85d0-239a97d0aa21",
+      "name": "Delete Identity"
+    },
+    {
+      "parameters": {
+        "fromEmail": "admin@fptonline.net",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        1960,
+        -260
+      ],
+      "id": "7cd25134-b259-4e7a-b2ef-e943ed888c19",
+      "name": "Send Email",
+      "webhookId": "b0d363fe-0bfa-4f84-851b-d695d954732f",
+      "credentials": {
+        "smtp": {
+          "id": "Ih51aPDMfHOq5IOb",
+          "name": "SMTP Huy gửi mail"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://111.65.255.239:8441/edge/management/v1/authenticate?",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "method",
+              "value": "password"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n    \"username\": \"admin\",\n    \"password\": \"inf123!@#\"\n}",
+        "options": {
+          "allowUnauthorizedCerts": true
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1540,
+        -20
+      ],
+      "id": "f14905a4-41c7-4601-9fef-c318d3811537",
+      "name": "Login1"
+    },
+    {
+      "parameters": {
+        "url": "https://111.65.255.239:8441/edge/management/v1/identities/?",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "filter",
+              "value": "=name=\"{{ $('Pick_layoff_account_vpn').item.json.account }}\""
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "zt-session",
+              "value": "={{ $json.data.token }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "options": {
+          "allowUnauthorizedCerts": true
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1740,
+        -20
+      ],
+      "id": "86c6755a-7e7b-446a-8fba-e335a566a170",
+      "name": "Search for ID Identity1"
+    },
+    {
+      "parameters": {
+        "method": "DELETE",
+        "url": "=https://111.65.255.239:8441/edge/management/v1/identities/{{ $('Search for ID Identity1').item.json.data[0].id }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "zt-session",
+              "value": "={{ $('Login1').item.json.data.token }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "options": {
+          "allowUnauthorizedCerts": true
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1960,
+        -20
+      ],
+      "id": "9efd2386-c661-4572-a4ed-70784b1a6d0f",
+      "name": "Delete Identity1"
+    },
+    {
+      "parameters": {
+        "fromEmail": "admin@fptonline.net",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        2160,
+        -20
+      ],
+      "id": "cc9e9978-5c28-4198-bba8-5b458555fe8f",
+      "name": "Send Email1",
+      "webhookId": "b0d363fe-0bfa-4f84-851b-d695d954732f",
+      "credentials": {
+        "smtp": {
+          "id": "Ih51aPDMfHOq5IOb",
+          "name": "SMTP Huy gửi mail"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://111.65.255.239:8441/edge/management/v1/authenticate?",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "method",
+              "value": "password"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n    \"username\": \"admin\",\n    \"password\": \"inf123!@#\"\n}",
+        "options": {
+          "allowUnauthorizedCerts": true
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1740,
+        220
+      ],
+      "id": "8885128e-2482-41c1-8b1d-a5f3518273ee",
+      "name": "Login2"
+    },
+    {
+      "parameters": {
+        "url": "https://111.65.255.239:8441/edge/management/v1/identities/?",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "filter",
+              "value": "=name=\"{{ $('Pick_layoff_account_vpn').item.json.account }}\""
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "zt-session",
+              "value": "={{ $json.data.token }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "options": {
+          "allowUnauthorizedCerts": true
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1960,
+        220
+      ],
+      "id": "68ef45da-3a62-453e-8e43-6104064dfb62",
+      "name": "Search for ID Identity2"
+    },
+    {
+      "parameters": {
+        "method": "DELETE",
+        "url": "=https://111.65.255.239:8441/edge/management/v1/identities/{{ $('Search for ID Identity2').item.json.data[0].id }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "zt-session",
+              "value": "={{ $('Login2').item.json.data.token }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "options": {
+          "allowUnauthorizedCerts": true
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2160,
+        220
+      ],
+      "id": "acd7cd5b-836a-4f38-a43e-d123cf6cf1ec",
+      "name": "Delete Identity2"
+    },
+    {
+      "parameters": {
+        "fromEmail": "admin@fptonline.net",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        2380,
+        220
+      ],
+      "id": "983d5823-5dbd-4e7c-8527-966f7b66fbab",
+      "name": "Send Email2",
+      "webhookId": "b0d363fe-0bfa-4f84-851b-d695d954732f",
+      "credentials": {
+        "smtp": {
+          "id": "Ih51aPDMfHOq5IOb",
+          "name": "SMTP Huy gửi mail"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fromEmail": "admin@fptonline.net",
+        "subject": "Xóa tài khoản VPN không thành công",
+        "html": "Tài khoản VPN cần xóa không tồn tại.",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        1720,
+        720
+      ],
+      "id": "dd30ea96-eabb-45a3-81ab-916d4320d0a4",
+      "name": "Send Email3",
+      "webhookId": "b0d363fe-0bfa-4f84-851b-d695d954732f",
+      "credentials": {
+        "smtp": {
+          "id": "Ih51aPDMfHOq5IOb",
+          "name": "SMTP Huy gửi mail"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "8b78e5ab-55ed-4083-8e58-7fcb76abd821",
+              "leftValue": "={{ $json.data[0].bo_phan }}",
+              "rightValue": "ADS",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            },
+            {
+              "id": "8cd96dd8-b82d-487c-8017-747f229e2cbc",
+              "leftValue": "={{ $json.data[0].bo_phan }}",
+              "rightValue": "BO",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1100,
+        -40
+      ],
+      "id": "541a5d14-7a1d-4259-9001-4a470f9ce87e",
+      "name": "If_Department_is_ADS_BO"
+    },
+    {
+      "parameters": {
+        "content": "Xóa identity trên server ziti ADS",
+        "height": 80,
+        "width": 200
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1280,
+        -360
+      ],
+      "typeVersion": 1,
+      "id": "c7a7090d-add6-453b-9bef-26c988761ff4",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "Xóa identity trên server ziti Editor",
+        "height": 80,
+        "width": 200
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1320,
+        -40
+      ],
+      "typeVersion": 1,
+      "id": "a70a5e4e-d1ec-4a4f-8556-b24c12cb3107",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "Xóa identity trên server ziti TECH & Office",
+        "height": 80,
+        "width": 200
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1520,
+        180
+      ],
+      "typeVersion": 1,
+      "id": "d0e29abc-0dec-4b2c-b97c-4b85413e6c08",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "content": "Nếu không tìm thấy thì gửi mail không xóa được",
+        "height": 80,
+        "width": 180
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1700,
+        640
+      ],
+      "typeVersion": 1,
+      "id": "7fa1b281-181e-48f5-9dfd-9e1c39a651a0",
+      "name": "Sticky Note4"
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "simple": false,
+        "filters": {},
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -640,
+        -40
+      ],
+      "id": "acc96267-898a-4138-9628-8e4952ec5f0c",
+      "name": "Gmail Trigger",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "i53vnyPz1JimsfVU",
+          "name": "Gmail account admin-huynd54 Eoffice"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Lấy dữ liệu từ item đầu tiên (trong trường hợp trigger trả về mảng nhiều email)\nconst item = $json;\n\n// Ưu tiên hiển thị nội dung theo thứ tự: textAsHtml > html > text\nlet bodyHtml = '';\nlet bodyText = '';\n\nif (item.textAsHtml) {\n  bodyHtml = item.textAsHtml;\n} else if (item.html) {\n  bodyHtml = item.html;\n}\n\nif (item.text) {\n  bodyText = item.text;\n}\n\n// Trích xuất thêm thông tin tiêu đề, người gửi, người nhận nếu cần\nconst subject = item.subject || '';\nconst from = item.from?.text || item.from?.value?.[0]?.address || '';\nconst to = item.to?.text || item.to?.value?.[0]?.address || '';\nconst date = item.date || '';\n\n// Trả ra kết quả\nreturn [\n  {\n    json: {\n      subject,\n      from,\n      to,\n      date,\n      body_text: bodyText,\n      body_html: bodyHtml\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -380,
+        -40
+      ],
+      "id": "b1d4e7e8-9f51-45d1-9f32-02672665f14b",
+      "name": "trich_xuat_body_email"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Lấy nội dung HTML hoặc text từ email\nconst html = $json.body_html || '';\nconst text = $json.body_text || '';\n\n// Gộp cả hai phòng trường hợp link nằm ở đâu đó\nconst content = `${html}\\n${text}`;\n\n// Regex tìm URL chứa /ViewPhase.jspa?id=xxxxx\nconst regex = /https:\\/\\/eoffice\\.fptonline\\.net\\/secure\\/ViewPhase\\.jspa\\?id=(\\d+)/i;\n\n// Thực hiện tìm kiếm\nconst match = content.match(regex);\n\n// Nếu tìm thấy, lấy id; nếu không, để null\nconst phaseId = match ? match[1] : null;\n\n// Trả về kết quả\nreturn [\n  {\n    json: {\n      phase_id: phaseId,\n      link_found: match ? match[0] : null,\n      has_match: !!match\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -160,
+        -40
+      ],
+      "id": "8cb76ebe-caf1-4769-bc21-71dd2fcad781",
+      "name": "trich_xuat_phase_ID"
+    }
+  ],
+  "pinData": {
+    "Gmail Trigger": [
+      {
+        "json": {
+          "id": "199e70a6e19481e6",
+          "threadId": "199e6fcfec714d45",
+          "labelIds": [
+            "UNREAD",
+            "CATEGORY_PERSONAL",
+            "INBOX"
+          ],
+          "sizeEstimate": 22888,
+          "headers": {
+            "delivered-to": "Delivered-To: huynd54.fo@gmail.com",
+            "received": "Received: from KL1PR0601MB4643.apcprd06.prod.outlook.com\r\n ([fe80::e273:dd0f:aae5:6fb9]) by KL1PR0601MB4643.apcprd06.prod.outlook.com\r\n ([fe80::e273:dd0f:aae5:6fb9%2]) with mapi id 15.20.9228.010; Wed, 15 Oct 2025\r\n 08:44:01 +0000",
+            "x-google-smtp-source": "X-Google-Smtp-Source: AGHT+IHsVTukyD8q6hoKOWJJLg9n45wCOc95/T6oaKxtdH4k5Kyf74EM9IBit4ddz89+mrzkde7o",
+            "x-received": "X-Received: by 2002:a05:6a21:6d88:b0:334:7b7f:587d with SMTP id adf61e73a8af0-3347b7f5aa4mr4762157637.24.1760517844636;\r\n        Wed, 15 Oct 2025 01:44:04 -0700 (PDT)",
+            "arc-seal": "ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;\r\n b=CtmHsulAt3yiqvTG2d/loPd/IN/ZFIZF4Q8bf5cekO8jdfAvJdm4UHZOA7PU8l2mEOoxr/ke/apcrFssEYmHm+xBaEGaNZXg6n/pOo2OHQFOJXS0LZHXGNd5THYWKqDG8AtvxCCBeumpdunA0/qsfTKss5K37AAWQS/Clu6topee6CJyFH5IlNv0AU6bioFiuZWWSzdQbSz6XE0RnkcV8gciZ/a0PsD4Zer+aTmRojCvm67b+gRqumpEUEuGNtQWwyTqcbwHgwBuq3w0XZE7kqJceIATFou2dnlInTuK13PBUK4xu7gVitquoFTJZ4fNh2BGIr6W27576+LFENL4+Q==",
+            "arc-message-signature": "ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;\r\n s=arcselector10001;\r\n h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;\r\n bh=HO0f8pY7PE3YEmviNHw4fwTFFISwYmJuvLktrGFsof8=;\r\n b=iaMTw1GbuZ3GWTbQ+LlXlCEVgC9ppRYYQIQFCONsjwtMkJXlT8Ol33ZazgkeSN2px4l/Yxin2pw8EE+qF6NCB6JnWnmuNbxcb3depeKx1RMnYvznApB2N1zoRzEcB65NQEfcIfT9S0DUE5V6n/ynB6L7Boi6pxdbplMwUyYF83XJ1shMzUb3LYeaeTrqhtsJy1aMjz1OdC+Q2ScRQZM8Q8KiEJRnxkz0mWQBk3H6hyRV7T0rPDjRbo7sr+apbRambtw1dpR48XIx9+hd9cXzZ8jUg8EFTM992BotsUUZ9j0+9Q11dlRfqDSw/fhhp0FQpHajnixPrdasQV/EI2o/mw==",
+            "arc-authentication-results": "ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass\r\n smtp.mailfrom=fpt.com; dmarc=pass action=none header.from=fpt.com; dkim=pass\r\n header.d=fpt.com; arc=none",
+            "return-path": "Return-Path: <HuyND54@fpt.com>",
+            "received-spf": "Received-SPF: pass (google.com: domain of huynd54@fpt.com designates 2a01:111:f403:c406::3 as permitted sender) client-ip=2a01:111:f403:c406::3;",
+            "authentication-results": "authentication-results: dkim=none (message not signed)\r\n header.d=none;dmarc=none action=none header.from=fpt.com;",
+            "dkim-signature": "DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fpt.com; s=selector2;\r\n h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;\r\n bh=HO0f8pY7PE3YEmviNHw4fwTFFISwYmJuvLktrGFsof8=;\r\n b=nqODo5bwjfvvtdV3GKe1mz6eEMMZ66Fy1pd4FzDuOP+P77cp/3zJJJ25y3TdCet1FQNLvDrgQPgKY0Yym8qy6jb/pnrqcIIJbgdLq4n4k715ZTlrr3L5r3xkeiCnAsUrI2Dudb8c23AfF5JcUy05HOlgYqWo7y9Vih2JrSToHfwcTN6Nxa+2LjzEwkvUGH708eGPcxHXMJw9V4qXVZVG50p8SUH6VJYkZ9wVq8R0hDDV7PHJP4datE+tqP3LmTBYRISl2XaIwujm7bt1NVnKyNnHjIt3SDBWLo0GPqGw7od5Y/Gte7a7xkd3bOg0DbflzHKPc2Dc6JB37nIRyakE1A==",
+            "from": "From: Huy Nguyen Dac <HuyND54@fpt.com>",
+            "to": "To: \"huynd54.fo@gmail.com\" <huynd54.fo@gmail.com>",
+            "subject": "Subject:\r\n =?utf-8?B?Rnc6IFtGTy1lb2ZmaWNlXSBbRXhlY3V0ZV0gVGlja2V0IDI0MzQwOkhvw6Bu?=\r\n =?utf-8?B?IHThuqV0IHRo4bunIHThu6VjIHRow7RpIHZp4buHYyAtIELhur8gVGhhbmgg?=\r\n =?utf-8?B?WHXDom4=?=",
+            "thread-topic": "Thread-Topic:\r\n =?utf-8?B?W0ZPLWVvZmZpY2VdIFtFeGVjdXRlXSBUaWNrZXQgMjQzNDA6SG/DoG4gdA==?=\r\n =?utf-8?B?4bqldCB0aOG7pyB04bulYyB0aMO0aSB2aeG7h2MgLSBC4bq/IFRoYW5oIFh1?=\r\n =?utf-8?B?w6Ju?=",
+            "thread-index": "Thread-Index: AQHcPOSyeMQbes9/10COifW+pvse+7TC4XH7gAAEcLY=",
+            "date": "Date: Wed, 15 Oct 2025 08:44:01 +0000",
+            "message-id": "Message-ID:\r\n <KL1PR0601MB46437B706A54007E3B1D6C5CB8E8A@KL1PR0601MB4643.apcprd06.prod.outlook.com>",
+            "references": "References: <1828291893.3052.1760430573731@spro-fptx-app-69855b97dc-xgk44>\r\n <KL1PR0601MB46433AE54F84470BB857F4FFB8E8A@KL1PR0601MB4643.apcprd06.prod.outlook.com>",
+            "in-reply-to": "In-Reply-To:\r\n <KL1PR0601MB46433AE54F84470BB857F4FFB8E8A@KL1PR0601MB4643.apcprd06.prod.outlook.com>",
+            "accept-language": "Accept-Language: en-US",
+            "content-language": "Content-Language: en-US",
+            "x-ms-has-attach": "X-MS-Has-Attach:",
+            "x-ms-tnef-correlator": "X-MS-TNEF-Correlator:",
+            "msip_labels": "msip_labels:",
+            "x-ms-publictraffictype": "x-ms-publictraffictype: Email",
+            "x-ms-traffictypediagnostic": "x-ms-traffictypediagnostic: KL1PR0601MB4643:EE_|TYSPR06MB6575:EE_",
+            "x-ms-office365-filtering-correlation-id": "x-ms-office365-filtering-correlation-id: 78dff8e0-e8e7-484c-fcdf-08de0bc6fd1b",
+            "x-ms-exchange-senderadcheck": "x-ms-exchange-senderadcheck: 1",
+            "x-ms-exchange-antispam-relay": "x-ms-exchange-antispam-relay: 0",
+            "x-microsoft-antispam": "x-microsoft-antispam:\r\n BCL:0;ARA:13230040|366016|19092799006|376014|1800799024|7053199007|38070700021|8096899003;",
+            "x-microsoft-antispam-message-info": "x-microsoft-antispam-message-info:\r\n =?utf-8?B?VlhvemQxN1pTYWxiRE9ySS80VlFYeE5FZjdsa0lyVzB5d1VoOGowcExYNkhQ?=\r\n =?utf-8?B?RzZFS0pYWElLVXNxdDM5OCtYRlMwcm5SVHlhNEk5azdsR2l3TnI0L2VVRzZk?=\r\n =?utf-8?B?TDRwNklJNlFkMTJYZ1lmRndQbG9JL1AyU3ZlcllLWFhINFVyNXZrV0wxdTBy?=\r\n =?utf-8?B?T2RNek1OSUlScDJ0MWhEckNrSWszTlV5T1E5b1dQQks2NnRNOEN5NVhDcnBZ?=\r\n =?utf-8?B?N3VwSysyODNIbkc3dTlRSUtVbWJnQjljSUw4ZEcyWGRhL1NDd3ppOWNLcFMz?=\r\n =?utf-8?B?eWJqOUxlNGphNjlaZWVvRWNJTWMvZlJURElkOFVFamsvMVJIV0Juekc0SDly?=\r\n =?utf-8?B?aDlkU0pNU3VMN0hJcHRlVjdRZjM3dGNTeGxoS0Q3UkQ3Z3BqNmVPbDRWUCtp?=\r\n =?utf-8?B?V0h1aXAvcW1pVGpnaW92M2tYUnpDc2NVNEVLeng5aUVid05wVm1MTGIwa1lN?=\r\n =?utf-8?B?YTVYdlJIdEpkZTBEVG95QkxMcmJDWWx5b3lPeXNSdU5PVTJsME56dXZlT2lv?=\r\n =?utf-8?B?YmxLY3JhU2dTcVZ1ZVo5Z081STNubW94amkwNW1jekZQZEdXMjBSRnE5bVFl?=\r\n =?utf-8?B?QlVaaG9Nd3RLK3cxRWRRaFBoejNEa0xVVGlJWG0vd2Y1OUxrM3o1MlA0ZUVL?=\r\n =?utf-8?B?U0FhNkhOVVN2bGU1Nk5VNm5VZWtxaVltbGM3SkthYlhodWxtK3RmRUMvRTZK?=\r\n =?utf-8?B?TXRlU1JFb2l3TGdKVWlzWDY2emJPT3kvSy9pSTlXN3d5dG0yT2JMNUEyRklB?=\r\n =?utf-8?B?RmpFNHMycVBzSkgxYjdHUlBUVFFYc21VUE8vZGtzQjRJaWJMbERVZXkxZURE?=\r\n =?utf-8?B?WTJOUXZLWU5EWmJlM3p5Sk1CQXhmdkNXVE9tUTlNV2FsUFRJeWI3cWN2Z1Na?=\r\n =?utf-8?B?VTdWdXpHMGhpV3VvV25nalNDMEVOYUYxcTk2WXh5RXV6aUt1R0x4RlVzdVNV?=\r\n =?utf-8?B?WWdjVUcrOU4yUHQxN0UrdU5nWnErVS9EdTg1V2FpME5GQ2k0dWNLUHNrRmty?=\r\n =?utf-8?B?ZjJiWEZ0RThSMWI0U2FkU0U5cTU4UUk0YUdheDdKejlXMUdmK1BHOEVGVDhX?=\r\n =?utf-8?B?NUVsYkNoajl2MnN1Y0tncGJiQUd5NU4wMkVsWkloUEtxekJZOGJMK2FVQzBl?=\r\n =?utf-8?B?cVBKODl1M0UwKzFWQjVHdG9FKzc1aGhyckJIMU56djViL04wNUplOXhiMGx4?=\r\n =?utf-8?B?R1pDWWhkV0M4OEd6TVNFTG9sUWtzbUJFd2ZEUklwV29GS0lZZ1NLZEVVT2ZX?=\r\n =?utf-8?B?Tk1mNnh2VU5HbElNSDVEY2REQzlEa1BaeFFTREFOUVdGWnpja0pNQ3NpcS9k?=\r\n =?utf-8?B?d2liZ1hVMmlJOTFTMDNrSVJJbkQrWFB3L0Q1Zm1zVklqWHFxTzF4SXpCK3VX?=\r\n =?utf-8?B?ZDNQanVBQ2dvOFpXMTRoRklpSDAxV0x4QlR3aTRmKzFwZE42cFYyc1hyaCtY?=\r\n =?utf-8?B?Z3l5bjc1UVhWc25tMlg0dHE5SUx5UHNVVEV5d1BqQWdOd0l0SkhKSnhNWUNn?=\r\n =?utf-8?B?c09kTHByekxDWkp3a0R4Q3ZFU0ZZVUJ5UVoyeUNvTk9yTm1xU2dGOHRwMEJq?=\r\n =?utf-8?B?QkZMb1N1L244SXFHUFdaUTl6b3gxVzBBclJGQzNNQ1pTVFN6QWgyNXRlQjhz?=\r\n =?utf-8?B?eHhVakowbkYyWUFZeFYyOXRuMGJCYnlpTFZKNm1kQjVBL0U4M1J3RkhQMjhB?=\r\n =?utf-8?B?MGlIb2dsKzFodWFLQXRDUGh4NEZldFBOOXZCQzlsZEJ2RGxQZlF1WE1IMVdY?=\r\n =?utf-8?B?dWpOMlFkVWtycCtkckwwT01mbzh0MGVPMWkxc2k1WndNT3hrN0JiVU1DSEpv?=\r\n =?utf-8?B?cXA0U2FaYjhlZzQvNzhSdklaYkFQZW05SnpwZU0xY015ejRRUU9KSW84dEMy?=\r\n =?utf-8?B?M2VHOXZuMkp5aDdMVU9pRXdtcHEwS1VDVXJROFJiU1grT1JJNVo1WmF0Vm1N?=\r\n =?utf-8?B?RG56c0U2MnFmY3FXZDJxRE92TGpZZThRZ3EzNHhkVXBnVitnT2ZJNXI2UnlC?=\r\n =?utf-8?B?bi9udlI1NVNBPT0=?=",
+            "x-forefront-antispam-report": "x-forefront-antispam-report:\r\n CIP:255.255.255.255;CTRY:;LANG:vi;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:KL1PR0601MB4643.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(19092799006)(376014)(1800799024)(7053199007)(38070700021)(8096899003);DIR:OUT;SFP:1102;",
+            "x-ms-exchange-antispam-messagedata-chunkcount": "x-ms-exchange-antispam-messagedata-chunkcount: 1",
+            "x-ms-exchange-antispam-messagedata-0": "x-ms-exchange-antispam-messagedata-0:\r\n =?utf-8?B?aHlUbXI1amdaYTU5YUFWMDI0NkdNS1pMbmtxRC93THovaFYrajlpdTBJV3Yx?=\r\n =?utf-8?B?cHNPaFExSCtEblROWmd3amMwcll3bVVwZ3J5MTlxdmRrZG9RTkdMSDNFV2VL?=\r\n =?utf-8?B?RC9OdzVxeGhaQXhFZVhCN3QrM1lyWEs2N3RtdFpEVGJ2UTNGcUJRTzVWRDI0?=\r\n =?utf-8?B?cEJDTnNpRUk5WlgzSm9CTDZIUFFwbk5WYW9wMzJkQTFtQzBIMEdWZUJ0UDln?=\r\n =?utf-8?B?M1RBSE1PUjFjTkRVTmZtTVhtcnpHRmNaRWVYVWJBRHlqcFJkNTYvTjFZSE1k?=\r\n =?utf-8?B?UlhVbVlFWDZLRXBKZkNFc0QxRzBUdVA3ZnZlK3N1RVdCUGFrTEsyaG5aSkdO?=\r\n =?utf-8?B?anpLSzJXbHQ3enBuMEFtMTNNbXZrbHBqVGtpR3RZTDQwVTRmVzFJYXFnQUQv?=\r\n =?utf-8?B?em0xS2h6S2IxWFF4cGlvVjFxUWxYNlgvUWs0YjdrUnhtSHE2STdmQzQvWXBt?=\r\n =?utf-8?B?dUF1OWxBdllwWGtvYTlnUDQ1MzF1VTNZNi9ZcWZYcS92SzducXhLVXpQWnA0?=\r\n =?utf-8?B?eW1OUHdXd3YrVVVnVGxLNG1GSXZuWVJnRzhRdjFmODh0cStWTjRWR3ZFbm8y?=\r\n =?utf-8?B?NUhTdmtkVlpFZ1dnb0lqeFh4M2JBT1g3eDY1dGpOdnp4V2NYZE80TjRZclZL?=\r\n =?utf-8?B?SDJVdEtFcGdzNExWUDZKTC9aOU8zdjdQNysxdThPQzVSZWVrQVIvZWYxVFlv?=\r\n =?utf-8?B?ckcxQTQ3RWpUVWxWVkcxOFdBSGVHWkQ4N01EMEl1Mlkwcy8xU3o4dklXSkx1?=\r\n =?utf-8?B?SGZreWsySGE2N1JNRUwrOXRkWmR6aVlMRXVjQ1VUR0l0S3o4bElieGVtR1Vn?=\r\n =?utf-8?B?RHMwejlnTmlhL3RxaUlnZVFnN0VsVThrZEt5V0VSbVNxLy94aTlLWmNBdldJ?=\r\n =?utf-8?B?bGlySklkWUltZHd0MHFRVkVpSGFYWGthMzhzT0xBcWR3S3FHbmxOVmJmT0JK?=\r\n =?utf-8?B?Mng3VXRNY3ExbkgwbTRDSnIxRTB1SW9zNkc4bW12Wi8yWjkzYkVndDZkMmpn?=\r\n =?utf-8?B?WEc0eWs1enNEbHZEUWQvNk1lS000cCt0Qk9tZndnM0g4UHVSUlpSTFg4OEZ5?=\r\n =?utf-8?B?dElyeE5zbW43eUZPYlJQMVZaeUY0MUxIK3VwUFN0bFlFZVpHeDBSV1BFMnpV?=\r\n =?utf-8?B?aEpHNlNvNU5KeWpjQzVsUUdoMXpMSnAydVRBNUF3c0kvelFRU2NERHlRUXhM?=\r\n =?utf-8?B?OW0vQXRxSlRhUUpKSGdoYXBoOFJ5NEQ4NkJEZkd4b0NCdTRLeWFJUjhvN1Zp?=\r\n =?utf-8?B?ZkJBZERnTjM4WE0wK0phWm5OK2szaHdOWWx6djVFR2h5NzdaQnA2WUZXT2VK?=\r\n =?utf-8?B?bXA0RDNWUnp4ZnJpcjZuTVpHZXl1R3dacTZHQmY1UVRVVXd5R3M5OWw3d2Ra?=\r\n =?utf-8?B?a0lUSnp1cjdrRVM1V3MvN3I4SGpZV1JyeENDcWNWbjluQ2FNeXlQTXVxWkF5?=\r\n =?utf-8?B?NmtPN3F6VElaMy9GcWdTMXc4KzJ5cFFXTS9yR0hZRjFnbTdmS3JvUE5SMjVt?=\r\n =?utf-8?B?OHoxa3hqUE9PMUNCb0thNHNNWTRkdWREckh2V2c0T3NaKzIrQk1naGlQN3Ax?=\r\n =?utf-8?B?cVVJNk5SWUVHKzd3bm15cUl5ci9sN1pRSnBFcEpTSjBMNlp6SnNWOXY5ZXBr?=\r\n =?utf-8?B?VEwvRkJqQ0dpL0drRkw1QmJqRW95YTVlZTNYdkM2YlhKRXFNSU52M2NWL3B4?=\r\n =?utf-8?B?eXdVNEVwcFU2c3A5amlHM05rYWVtVE52U2hTVnhGbCsxaklmYmNmNjhlaVRG?=\r\n =?utf-8?B?Q1AwVHpzcGs2K2FwVG1jeXhMTEtNUDNvaFRaQWVhUDI4VXFRMk1xSnRxMEFG?=\r\n =?utf-8?B?WnBRZGM4aWFSNFhDTWVoWlplQzhjWG5KZUx0SG5GeURIekc1bjFvMkNFNEpL?=\r\n =?utf-8?B?RHkvV2NlSjY3aE9LMEtJWlM3RGJiMXljbno5MWRzTWI3WjlURnA3S3FIYmFr?=\r\n =?utf-8?B?K3YrSjRJREF5aWFURkR4ZGxKK3RuWUtLVHhkbkNKMU1BdFR5ZjhRT3VJT1Ns?=\r\n =?utf-8?B?aFRzNy9oVFQ1MWtid2x6dWp3bko5NHNkeFI0ckhKSDI3RFJYUWlGTDUzVmMy?=\r\n =?utf-8?B?NEc2Y1c4aXZpS0s0ZFNBcHV2Nm9Pa01wSzB6Y3ZqdHhqaHllMUNOZWlSdkda?=\r\n =?utf-8?Q?J/aw=3D?=",
+            "content-type": "Content-Type: multipart/alternative;\r\n\tboundary=\"_000_KL1PR0601MB46437B706A54007E3B1D6C5CB8E8AKL1PR0601MB4643_\"",
+            "mime-version": "MIME-Version: 1.0",
+            "x-originatororg": "X-OriginatorOrg: fpt.com",
+            "x-ms-exchange-crosstenant-authas": "X-MS-Exchange-CrossTenant-AuthAs: Internal",
+            "x-ms-exchange-crosstenant-authsource": "X-MS-Exchange-CrossTenant-AuthSource: KL1PR0601MB4643.apcprd06.prod.outlook.com",
+            "x-ms-exchange-crosstenant-network-message-id": "X-MS-Exchange-CrossTenant-Network-Message-Id: 78dff8e0-e8e7-484c-fcdf-08de0bc6fd1b",
+            "x-ms-exchange-crosstenant-originalarrivaltime": "X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Oct 2025 08:44:01.0759\r\n (UTC)",
+            "x-ms-exchange-crosstenant-fromentityheader": "X-MS-Exchange-CrossTenant-fromentityheader: Hosted",
+            "x-ms-exchange-crosstenant-id": "X-MS-Exchange-CrossTenant-id: f01e930a-b52e-42b1-b70f-a8882b5d043b",
+            "x-ms-exchange-crosstenant-mailboxtype": "X-MS-Exchange-CrossTenant-mailboxtype: HOSTED",
+            "x-ms-exchange-crosstenant-userprincipalname": "X-MS-Exchange-CrossTenant-userprincipalname: jDZBXA4B4TVI36q0Up2BcPVGKKgYqY8Cx6CGx4vMoJ28L11bUcS3wq3wXey/6pMH",
+            "x-ms-exchange-transport-crosstenantheadersstamped": "X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYSPR06MB6575"
+          },
+          "html": "<html>\n<head>\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">\n<style type=\"text/css\" style=\"display:none;\"> P {margin-top:0;margin-bottom:0;} </style>\n</head>\n<body dir=\"ltr\">\n<div class=\"elementToProof\" style=\"font-family: Aptos, Aptos_EmbeddedFont, Aptos_MSFontService, Calibri, Helvetica, sans-serif; font-size: 12pt; color: rgb(0, 0, 0);\">\n<br>\n</div>\n<div id=\"appendonsend\"></div>\n<hr style=\"display:inline-block;width:98%\" tabindex=\"-1\">\n<div id=\"divRplyFwdMsg\" dir=\"ltr\"><font face=\"Calibri, sans-serif\" style=\"font-size:11pt\" color=\"#000000\"><b>From:</b> Huy Nguyen Dac &lt;HuyND54@fpt.com&gt;<br>\n<b>Sent:</b> Wednesday, October 15, 2025 3:29 PM<br>\n<b>To:</b> huynd54.fo@gmail.com &lt;huynd54.fo@gmail.com&gt;<br>\n<b>Subject:</b> Fw: [FO-eoffice] [Execute] Ticket 24340:Hoàn tất thủ tục thôi việc - Bế Thanh Xuân</font>\n<div>&nbsp;</div>\n</div>\n<style type=\"text/css\" style=\"display:none\">\n<!--\np\n\t{margin-top:0;\n\tmargin-bottom:0}\n-->\n</style>\n<div dir=\"ltr\">\n<div style=\"font-family:Aptos,Aptos_EmbeddedFont,Aptos_MSFontService,Calibri,Helvetica,sans-serif; font-size:12pt; color:rgb(0,0,0)\">\n<br>\n</div>\n<div id=\"x_appendonsend\"></div>\n<hr tabindex=\"-1\" style=\"display:inline-block; width:98%\">\n<div id=\"x_divRplyFwdMsg\" dir=\"ltr\"><font face=\"Calibri, sans-serif\" color=\"#000000\" style=\"font-size:11pt\"><b>From:</b> fo.inf.it &lt;fo.inf.it@fpt.com&gt;<br>\n<b>Sent:</b> Tuesday, October 14, 2025 3:29 PM<br>\n<b>To:</b> fo-it &lt;fo-it@fpt.com&gt;<br>\n<b>Subject:</b> [FO-eoffice] [Execute] Ticket 24340:Hoàn tất thủ tục thôi việc - Bế Thanh Xuân</font>\n<div>&nbsp;</div>\n</div>\n<div>\n<div style=\"font-family:helvetica,arial,sans-serif; font-size:11pt\">\n<p>Dear Anh/Chị ,</p>\n<p><a href=\"mailto:doannhinh@vnexpress.net\">Doan Thi Nhinh (VnExpress)</a> has created\n<b><a href=\"https://eoffice.fptonline.net/secure/ViewTicket.jspa?id=24340\" originalsrc=\"https://eoffice.fptonline.net/secure/ViewTicket.jspa?id=24340\">ticket 24340: Hoàn tất thủ tục thôi việc - Bế Thanh Xuân</a></b>, with the details as follows:</p>\n<table>\n<tbody>\n<tr>\n<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>\n<td class=\"x_x_padding-top x_x_text-paragraph-pattern\">Request type: <b>Hoàn tất thủ tục thôi việc</b></td>\n</tr>\n</tbody>\n</table>\n<table>\n<tbody>\n<tr>\n<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>\n<td>\n<table style=\"font:normal 14px/20px Arial,sans-serif; width:700px\">\n<tbody>\n<tr style=\"background-color:#f1f1f1\">\n<td class=\"x_x_confluenceTd\" colspan=\"2\" style=\"color:#003399\"><b>Thông tin nhân viên thôi việc</b></td>\n</tr>\n<tr style=\"background-color:#ffffff\">\n<td class=\"x_x_confluenceTd\" style=\"width:200px\"><b>Nhân viên thôi việc</b></td>\n<td class=\"x_x_confluenceTd\">thanhxuan</td>\n</tr>\n<tr style=\"background-color:#f1f1f1\">\n<td class=\"x_x_confluenceTd\" style=\"width:200px\"><b>Vùng Miền CBNV thôi việc</b></td>\n<td class=\"x_x_confluenceTd\">HN</td>\n</tr>\n<tr style=\"background-color:#ffffff\">\n<td class=\"x_x_confluenceTd\" style=\"width:200px\"><b>Ho Tên Nhân Viên Thôi Việc</b></td>\n<td class=\"x_x_confluenceTd\">Bế Thanh Xuân</td>\n</tr>\n<tr style=\"background-color:#f1f1f1\">\n<td class=\"x_x_confluenceTd\" style=\"width:200px\"><b>Bộ Phận</b></td>\n<td class=\"x_x_confluenceTd\">BO-FHR-FHR-FHR</td>\n</tr>\n<tr style=\"background-color:#ffffff\">\n<td class=\"x_x_confluenceTd\" style=\"width:200px\"><b>Mã Nhân Viên</b></td>\n<td class=\"x_x_confluenceTd\">00320527</td>\n</tr>\n<tr style=\"background-color:#f1f1f1\">\n<td class=\"x_x_confluenceTd\" style=\"width:200px\"><b>Email</b></td>\n<td class=\"x_x_confluenceTd\">thanhxuan@vnexpress.net</td>\n</tr>\n<tr style=\"background-color:#ffffff\">\n<td class=\"x_x_confluenceTd\" style=\"width:200px\"><b>Trưởng bộ phận người thôi việc</b></td>\n<td class=\"x_x_confluenceTd\">Le Thi Thanh Nhan (VnExpress) - LeNhan@vnexpress.net</td>\n</tr>\n</tbody>\n</table>\n</td>\n</tr>\n</tbody>\n</table>\n<p><b>Please perform your assigned tasks by click the button below:</b></p>\n<br>\n<div>\n<table cellspacing=\"0\" cellpadding=\"0\" border=\"0\" class=\"x_x_aui-button-email-container\">\n<tbody>\n<tr>\n<td class=\"x_x_aui-button-email\" style=\"background:#009900\"><a href=\"https://eoffice.fptonline.net/secure/ViewPhase.jspa?id=71673\" originalsrc=\"https://eoffice.fptonline.net/secure/ViewPhase.jspa?id=71673\" class=\"x_x_aui-button-email-link\">Go To Ticket</a></td>\n</tr>\n</tbody>\n</table>\n</div>\n<p>To follow all requests, click <a href=\"https://eoffice.fptonline.net/secure/PhaseAssignedToMeBrowser.jspa\" originalsrc=\"https://eoffice.fptonline.net/secure/PhaseAssignedToMeBrowser.jspa\">\nhere</a></p>\n<p>Regards, <br>\n<table border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\n<tbody>\n<tr>\n<td style=\"padding:0px; width:500px\">\n<div style=\"padding-left:10px\"><b><span style=\"font-size:11.0pt; font-family:\">EOffice - FPT Online</span></b>\n<br>\n<span style=\"font-size:10.0pt; font-family:\"></span><span style=\"font-size:11.0pt; font-family:\"></span></div>\n</td>\n</tr>\n</tbody>\n</table>\n</p>\n</div>\n</div>\n</div>\n</body>\n</html>\n",
+          "text": "\n________________________________\nFrom: Huy Nguyen Dac <HuyND54@fpt.com>\nSent: Wednesday, October 15, 2025 3:29 PM\nTo: huynd54.fo@gmail.com <huynd54.fo@gmail.com>\nSubject: Fw: [FO-eoffice] [Execute] Ticket 24340:Hoàn tất thủ tục thôi việc - Bế Thanh Xuân\n\n\n________________________________\nFrom: fo.inf.it <fo.inf.it@fpt.com>\nSent: Tuesday, October 14, 2025 3:29 PM\nTo: fo-it <fo-it@fpt.com>\nSubject: [FO-eoffice] [Execute] Ticket 24340:Hoàn tất thủ tục thôi việc - Bế Thanh Xuân\n\n\nDear Anh/Chị ,\n\nDoan Thi Nhinh (VnExpress)<mailto:doannhinh@vnexpress.net> has created ticket 24340: Hoàn tất thủ tục thôi việc - Bế Thanh Xuân<https://eoffice.fptonline.net/secure/ViewTicket.jspa?id=24340>, with the details as follows:\n\n        Request type: Hoàn tất thủ tục thôi việc\n\nThông tin nhân viên thôi việc\nNhân viên thôi việc     thanhxuan\nVùng Miền CBNV thôi việc        HN\nHo Tên Nhân Viên Thôi Việc      Bế Thanh Xuân\nBộ Phận BO-FHR-FHR-FHR\nMã Nhân Viên    00320527\nEmail   thanhxuan@vnexpress.net\nTrưởng bộ phận người thôi việc  Le Thi Thanh Nhan (VnExpress) - LeNhan@vnexpress.net\n\nPlease perform your assigned tasks by click the button below:\n\nGo To Ticket<https://eoffice.fptonline.net/secure/ViewPhase.jspa?id=71673>\n\nTo follow all requests, click here<https://eoffice.fptonline.net/secure/PhaseAssignedToMeBrowser.jspa>\n\nRegards,\nEOffice - FPT Online\n",
+          "textAsHtml": "<p>________________________________<br/>From: Huy Nguyen Dac &lt;<a href=\"mailto:HuyND54@fpt.com\">HuyND54@fpt.com</a>&gt;<br/>Sent: Wednesday, October 15, 2025 3:29 PM<br/>To: <a href=\"mailto:huynd54.fo@gmail.com\">huynd54.fo@gmail.com</a> &lt;<a href=\"mailto:huynd54.fo@gmail.com\">huynd54.fo@gmail.com</a>&gt;<br/>Subject: Fw: [FO-eoffice] [Execute] Ticket 24340:Ho&agrave;n t&#x1EA5;t th&#x1EE7; t&#x1EE5;c th&ocirc;i vi&#x1EC7;c - B&#x1EBF; Thanh Xu&acirc;n</p><p>________________________________<br/>From: <a href=\"http://fo.inf.it\">fo.inf.it</a> &lt;<a href=\"mailto:fo.inf.it@fpt.com\">fo.inf.it@fpt.com</a>&gt;<br/>Sent: Tuesday, October 14, 2025 3:29 PM<br/>To: fo-it &lt;<a href=\"mailto:fo-it@fpt.com\">fo-it@fpt.com</a>&gt;<br/>Subject: [FO-eoffice] [Execute] Ticket 24340:Ho&agrave;n t&#x1EA5;t th&#x1EE7; t&#x1EE5;c th&ocirc;i vi&#x1EC7;c - B&#x1EBF; Thanh Xu&acirc;n</p><p>Dear Anh/Ch&#x1ECB; ,</p><p>Doan Thi Nhinh (VnExpress)&lt;<a href=\"mailto:doannhinh@vnexpress.net\">mailto:doannhinh@vnexpress.net</a>&gt; has created ticket 24340: Ho&agrave;n t&#x1EA5;t th&#x1EE7; t&#x1EE5;c th&ocirc;i vi&#x1EC7;c - B&#x1EBF; Thanh Xu&acirc;n&lt;<a href=\"https://eoffice.fptonline.net/secure/ViewTicket.jspa?id=24340\">https://eoffice.fptonline.net/secure/ViewTicket.jspa?id=24340</a>&gt;, with the details as follows:</p><p>        Request type: Ho&agrave;n t&#x1EA5;t th&#x1EE7; t&#x1EE5;c th&ocirc;i vi&#x1EC7;c</p><p>Th&ocirc;ng tin nh&acirc;n vi&ecirc;n th&ocirc;i vi&#x1EC7;c<br/>Nh&acirc;n vi&ecirc;n th&ocirc;i vi&#x1EC7;c     thanhxuan<br/>V&ugrave;ng Mi&#x1EC1;n CBNV th&ocirc;i vi&#x1EC7;c        HN<br/>Ho T&ecirc;n Nh&acirc;n Vi&ecirc;n Th&ocirc;i Vi&#x1EC7;c      B&#x1EBF; Thanh Xu&acirc;n<br/>B&#x1ED9; Ph&#x1EAD;n BO-FHR-FHR-FHR<br/>M&atilde; Nh&acirc;n Vi&ecirc;n    00320527<br/>Email   <a href=\"mailto:thanhxuan@vnexpress.net\">thanhxuan@vnexpress.net</a><br/>Tr&#x1B0;&#x1EDF;ng b&#x1ED9; ph&#x1EAD;n ng&#x1B0;&#x1EDD;i th&ocirc;i vi&#x1EC7;c  Le Thi Thanh Nhan (VnExpress) - <a href=\"mailto:LeNhan@vnexpress.net\">LeNhan@vnexpress.net</a></p><p>Please perform your assigned tasks by click the button below:</p><p>Go To Ticket&lt;<a href=\"https://eoffice.fptonline.net/secure/ViewPhase.jspa?id=71673\">https://eoffice.fptonline.net/secure/ViewPhase.jspa?id=71673</a>&gt;</p><p>To follow all requests, click here&lt;<a href=\"https://eoffice.fptonline.net/secure/PhaseAssignedToMeBrowser.jspa\">https://eoffice.fptonline.net/secure/PhaseAssignedToMeBrowser.jspa</a>&gt;</p><p>Regards,<br/>EOffice - FPT Online</p>",
+          "subject": "Fw: [FO-eoffice] [Execute] Ticket 24340:Hoàn tất thủ tục thôi việc - Bế Thanh Xuân",
+          "references": [
+            "<1828291893.3052.1760430573731@spro-fptx-app-69855b97dc-xgk44>",
+            "<KL1PR0601MB46433AE54F84470BB857F4FFB8E8A@KL1PR0601MB4643.apcprd06.prod.outlook.com>"
+          ],
+          "date": "2025-10-15T08:44:01.000Z",
+          "to": {
+            "value": [
+              {
+                "address": "huynd54.fo@gmail.com",
+                "name": ""
+              }
+            ],
+            "html": "<span class=\"mp_address_group\"><a href=\"mailto:huynd54.fo@gmail.com\" class=\"mp_address_email\">huynd54.fo@gmail.com</a></span>",
+            "text": "huynd54.fo@gmail.com"
+          },
+          "from": {
+            "value": [
+              {
+                "address": "HuyND54@fpt.com",
+                "name": "Huy Nguyen Dac"
+              }
+            ],
+            "html": "<span class=\"mp_address_group\"><span class=\"mp_address_name\">Huy Nguyen Dac</span> &lt;<a href=\"mailto:HuyND54@fpt.com\" class=\"mp_address_email\">HuyND54@fpt.com</a>&gt;</span>",
+            "text": "\"Huy Nguyen Dac\" <HuyND54@fpt.com>"
+          },
+          "messageId": "<KL1PR0601MB46437B706A54007E3B1D6C5CB8E8A@KL1PR0601MB4643.apcprd06.prod.outlook.com>",
+          "inReplyTo": "<KL1PR0601MB46433AE54F84470BB857F4FFB8E8A@KL1PR0601MB4643.apcprd06.prod.outlook.com>"
+        }
+      }
+    ]
+  },
+  "connections": {
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Code Preprocess JSON",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code Preprocess JSON": {
+      "main": [
+        [
+          {
+            "node": "OpenAI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI": {
+      "main": [
+        [
+          {
+            "node": "Acc_Department_layoff_user",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Acc_Department_layoff_user": {
+      "main": [
+        [
+          {
+            "node": "If_Department_is_ADS_BO",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If_Department_is_NEWS": {
+      "main": [
+        [
+          {
+            "node": "Login1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "If_Department_is_TECH",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Login": {
+      "main": [
+        [
+          {
+            "node": "Search for ID Identity",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Delete Identity": {
+      "main": [
+        [
+          {
+            "node": "Send Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search for ID Identity": {
+      "main": [
+        [
+          {
+            "node": "Delete Identity",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Login1": {
+      "main": [
+        [
+          {
+            "node": "Search for ID Identity1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search for ID Identity1": {
+      "main": [
+        [
+          {
+            "node": "Delete Identity1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Delete Identity1": {
+      "main": [
+        [
+          {
+            "node": "Send Email1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Login2": {
+      "main": [
+        [
+          {
+            "node": "Search for ID Identity2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search for ID Identity2": {
+      "main": [
+        [
+          {
+            "node": "Delete Identity2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Delete Identity2": {
+      "main": [
+        [
+          {
+            "node": "Send Email2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If_Department_is_TECH": {
+      "main": [
+        [
+          {
+            "node": "Login2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send Email3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If_Department_is_ADS_BO": {
+      "main": [
+        [
+          {
+            "node": "Login",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "If_Department_is_NEWS",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gmail Trigger": {
+      "main": [
+        [
+          {
+            "node": "trich_xuat_body_email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "trich_xuat_body_email": {
+      "main": [
+        [
+          {
+            "node": "trich_xuat_phase_ID",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "trich_xuat_phase_ID": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "910c5825-c1eb-453f-b4d0-9e3e4cc14d87",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "1eb38babc8a8a45a31824b994b841421a7c46b5a123ae069344c5034178393e9"
+  },
+  "id": "BbUNjYfQTYZ484FV",
+  "tags": []
+}
