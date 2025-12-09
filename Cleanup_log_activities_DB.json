@@ -1,0 +1,106 @@
+{
+  "name": "Cleanup log activities DB",
+  "nodes": [
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT user_id, activity_log, created_at, rn\nFROM (\n  SELECT\n    user_id,\n    activity_log,\n    created_at,\n    ROW_NUMBER() OVER (\n      PARTITION BY user_id\n      ORDER BY created_at DESC NULLS LAST, ctid DESC\n    ) AS rn\n  FROM logs_user_activities\n) s\nWHERE rn > 20\nORDER BY user_id, created_at DESC NULLS LAST;",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -320,
+        -100
+      ],
+      "id": "aeb97515-9225-4642-a822-ff899df83c24",
+      "name": "query_will_delete_records",
+      "credentials": {
+        "postgres": {
+          "id": "OzOB0lLRA6vftfxv",
+          "name": "Postgres IT_Agent"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "WITH ranked AS (\n  SELECT\n    ctid,\n    ROW_NUMBER() OVER (\n      PARTITION BY user_id\n      ORDER BY created_at DESC NULLS LAST, ctid DESC\n    ) AS rn\n  FROM logs_user_activities\n)\nDELETE FROM logs_user_activities t\nUSING ranked r\nWHERE t.ctid = r.ctid\n  AND r.rn > 20;",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -100,
+        -100
+      ],
+      "id": "36ab7b6c-e333-42e3-babd-10f021e9cd6e",
+      "name": "delete_records (history >20)",
+      "credentials": {
+        "postgres": {
+          "id": "OzOB0lLRA6vftfxv",
+          "name": "Postgres IT_Agent"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "months",
+              "triggerAtDayOfMonth": 30,
+              "triggerAtHour": 2
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -540,
+        -100
+      ],
+      "id": "b8e52146-255d-425a-9c62-b61616d94806",
+      "name": "Chạy ngày 30 mỗi tháng lúc 2AM"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "query_will_delete_records": {
+      "main": [
+        [
+          {
+            "node": "delete_records (history >20)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Chạy ngày 30 mỗi tháng lúc 2AM": {
+      "main": [
+        [
+          {
+            "node": "query_will_delete_records",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "Asia/Ho_Chi_Minh",
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "versionId": "bfce5219-c4d5-4af1-9e8d-f759aa9f8a46",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "1eb38babc8a8a45a31824b994b841421a7c46b5a123ae069344c5034178393e9"
+  },
+  "id": "1VVivie7ZFl9RdTG",
+  "tags": []
+}
