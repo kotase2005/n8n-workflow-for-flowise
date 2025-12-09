@@ -1,0 +1,371 @@
+{
+  "name": "getticketdetail",
+  "nodes": [
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://eoffice.fptonline.net/rest/sms/latest/integration-user/login",
+        "sendBody": true,
+        "contentType": "form-urlencoded",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "username",
+              "value": "itbot"
+            },
+            {
+              "name": "password",
+              "value": "fo@45934593"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -1700,
+        -100
+      ],
+      "id": "30dd2c4f-224d-47df-97f1-ed7c5f7953b8",
+      "name": "Get_S-token"
+    },
+    {
+      "parameters": {
+        "url": "https://eoffice.fptonline.net/rest/sms/latest/integration-ticket/detail",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "id",
+              "value": "={{ $('When Executed by Another Workflow').item.json.id }}"
+            },
+            {
+              "name": "getHidden",
+              "value": "true"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "S-Token",
+              "value": "={{ $json.UserInfo.loginToken }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -1480,
+        -100
+      ],
+      "id": "c68780f7-f882-4978-900c-7bec33974f1b",
+      "name": "Get ticket detail"
+    },
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "id"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -1900,
+        -100
+      ],
+      "id": "f39af050-48fd-4852-914f-909aafcb929e",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "95e5db58-4d53-4837-95ce-538cd18913e9",
+              "name": "ID Phiếu yêu cầu",
+              "value": "={{ $('Get ticket detail').item.json.TicketInfos.ticketId }}",
+              "type": "string"
+            },
+            {
+              "id": "662041da-e32a-454c-aec7-112e0fe3f3a7",
+              "name": "Bộ phận đang nhận task",
+              "value": "={{ $('Get ticket detail').item.json.TicketInfos.current_phase }}",
+              "type": "string"
+            },
+            {
+              "id": "072a17a9-ce62-4c14-a9da-8a3ef2a35d18",
+              "name": "Người đang nhận task",
+              "value": "={{ $json['Họ tên'] }}",
+              "type": "string"
+            },
+            {
+              "id": "d0f2590c-2448-4a39-9ee5-53d52b389a84",
+              "name": "Thời gian nhận task",
+              "value": "={{ $('Get ticket detail').item.json.TicketInfos.received_time }}",
+              "type": "string"
+            },
+            {
+              "id": "41dc57b8-f66a-4e13-aee1-f7078d67d2fa",
+              "name": "Thời gian dự kiến hoàn thành",
+              "value": "={{ $('Get ticket detail').item.json.TicketInfos.estimate_to_finish }}",
+              "type": "string"
+            },
+            {
+              "id": "2677ebeb-7c98-45aa-8c96-201e0c60cb0a",
+              "name": "Tình trạng phiếu",
+              "value": "={{ $('Get ticket detail').item.json.TicketInfos.status }}",
+              "type": "string"
+            },
+            {
+              "id": "73e24b6e-36e7-4a71-9eb4-f5d10b363944",
+              "name": "Vùng miền",
+              "value": "={{ $('Get ticket detail').item.json.TicketInfos.location }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -680,
+        -320
+      ],
+      "id": "b3f5d06c-134c-4706-8a15-fa95057d9e72",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "19uaTJQm8OCtuJ7p8XI82ocp3ndc4KDqigiVF_KpRSP8",
+          "mode": "list",
+          "cachedResultName": "Master Data FO",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/19uaTJQm8OCtuJ7p8XI82ocp3ndc4KDqigiVF_KpRSP8/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 16100127,
+          "mode": "list",
+          "cachedResultName": "DS_Final",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/19uaTJQm8OCtuJ7p8XI82ocp3ndc4KDqigiVF_KpRSP8/edit#gid=16100127"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Tài khoản",
+              "lookupValue": "={{ $json.TicketInfos.owner }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        -980,
+        -320
+      ],
+      "id": "01f639c4-c1b6-49d5-87ba-a849eb07a4d2",
+      "name": "Google Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "QatTQoMeZfYT8YNF",
+          "name": "Google Sheets account huynd"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "return [\n  {\n    json: {\n      result: JSON.stringify(items[0].json, null, 2)\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -460,
+        -320
+      ],
+      "id": "ab536494-c532-4544-be16-2358c4eb86b0",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "a251f7d4-577f-49bb-aab2-411c7833042c",
+              "leftValue": "={{ $json.TicketInfos.owner }}",
+              "rightValue": "itbot",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -1260,
+        -100
+      ],
+      "id": "9345aec0-2031-447a-ad2b-cccead5794b4",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Lấy object từ input (output node IF truyền qua)\nconst item = $json;\n\n// Lấy id và finished_time\nconst ticketId = item.TicketInfos.ticketId;\nconst finishedTime = item.TicketInfos.finished_time;\n\nreturn [\n  {\n    json: {\n      message: `Phiếu yêu cầu ${ticketId} ([xem chi tiết](https://eoffice.fptonline.net/secure/ViewTicket.jspa?id=${ticketId})) đã hoàn thành vào thời điểm ${finishedTime}`\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1040,
+        0
+      ],
+      "id": "e8e217a1-b234-4497-a923-7de6ae3bcfae",
+      "name": "Code1"
+    },
+    {
+      "parameters": {
+        "method": "DELETE",
+        "url": "https://eoffice.fptonline.net/rest/sms/latest/integration-user/logout",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "S-Token",
+              "value": "={{ $('Get_S-token').item.json.UserInfo.loginToken }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -1260,
+        -300
+      ],
+      "id": "3e3e01d1-9ce4-46bd-b074-820ebfd653e7",
+      "name": "Logout eoffice"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Get_S-token": {
+      "main": [
+        [
+          {
+            "node": "Get ticket detail",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get ticket detail": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Logout eoffice",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Get_S-token",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Code1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "6f9b4b70-a78a-4596-a35f-e2e4db661915",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "1eb38babc8a8a45a31824b994b841421a7c46b5a123ae069344c5034178393e9"
+  },
+  "id": "P2kBp1ggAhqcg71A",
+  "tags": [
+    {
+      "createdAt": "2025-07-17T02:47:19.159Z",
+      "updatedAt": "2025-07-17T02:47:19.159Z",
+      "id": "p270oUGkKlcxqRIk",
+      "name": "check_ticket_detail"
+    }
+  ]
+}
