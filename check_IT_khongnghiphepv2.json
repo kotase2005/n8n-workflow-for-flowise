@@ -1,0 +1,298 @@
+{
+  "name": "check_IT_khongnghiphepv2",
+  "nodes": [
+    {
+      "parameters": {
+        "operation": "deleteTable",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "it_support_users_on_duty",
+          "mode": "list",
+          "cachedResultName": "it_support_users_on_duty"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -320,
+        20
+      ],
+      "id": "49f170a0-c919-41aa-b148-0dd7c8de939c",
+      "name": "del_rows_it_khongnghiphep",
+      "credentials": {
+        "postgres": {
+          "id": "OzOB0lLRA6vftfxv",
+          "name": "Postgres IT_Agent"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "https://internal.fptonline.net/api/getDayOffByDepartment?center=16&department=55",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {}
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -120,
+        20
+      ],
+      "id": "8ada47d0-fb77-4ee1-bc61-1dfc88931720",
+      "name": "checkin"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Lấy chuỗi JSON từ output của node API\nconst raw = $json[\"data\"];\n\n// Parse chuỗi JSON ban đầu (bên trong là 1 object lớn chứa nhiều người)\nconst parsedData = JSON.parse(raw);\n\n// Tạo mảng item đầu ra\nconst result = [];\n\nfor (const [id, info] of Object.entries(parsedData)) {\n  result.push({\n    json: {\n      id,\n      ...info\n    }\n  });\n}\n\nreturn result;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        100,
+        20
+      ],
+      "id": "f172cb4d-8b2f-4a0b-b347-19e8e004daa5",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "99e581ac-d66f-428b-a912-0b7950bf6320",
+              "leftValue": "={{ $json.day_off[0].num_day }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notExists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        320,
+        20
+      ],
+      "id": "a843edef-513a-4e2c-96e3-eff81120f7cc",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Danh sách các id cần giữ lại\nconst allowedIds = [\n  \"00171946\",\n  \"00140461\",\n  \"00291229\",\n  \"00174606\",\n  \"00255629\",\n  \"00148670\"\n];\n\n// Lọc các item hiện tại\nreturn items.filter(item => allowedIds.includes(item.json.id));\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        540,
+        -80
+      ],
+      "id": "3b3e2f21-b7c0-408a-ae66-1ac6c0f3b69d",
+      "name": "Code1"
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "it_support_users_on_duty",
+          "mode": "list",
+          "cachedResultName": "it_support_users_on_duty"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "user_name": "={{ $json.email.split('@')[0].toLowerCase() }}",
+            "location": "={{    $json.id === '00171946' || $json.id === '00140461' || $json.id === '00291229'     ? 'HCM'      : ($json.id === '00174606' || $json.id === '00255629' || $json.id === '00148670'          ? 'HN'          : 'UNKNOWN')  }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "user_name",
+              "displayName": "user_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "location",
+              "displayName": "location",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        760,
+        -80
+      ],
+      "id": "17c128b7-2635-4faf-8c80-652576d9ddfc",
+      "name": "write_to_db_khongnghiphep",
+      "credentials": {
+        "postgres": {
+          "id": "OzOB0lLRA6vftfxv",
+          "name": "Postgres IT_Agent"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 8 * * 1-5"
+            },
+            {
+              "field": "cronExpression",
+              "expression": "30 13 * * 1-5"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -520,
+        20
+      ],
+      "id": "dc435263-6bdb-4c8a-9463-ef38dc7274ab",
+      "name": "Run_at_8AM_1:30PM_daily"
+    },
+    {
+      "parameters": {
+        "content": "Chạy lúc 8:00 và 13:30 mỗi ngày từ thứ 2 đến thứ 6",
+        "height": 80,
+        "width": 260
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -600,
+        -80
+      ],
+      "typeVersion": 1,
+      "id": "3803d804-630f-42b0-ad74-090900204507",
+      "name": "Sticky Note"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "del_rows_it_khongnghiphep": {
+      "main": [
+        [
+          {
+            "node": "checkin",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "checkin": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Code1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code1": {
+      "main": [
+        [
+          {
+            "node": "write_to_db_khongnghiphep",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Run_at_8AM_1:30PM_daily": {
+      "main": [
+        [
+          {
+            "node": "del_rows_it_khongnghiphep",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "Asia/Ho_Chi_Minh",
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "versionId": "0383098b-934c-4e99-ad7e-0bdebb6abd8e",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "1eb38babc8a8a45a31824b994b841421a7c46b5a123ae069344c5034178393e9"
+  },
+  "id": "wI4iYYVRriVnoyhE",
+  "tags": []
+}
