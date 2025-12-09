@@ -1,0 +1,466 @@
+{
+  "name": "check_and_select_ITHCM",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -180,
+        0
+      ],
+      "id": "c22be03d-19ae-4805-8bbc-0e7e2ddb3c1a",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "url": "https://eoffice.fptonline.net/rest/sms/latest/integration-my-execution/list",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "statusType",
+              "value": "ongoing"
+            },
+            {
+              "name": "pageSize",
+              "value": "15"
+            },
+            {
+              "name": "currentPages",
+              "value": "1"
+            },
+            {
+              "name": "asc",
+              "value": "1"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "S-Token",
+              "value": "tx8XC8AOx6n6LIK7494SKhVVTM--huynd54@fpt.com"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        40,
+        -220
+      ],
+      "id": "80dc2f03-85c4-4f2a-aa77-3c928a6416d5",
+      "name": "list_execute_huynd54"
+    },
+    {
+      "parameters": {
+        "url": "https://eoffice.fptonline.net/rest/sms/latest/integration-my-execution/list",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "statusType",
+              "value": "ongoing"
+            },
+            {
+              "name": "pageSize",
+              "value": "15"
+            },
+            {
+              "name": "currentPages",
+              "value": "1"
+            },
+            {
+              "name": "asc",
+              "value": "1"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "S-Token",
+              "value": "tx8XC8AOx6n6LIK7494SKhVVTM--sanglt6@fpt.com"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        40,
+        0
+      ],
+      "id": "86170b6e-b433-452d-b2e4-1d92e9d98931",
+      "name": "list_execute_sanglt6"
+    },
+    {
+      "parameters": {
+        "url": "https://eoffice.fptonline.net/rest/sms/latest/integration-my-execution/list",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "statusType",
+              "value": "ongoing"
+            },
+            {
+              "name": "pageSize",
+              "value": "15"
+            },
+            {
+              "name": "currentPages",
+              "value": "1"
+            },
+            {
+              "name": "asc",
+              "value": "1"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "S-Token",
+              "value": "tx8XC8AOx6n6LIK7494SKhVVTM--trongnc2@fpt.com"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        40,
+        220
+      ],
+      "id": "ad045db5-90fd-4138-940b-c6e6961dc856",
+      "name": "list_execute_trongnc2"
+    },
+    {
+      "parameters": {
+        "numberInputs": 3
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        760,
+        0
+      ],
+      "id": "93bf8f51-8471-40ad-aa87-a712511f1b8c",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "jsCode": "const specialTypes = [\n  \"IT.FO.04-Hỗ trợ khác\",\n  \"Yêu cầu cài đặt phần mềm mới - Nâng cấp phần mềm\",\n  \"Yêu cầu cấp tài sản công nghệ thông tin\",\n  \"Yêu cầu cấp phụ kiện tài sản công nghệ thông tin\",\n  \"Kiểm tra thông tin Hardware\",\n  \"Hỗ trợ xử lý lỗi phần cứng\",\n  \"Hỗ trợ xử lý lỗi phần mềm\",\n  \"Yêu cầu liên quan đến cổng USB\",\n  \"Khắc phục sự cố mạng\"\n];\n\n// input 0 = list_execute_huynd54\nconst listData = $('list_execute_huynd54').first().json.ListData || [];\n\n// input 1 = checkin_huynd54\nconst checkinRaw = $input.first().json.data || \"{}\";\n\n/** @type {{ [key: string]: any }} */\nlet checkinData = {};\ntry {\n  checkinData = JSON.parse(checkinRaw).checkin || {};\n} catch (e) {\n  checkinData = {};\n}\n\n// Lấy ngày hiện tại dạng dd-mm-yyyy\nconst now = new Date();\nconst day = String(now.getDate()).padStart(2, '0');\nconst month = String(now.getMonth() + 1).padStart(2, '0');\nconst year = now.getFullYear();\nconst todayStr = `${day}-${month}-${year}`;\n\n// kiểm tra onLeaveToday\nconst onLeaveToday = !checkinData[todayStr];\n\n// Kiểm tra có ticket đặc biệt\nlet hasSpecialTicket = false;\nfor (const ticket of listData) {\n  if (specialTypes.includes(ticket.requestType)) {\n    hasSpecialTicket = true;\n    break;\n  }\n}\n\nconst isAvailable = !onLeaveToday && !hasSpecialTicket;\n\nreturn [{\n  json: {\n    user: \"huynd54\",\n    isAvailable\n  }\n}];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        420,
+        -220
+      ],
+      "id": "cc9d80ce-309d-4776-b9a9-2332b9c0af8e",
+      "name": "check_huynd54_is_busy"
+    },
+    {
+      "parameters": {
+        "url": "https://internal.fptonline.net/api/getDayOffByEmp?",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "EmployeeID",
+              "value": "00171946"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        240,
+        -220
+      ],
+      "id": "a3520b0e-0162-40d8-b342-bda1cd09f34b",
+      "name": "checkin_huynd54"
+    },
+    {
+      "parameters": {
+        "url": "https://internal.fptonline.net/api/getDayOffByEmp?",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "EmployeeID",
+              "value": "00140461"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        240,
+        0
+      ],
+      "id": "9d08e2a9-4cbe-4ed9-8113-43c080955188",
+      "name": "checkin_sanglt6"
+    },
+    {
+      "parameters": {
+        "url": "https://internal.fptonline.net/api/getDayOffByEmp?",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "EmployeeID",
+              "value": "00291229"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        240,
+        220
+      ],
+      "id": "9da9c941-e50c-4629-a6f9-60e3ee1bf0ee",
+      "name": "checkin_trongnc2"
+    },
+    {
+      "parameters": {
+        "jsCode": "const specialTypes = [\n  \"IT.FO.04-Hỗ trợ khác\",\n  \"Yêu cầu cài đặt phần mềm mới - Nâng cấp phần mềm\",\n  \"Yêu cầu cấp tài sản công nghệ thông tin\",\n  \"Yêu cầu cấp phụ kiện tài sản công nghệ thông tin\",\n  \"Kiểm tra thông tin Hardware\",\n  \"Hỗ trợ xử lý lỗi phần cứng\",\n  \"Hỗ trợ xử lý lỗi phần mềm\",\n  \"Yêu cầu liên quan đến cổng USB\",\n  \"Khắc phục sự cố mạng\"\n];\n\n// input 0 = list_execute_trongnc2\nconst listData = $('list_execute_trongnc2').first().json.ListData || [];\n\n// input 1 = checkin_trongnc2\nconst checkinRaw = $input.first().json.data || \"{}\";\n\n/** @type {{ [key: string]: any }} */\nlet checkinData = {};\ntry {\n  checkinData = JSON.parse(checkinRaw).checkin || {};\n} catch (e) {\n  checkinData = {};\n}\n\n// Lấy ngày hiện tại dạng dd-mm-yyyy\nconst now = new Date();\nconst day = String(now.getDate()).padStart(2, '0');\nconst month = String(now.getMonth() + 1).padStart(2, '0');\nconst year = now.getFullYear();\nconst todayStr = `${day}-${month}-${year}`;\n\n// kiểm tra onLeaveToday\nconst onLeaveToday = !checkinData[todayStr];\n\n// Kiểm tra có ticket đặc biệt\nlet hasSpecialTicket = false;\nfor (const ticket of listData) {\n  if (specialTypes.includes(ticket.requestType)) {\n    hasSpecialTicket = true;\n    break;\n  }\n}\n\nconst isAvailable = !onLeaveToday && !hasSpecialTicket;\n\nreturn [{\n  json: {\n    user: \"trongnc2\",\n    isAvailable\n  }\n}];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        420,
+        220
+      ],
+      "id": "6dd67c2a-9112-46b3-babe-e6864e4f4b42",
+      "name": "check_trongnc2_is_busy"
+    },
+    {
+      "parameters": {
+        "jsCode": "const specialTypes = [\n  \"IT.FO.04-Hỗ trợ khác\",\n  \"Yêu cầu cài đặt phần mềm mới - Nâng cấp phần mềm\",\n  \"Yêu cầu cấp tài sản công nghệ thông tin\",\n  \"Yêu cầu cấp phụ kiện tài sản công nghệ thông tin\",\n  \"Kiểm tra thông tin Hardware\",\n  \"Hỗ trợ xử lý lỗi phần cứng\",\n  \"Hỗ trợ xử lý lỗi phần mềm\",\n  \"Yêu cầu liên quan đến cổng USB\",\n  \"Khắc phục sự cố mạng\"\n];\n\n// input 0 = list_execute_sanglt6\nconst listData = $('list_execute_sanglt6').first().json.ListData || [];\n\n// input 1 = checkin_sanglt6\nconst checkinRaw = $input.first().json.data || \"{}\";\n\n/** @type {{ [key: string]: any }} */\nlet checkinData = {};\ntry {\n  checkinData = JSON.parse(checkinRaw).checkin || {};\n} catch (e) {\n  checkinData = {};\n}\n\n// Lấy ngày hiện tại dạng dd-mm-yyyy\nconst now = new Date();\nconst day = String(now.getDate()).padStart(2, '0');\nconst month = String(now.getMonth() + 1).padStart(2, '0');\nconst year = now.getFullYear();\nconst todayStr = `${day}-${month}-${year}`;\n\n// kiểm tra onLeaveToday\nconst onLeaveToday = !checkinData[todayStr];\n\n// Kiểm tra có ticket đặc biệt\nlet hasSpecialTicket = false;\nfor (const ticket of listData) {\n  if (specialTypes.includes(ticket.requestType)) {\n    hasSpecialTicket = true;\n    break;\n  }\n}\n\nconst isAvailable = !onLeaveToday && !hasSpecialTicket;\n\nreturn [{\n  json: {\n    user: \"sanglt6\",\n    isAvailable\n  }\n}];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        420,
+        0
+      ],
+      "id": "e88f1aa5-bf10-42ec-96e7-28530fc8002d",
+      "name": "check_sanglt6_is_busy"
+    },
+    {
+      "parameters": {
+        "content": "Kiểm tra xem IT nào available theo quy tắc:\n- Không nghỉ phép.\n- Không có task.",
+        "height": 100,
+        "width": 340
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        120,
+        400
+      ],
+      "id": "bfab9547-7c48-49f5-a438-17f5fb890c3b",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "Lấy ra IT nhận task mới theo quy tắc:\n- Random các IT available.\n- Nếu tất cả IT đều không available thì lấy binhvh"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        980,
+        140
+      ],
+      "id": "71f5f0d0-4e77-4a44-85ee-9dc2054c723e",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "jsCode": "const allUsers = items.map(e => e.json);\nconst availableUsers = allUsers.filter(u => u.isAvailable).map(u => u.user);\n\nlet selectedIT = \"binhvh\";\n\nif (availableUsers.length > 0) {\n  const randomIndex = Math.floor(Math.random() * availableUsers.length);\n  selectedIT = availableUsers[randomIndex];\n}\n\nreturn [{\n  json: {\n    selectedIT\n  }\n}];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        980,
+        0
+      ],
+      "id": "66f64fb0-e8ca-4388-b0f0-5bd7423c9231",
+      "name": "select_IT"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "list_execute_huynd54",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "list_execute_sanglt6",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "list_execute_trongnc2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "list_execute_huynd54": {
+      "main": [
+        [
+          {
+            "node": "checkin_huynd54",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "list_execute_sanglt6": {
+      "main": [
+        [
+          {
+            "node": "checkin_sanglt6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "list_execute_trongnc2": {
+      "main": [
+        [
+          {
+            "node": "checkin_trongnc2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "select_IT",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "check_huynd54_is_busy": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "checkin_huynd54": {
+      "main": [
+        [
+          {
+            "node": "check_huynd54_is_busy",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "checkin_sanglt6": {
+      "main": [
+        [
+          {
+            "node": "check_sanglt6_is_busy",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "checkin_trongnc2": {
+      "main": [
+        [
+          {
+            "node": "check_trongnc2_is_busy",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "check_trongnc2_is_busy": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "check_sanglt6_is_busy": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "select_IT": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "3aab688e-9c9c-4948-943d-7eac25b673d7",
+  "meta": {
+    "instanceId": "1eb38babc8a8a45a31824b994b841421a7c46b5a123ae069344c5034178393e9"
+  },
+  "id": "Uq4U4FsiMiGx7qsN",
+  "tags": [
+    {
+      "createdAt": "2025-07-17T02:46:39.884Z",
+      "updatedAt": "2025-07-17T02:46:39.884Z",
+      "id": "XfrkRVlN9koNTQg6",
+      "name": "pick_it"
+    }
+  ]
+}
