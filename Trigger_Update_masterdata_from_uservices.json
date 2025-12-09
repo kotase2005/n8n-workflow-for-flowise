@@ -1,0 +1,244 @@
+{
+  "name": "Trigger_Update_masterdata_from_uservices",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "triggerOn": "specificFolder",
+        "folderToWatch": {
+          "__rl": true,
+          "value": "1r3wQrMaof011H-8ZSfAlNVePMrec6oKw",
+          "mode": "list",
+          "cachedResultName": "Uservices-MasterData",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1r3wQrMaof011H-8ZSfAlNVePMrec6oKw"
+        },
+        "event": "fileUpdated",
+        "options": {}
+      },
+      "id": "0c4b117b-36c6-4705-8268-12c6f84fa096",
+      "name": "Google Drive Trigger",
+      "type": "n8n-nodes-base.googleDriveTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1600,
+        -220
+      ],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "NlunE72CZIo3W36f",
+          "name": "Google Drive Huy"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "1lq4OoMnz9VO6zBVd7vtxlGeSX4y1SE1a",
+          "mode": "list",
+          "cachedResultName": "Master Data FO 1.xlsx",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1lq4OoMnz9VO6zBVd7vtxlGeSX4y1SE1a/edit?usp=drivesdk&ouid=114962108832664751197&rtpof=true&sd=true"
+        },
+        "options": {}
+      },
+      "id": "0804f8d6-822e-435c-b366-0521cc607209",
+      "name": "Download Excel",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 2,
+      "position": [
+        -1080,
+        -220
+      ],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "NlunE72CZIo3W36f",
+          "name": "Google Drive Huy"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "4abf33ec-48ce-4e57-ab80-cafc58069313",
+      "name": "Parse Excel",
+      "type": "n8n-nodes-base.spreadsheetFile",
+      "typeVersion": 1,
+      "position": [
+        -860,
+        -220
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "clear",
+        "documentId": {
+          "__rl": true,
+          "value": "1RX3sNsu_YGEl2qEAd66iqaY8UbJy37BTO2BUjjxwBYw",
+          "mode": "list",
+          "cachedResultName": "Master Data FO",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1RX3sNsu_YGEl2qEAd66iqaY8UbJy37BTO2BUjjxwBYw/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 16100127,
+          "mode": "list",
+          "cachedResultName": "DS_Final",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1RX3sNsu_YGEl2qEAd66iqaY8UbJy37BTO2BUjjxwBYw/edit#gid=16100127"
+        },
+        "clear": "specificRange",
+        "range": "A2:Y1000"
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        -1360,
+        -220
+      ],
+      "id": "11c291db-dd6c-4857-8b02-abd8245d6578",
+      "name": "Google Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "QatTQoMeZfYT8YNF",
+          "name": "Google Sheets account huynd"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "Khi có ghi nhận thay đổi trong thư mục Uservices-masterdata luồng sẽ Upload file excel chứa Master Data mới nhất vào Google Drive, luồng sẽ xóa dữ liệu file Google sheet chứa Master data cũ và chèn dữ liệu mới vào",
+        "height": 140,
+        "width": 300
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -1740,
+        -380
+      ],
+      "typeVersion": 1,
+      "id": "4ac2662f-0111-4447-9955-723fc6be5323",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "method": "PUT",
+        "url": "https://sheets.googleapis.com/v4/spreadsheets/1RX3sNsu_YGEl2qEAd66iqaY8UbJy37BTO2BUjjxwBYw/values/DS_Final!A2:Y?valueInputOption=RAW",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googleApi",
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={{\n  {\n    \"range\": \"DS_Final!A2:Y\",\n    \"majorDimension\": \"ROWS\",\n    \"values\": $node[\"BuildValues\"].json[\"values\"]\n  }\n}}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -420,
+        -220
+      ],
+      "id": "78f84fbd-f080-4ace-837f-f14f29ff006c",
+      "name": "HTTP Request",
+      "credentials": {
+        "googleApi": {
+          "id": "wTmJowIYhre5ut5N",
+          "name": "Google Service Account - huynd54"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Function node: BuildValues with explicit mapping\n// Input: items (output của Parse Excel)\n// Output: 1 item { json: { values: [...], mapping: {...} } }\n\n// === Target headers (Google Sheet order A -> Y) ===\nconst targets = [\n  \"Bộ phận cấp 3\",\n  \"Man_Approve\",\n  \"Group_approve\",\n  \"MB4\",\n  \"M4\",\n  \"1\",\n  \"Job_code\",\n  \"IP_Phone\",\n  \"Mã bộ phận cấp 3\",\n  \"Mã bộ phận cấp2\",\n  \"Bộ phận cấp 1\",\n  \"Bộ phận cấp 2\",\n  \"Level Chuẩn\",\n  \"TT\",\n  \"Mã NV\",\n  \"Công việc\",\n  \"Mã bộ phận cấp 1\",\n  \"Trình tự duyệt\",\n  \"Cấp Nhóm\",\n  \"Họ tên\",\n  \"Giới tính\",\n  \"Tài khoản\",\n  \"Công Ty\",\n  \"Email\",\n  \"Vùng miền\"\n];\n\n// === Mapping target -> source (the exact keys from your Excel Parse) ===\n// You gave the mapping; bên trái là trường Google Sheet (target), bên phải là key từ Parse Excel (source)\nconst mapTargetToSource = {\n  \"Bộ phận cấp 3\": \"bo_phan_cap_3\",         // from Excel 'Bo_phan_cap_3' or 'bo_phan_cap_3'\n  \"Man_Approve\": \"MA\",\n  \"Group_approve\": \"GA\",\n  \"MB4\": \"ma_bo_phan_cap_4\",\n  \"M4\": \"bo_phan_cap_4\",\n  \"1\": \"bo_phan\",\n  \"Job_code\": \"job_code\",\n  \"IP_Phone\": \"IP_Phone\",\n  \"Mã bộ phận cấp 3\": \"Ma_bo_phan_cap_3\",\n  \"Mã bộ phận cấp2\": \"Ma_bo_phan_cap2\",\n  \"Bộ phận cấp 1\": \"Bo_phan_cap_1\",\n  \"Bộ phận cấp 2\": \"Bo_phan_cap_2\",\n  \"Level Chuẩn\": \"Level_Chuan\",\n  \"TT\": \"TT\",\n  \"Mã NV\": \"Ma_NV\",\n  \"Công việc\": \"Cong_viec\",\n  \"Mã bộ phận cấp 1\": \"Ma_bo_phan_cap_1\",\n  \"Trình tự duyệt\": \"Trinh_tu_duyet\",\n  \"Cấp Nhóm\": \"Cap_Nhom\",\n  \"Họ tên\": \"Ho_ten\",\n  \"Giới tính\": \"Gioi_tinh\",\n  \"Tài khoản\": \"Tai_khoan\",\n  \"Công Ty\": \"Cong_Ty\",\n  \"Email\": \"Email\",\n  \"Vùng miền\": \"Vung_mien\"\n};\n\n// helper: normalize & stringify a value\nfunction normVal(v) {\n  if (v === null || v === undefined) return \"\";\n  if (typeof v === \"object\") {\n    try { return JSON.stringify(v); } catch(e) { return String(v); }\n  }\n  return String(v);\n}\n\n// If no items -> return empty values\nif (!items || items.length === 0) {\n  return [{ json: { values: [], mapping: mapTargetToSource } }];\n}\n\n// build rows\nconst rows = items.map(it => {\n  const row = [];\n  for (const target of targets) {\n    const sourceKey = mapTargetToSource[target];\n    // try common variations if sourceKey not found exactly\n    let val = \"\";\n    if (sourceKey && it.json.hasOwnProperty(sourceKey)) {\n      val = it.json[sourceKey];\n    } else if (sourceKey) {\n      // try some common alternative key spellings (case-insensitive)\n      const keys = Object.keys(it.json);\n      const found = keys.find(k => k.toLowerCase() === sourceKey.toLowerCase());\n      if (found) val = it.json[found];\n      else {\n        // try replacing underscores/spaces and compare\n        const srcNorm = sourceKey.replace(/[_\\s]/g, \"\").toLowerCase();\n        const found2 = keys.find(k => k.replace(/[_\\s]/g,\"\").toLowerCase() === srcNorm);\n        if (found2) val = it.json[found2];\n        else val = \"\"; // not found -> keep empty\n      }\n    } else {\n      val = \"\";\n    }\n    row.push(normVal(val));\n  }\n  // ensure exact length = targets.length\n  if (row.length > targets.length) row.length = targets.length;\n  while (row.length < targets.length) row.push(\"\");\n  return row;\n});\n\n// return values and mapping for debug\nreturn [{ json: { values: rows, mapping: mapTargetToSource } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -640,
+        -220
+      ],
+      "id": "34f524d1-997d-4c71-8847-1793c19fc26a",
+      "name": "BuildValues"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Google Drive Trigger": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download Excel": {
+      "main": [
+        [
+          {
+            "node": "Parse Excel",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Excel": {
+      "main": [
+        [
+          {
+            "node": "BuildValues",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets": {
+      "main": [
+        [
+          {
+            "node": "Download Excel",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        []
+      ]
+    },
+    "BuildValues": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "10aad417-9565-4554-87ed-3a178d51efb2",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "1eb38babc8a8a45a31824b994b841421a7c46b5a123ae069344c5034178393e9"
+  },
+  "id": "S3QdgMPAWikK2iZM",
+  "tags": []
+}
