@@ -152,6 +152,15 @@
                 "operation": "equals",
                 "name": "filter.operator.equals"
               }
+            },
+            {
+              "id": "97bbccf9-3ade-40c2-92d5-259f494f1a72",
+              "leftValue": "={{ $json['Tên account'] }}",
+              "rightValue": "[null]",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
             }
           ],
           "combinator": "and"
@@ -162,8 +171,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        1540,
-        0
+        1880,
+        -140
       ],
       "id": "fd72c3a1-4a91-4c5f-a461-3af2606d860c",
       "name": "If"
@@ -209,8 +218,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        1780,
-        -140
+        2180,
+        -280
       ],
       "id": "b96ecbbb-728d-4128-9587-aa0e379523fa",
       "name": "Edit Fields2"
@@ -250,8 +259,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        1780,
-        80
+        2180,
+        -60
       ],
       "id": "50a5f8ad-0f56-47a8-b078-94f83f00118d",
       "name": "Edit Fields3"
@@ -306,13 +315,60 @@
       ],
       "id": "f3c6c371-56fe-4eb1-a377-21af2ceb5f80",
       "name": "Search for account attributes",
-      "alwaysOutputData": false,
+      "alwaysOutputData": true,
       "credentials": {
         "ldap": {
           "id": "iI9T1mvcoQPLwUcL",
           "name": "LDAP huynd"
         }
       }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "627574fc-7daf-4f08-a49e-c480828ff761",
+              "leftValue": "={{ $json['Tên account'] }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1620,
+        0
+      ],
+      "id": "443c6fe2-12d6-490a-bf2d-f5b9fdaa750a",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "jsCode": "const username = $('Edit Fields').first().json.username ;\n\nreturn [\n  {\n    json: {\n      message: `Tài khoản ${username} không tồn tại trên hệ thống.`\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1880,
+        120
+      ],
+      "id": "cd54bd21-8041-4ea3-ad49-5e5dfc79122b",
+      "name": "Code1"
     }
   ],
   "pinData": {},
@@ -354,7 +410,7 @@
       "main": [
         [
           {
-            "node": "If",
+            "node": "If1",
             "type": "main",
             "index": 0
           }
@@ -400,6 +456,24 @@
           }
         ]
       ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Code1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": true,
@@ -408,7 +482,7 @@
     "timezone": "Asia/Ho_Chi_Minh",
     "callerPolicy": "workflowsFromSameOwner"
   },
-  "versionId": "17edcd15-3341-4af8-a06d-5eba976b9429",
+  "versionId": "3a85a9c6-13d5-4955-a1e9-b5ae18e041fe",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "1eb38babc8a8a45a31824b994b841421a7c46b5a123ae069344c5034178393e9"
