@@ -1,0 +1,297 @@
+{
+  "name": "Reset_pass_account_domain",
+  "nodes": [
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "46a41a9e-203b-4f7c-ad5b-7f21bb32a5f1",
+              "leftValue": "={{ $json.ok }}",
+              "rightValue": "true",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        800,
+        -160
+      ],
+      "id": "26090d0a-f525-43ba-9900-2cce7bf0cc5f",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "jsCode": "const username = $('Edit Fields').first().json.username ;\nconst email = $('HTTP Request').first().json.email_mask;\n\nreturn [\n  {\n    json: {\n      message: `Tài khoản ${username} đã reset mật khẩu thành công. Mật khẩu đã được gửi đến email ${email}`\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1100,
+        -260
+      ],
+      "id": "f3aa35df-8981-44dd-b7c0-6a973138f76c",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "jsCode": "const username = $('Edit Fields').first().json.username ;\n\nreturn [\n  {\n    json: {\n      message: `Tài khoản ${username} reset mật khẩu không thành công.`\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1100,
+        -60
+      ],
+      "id": "548d4d13-4a71-4ecc-bbf8-1cd31c75a5d1",
+      "name": "Code1"
+    },
+    {
+      "parameters": {
+        "content": "Luồng dùng để reset pass acc domain",
+        "height": 80,
+        "width": 180
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -140,
+        -100
+      ],
+      "typeVersion": 1,
+      "id": "700ffd9b-ad00-4789-9c7e-24f0f35b02c8",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "56a84886-1573-4624-83ce-6d313dc153c9",
+              "name": "username",
+              "value": "={{ $json.body.username.trim() }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        140,
+        0
+      ],
+      "id": "9f9c9747-f3d7-4fca-a5a3-39e66b2dd7cd",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "reset-pass-domain",
+        "authentication": "basicAuth",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -100,
+        0
+      ],
+      "id": "b5a00e45-5459-4e02-8f33-a3735e506dc1",
+      "name": "Webhook",
+      "webhookId": "28dd0c8f-44e3-44a9-af4b-1d0a86406911",
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "dZNtog4wIGaX2q9L",
+          "name": "Basic authen huynd54 HTTP Request"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://reset-password.fptonline.net/api/reset/direct",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "X-API-Key",
+              "value": "c1f0a8b9e7d6c4f2a1b0d9e8c7f6a5b4c3d2e1f0a9b8c7d6e5f4a3b2c1d0e9f8"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "username",
+              "value": "={{ $('Edit Fields').item.json.username }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        360,
+        0
+      ],
+      "id": "2b2a93b1-0d9f-476b-8df7-13394a90137f",
+      "name": "HTTP Request",
+      "alwaysOutputData": false,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "47a4d7d7-85a8-4437-869e-dc177b8a4b42",
+              "leftValue": "={{ $json.error }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notExists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        580,
+        0
+      ],
+      "id": "3c64ea23-2c70-4635-ad07-bb28d207eb02",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "jsCode": "const username = $('Edit Fields').first().json.username ;\n\nreturn [\n  {\n    json: {\n      message: `Tài khoản ${username} không tồn tại trên hệ thống.`\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        800,
+        100
+      ],
+      "id": "7a3d12bd-66c0-4c6c-8b23-d3f2183f0770",
+      "name": "Code2"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Code1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Code2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "60d817d0-04ea-4362-a9d4-85baf2014f37",
+  "meta": {
+    "instanceId": "1eb38babc8a8a45a31824b994b841421a7c46b5a123ae069344c5034178393e9"
+  },
+  "id": "emqFIxI1OcnbB7BH",
+  "tags": []
+}
